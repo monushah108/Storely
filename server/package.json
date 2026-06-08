@@ -1,0 +1,31 @@
+{
+  "name": "folder driver",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --no-deprecation app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "google-auth-library": "^10.3.0",
+    "mime-type": "^5.0.3",
+    "mime-types": "^2.1.35",
+    "mongoose": "^8.12.1",
+    "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-github": "^1.1.0",
+    "passport-github2": "^0.1.12",
+    "redis": "^5.8.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}
