@@ -8,18 +8,20 @@ import authRoute from "./routes/authRoute.js";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import checkAuth from "./middleware/authMilddleware.js";
+import dotenv from "dotenv";
 
 await connectDB();
-
+dotenv.config();
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.ORIGIN,
     credentials: true,
-  })
+  }),
 );
-app.use(cookieParser("my-secret-key-is-MONU"));
+
+app.use(cookieParser(process.env.SECRET_KEY));
 app.use(express.json());
 
 app.use("/directory", checkAuth, directoryRoute);
