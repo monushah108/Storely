@@ -7,7 +7,7 @@ export default function PasswordForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const passwordRef = useRef("");
-  const BASE_URL = "http://localhost:4000";
+  const BASE_URL = process.env.BASE_URL;
 
   const Savepassword = async () => {
     const res = await fetch(`${BASE_URL}/auth/login/password`, {

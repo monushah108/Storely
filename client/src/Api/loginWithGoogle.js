@@ -1,5 +1,5 @@
 export const loginWithGoogle = async (idToken) => {
-  const BASE_URL = "http://localhost:4000";
+  const BASE_URL = process.env.BASE_URL;
 
   const response = await fetch(`${BASE_URL}/auth/google`, {
     method: "POST",
