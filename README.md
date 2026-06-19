@@ -1,1 +1,1 @@
-# folder-app
+# storely
