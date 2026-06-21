@@ -12,41 +12,51 @@ export default function ContextModle({
   setRenameModal,
   setNewname,
   setDirId,
-  setType,
+  setExt,
+  setIsShare,
   id,
   name,
-  extension,
+  ext,
+  setDeleteId,
+  setShareId,
 }) {
   const [menuOpenId, setMenuOpenId] = useState(null);
-  const [deleteFile] = useDeleteFileMutation();
-  const BASE_URL = "http://localhost:4000";
+  const [deleteFile, { isLoading }] = useDeleteFileMutation();
+
   const navigate = useNavigate();
   const [openFile] = useOpenFileMutation();
 
   const handleOpen = async (id, type) => {
     setMenuOpenId(null);
-    const path = await openFile({ id, type });
+    const data = await openFile({ id, type });
     if (!type) {
       navigate(`/dirItem/${id}`);
     } else {
-      window.location.href = `${BASE_URL}/file/${id}`;
+      navigate(`/file/${id}`, {
+        state: data,
+      });
     }
   };
 
   const deleteFunc = useCallback((id, type) => {
-    console.log(id, type);
+    setDeleteId(id);
     deleteFile({ id, type });
     setMenuOpenId(null);
     setMenu((pre) => ({ ...pre, visible: false }));
   }, []);
 
-  const renameFunc = useCallback((id, name, extension) => {
+  const renameFunc = useCallback((id, name, ext) => {
     setDirId(id);
     setNewname(name);
     setMenuOpenId(null);
     setRenameModal(true);
-    setType(extension);
+    setExt(ext);
   }, []);
+
+  const handleShare = (id) => {
+    setIsShare(true);
+    setShareId(id);
+  };
 
   if (!menu.visible) return null;
 
@@ -58,22 +68,30 @@ export default function ContextModle({
     >
       <button
         className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-        onClick={() => deleteFunc(id, extension)}
+        onClick={() => deleteFunc(id, ext)}
       >
         Delete
       </button>
       <button
         className="block w-full px-4 py-2 text-left text-sm text-blue-600 hover:bg-blue-50"
-        onClick={() => renameFunc(id, name, extension)}
+        onClick={() => renameFunc(id, name, ext)}
       >
         Rename
       </button>
       <button
         className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-        onClick={() => handleOpen(id, extension)}
+        onClick={() => handleOpen(id, ext)}
       >
         Open
       </button>
+      {ext && (
+        <button
+          onClick={() => handleShare(id)}
+          className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+        >
+          share
+        </button>
+      )}
     </div>
   );
 }

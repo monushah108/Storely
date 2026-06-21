@@ -1,39 +1,46 @@
 import UsersPage from "../pages/UsersPage.jsx";
-import RecoverUserPage from "../pages/RecoverUserPage.jsx";
-import AdminLayout from "../pages/AdminLayout.jsx";
-import UserFileExplorer from "../pages/UserFileExplorer.jsx";
-import StaffManagement from "../pages/StaffeManagement.jsx";
+import Recover from "../pages/recover.jsx";
+import Layout from "../pages/layout.jsx";
+import FileExplorer from "../pages/fileExplorer.jsx";
+import Staff from "../pages/staff.jsx";
 import ProtectedRoutes from "./protectedRoutes.jsx";
+import Dashboard from "../pages/dashboard.jsx";
 
 export default function privateRoutes() {
   return {
-    path: "/users",
+    path: "/dashboard",
 
     element: (
       <ProtectedRoutes>
-        <AdminLayout />
+        <Layout />
       </ProtectedRoutes>
     ),
     children: [
       {
         index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "users",
         element: <UsersPage />,
       },
       {
         path: "recover",
-        element: <RecoverUserPage />,
+        element: <Recover />,
       },
       {
         path: "staffes",
-        element: <StaffManagement />,
+        element: <Staff />,
       },
       {
         path: "data/:userId",
-        element: <UserFileExplorer />,
-      },
-      {
-        path: "data/:userId/:dirId",
-        element: <UserFileExplorer />,
+        element: <FileExplorer />,
+        children: [
+          {
+            path: ":dirId",
+            element: <FileExplorer />,
+          },
+        ],
       },
     ],
   };

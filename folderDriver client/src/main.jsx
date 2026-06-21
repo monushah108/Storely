@@ -3,14 +3,15 @@ import App from "./App.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
 import { Store } from "./store/index.js";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
-const client_id =
-
-
+const client_id = import.meta.env.VITE_CLIENT_ID;
 createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={client_id}>
     <Provider store={Store}>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </Provider>
-  </GoogleOAuthProvider>
+  </GoogleOAuthProvider>,
 );

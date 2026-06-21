@@ -1,7 +1,7 @@
 export const loginWithGoogle = async (idToken) => {
-  const BASE_URL = "http://localhost:4000";
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  const response = await fetch(`${BASE_URL}/auth/google`, {
+  const response = await fetch(`${VITE_BASE_URL}/auth/google`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

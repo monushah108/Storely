@@ -1,37 +1,32 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
-import { loginWithGoogle } from "../Api/loginWithGoogle";
 import { toast, Toaster } from "sonner";
 import { useLoginMutation } from "../store/slices/UserSlice";
 import { FaGithub } from "react-icons/fa";
+import { Loader } from "lucide-react";
+import GoogleBth from "../components/ui/OauthBth";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("sonu@gmail.com");
+  const [password, setPassword] = useState("12345678");
 
-  const [login] = useLoginMutation();
+  const [login, { isLoading, isError }] = useLoginMutation();
 
   const navigate = useNavigate();
 
-  const handleLogin = async (userContent) => {
+  const handleLogin = async () => {
     try {
-      const data = await login(userContent).unwrap();
+      const data = await login({ email, password }).unwrap();
+      toast.success(data.messsage);
       navigate("/");
     } catch (err) {
       toast.error(err.data.error || "login failed");
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleLogin(formData);
+    handleLogin();
   };
 
   return (
@@ -54,8 +49,8 @@ export default function Login() {
             type="email"
             name="email"
             placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -70,8 +65,8 @@ export default function Login() {
             type="password"
             name="password"
             placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -79,10 +74,18 @@ export default function Login() {
 
         {/* Login button */}
         <button
+          disabled={isLoading}
           type="submit"
           className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Login
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader className="animate-spin h-4 w-4" />
+              <span>Logging in...</span>
+            </div>
+          ) : (
+            "Login"
+          )}
         </button>
 
         {/* OR divider */}
@@ -94,23 +97,7 @@ export default function Login() {
 
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {/* Google login */}
-          <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-              const data = await loginWithGoogle(credentialResponse.credential);
-              if (data.error) {
-                toast.error(data.error);
-                console.log(data);
-                return;
-              }
-              navigate("/");
-            }}
-            theme="filled_blue"
-            text="continue_with"
-            onError={() => {
-              toast.error("Login Failed");
-            }}
-            // useOneTap
-          />
+          <GoogleBth />
           {/* github login  */}
           <button
             onClick={() => {

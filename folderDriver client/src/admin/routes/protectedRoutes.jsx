@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function ProtectedRoutes({ role, children }) {
   const roles = ["admin", "owner"];
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:4000";
+  const VITE_BASE_URL = "http://localhost:4000";
 
   useEffect(() => {
     fetchUser();
@@ -12,7 +12,7 @@ export default function ProtectedRoutes({ role, children }) {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/user/profile`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/user/profile`, {
         credentials: "include",
       });
       const { role } = await res.json();

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const adminApiSlice = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:4000",
+    baseUrl: import.meta.env.VITE_BASE_URL,
     credentials: "include",
     prepareHeaders: (headers) => {
       headers.set("Content-Type", "application/json");

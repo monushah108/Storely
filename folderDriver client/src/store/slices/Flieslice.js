@@ -1,34 +1,44 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = "http://localhost:4000/";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const FileApiSlice = createApi({
   reducerPath: "fileApi",
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL, credentials: "include" }),
-  tagTypes: ["directory", "file"],
+
+  baseQuery: fetchBaseQuery({
+    baseUrl: BASE_URL,
+    credentials: "include",
+    // prepareHeaders: (headers) => {
+    //   headers.set("content-type", "application/json");
+    //   return headers;
+    // },
+  }),
+
+  tagTypes: ["file", "directory"],
 
   endpoints: (builder) => ({
     getFile: builder.query({
-      query: (paramId) => `/directory/${paramId || ""}`,
-      transformResponse: (query) => [
-        ...(query?.directories || []),
-        ...(query?.files || []),
+      query: (parentId) => `/directory/${parentId ?? ""}`,
+
+      transformResponse: ({ directories = [], files = [] }) => [
+        ...directories,
+        ...files,
       ],
-      transformErrorResponse: (error) => error,
+
       providesTags: (result) =>
         result
           ? [
-              ...result
-                .filter((item) => item.type === "directory")
-                .map(({ id }) => ({ type: "directory", id })),
-              ...result
-                .filter((item) => item.type === "file")
-                .map(({ id }) => ({ type: "file", id })),
-              "directory",
-              "file",
+              ...result.map(({ type, id }) => ({
+                type,
+                id,
+              })),
+              { type: "file", id: "LIST" },
+              { type: "directory", id: "LIST" },
             ]
-          : ["directory", "file"],
+          : [
+              { type: "file", id: "LIST" },
+              { type: "directory", id: "LIST" },
+            ],
     }),
 
     deleteFile: builder.mutation({
@@ -36,69 +46,45 @@ export const FileApiSlice = createApi({
         url: `/${type ? "file" : "directory"}/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, { id, type }) => [
-        { type: type ? "file" : "directory", id },
-      ],
+
+      invalidatesTags: ["file", "directory"],
     }),
 
     renameFile: builder.mutation({
-      query: ({ newName, DirId, type }) => ({
-        url: `/${type ? "file" : "directory"}/${DirId}`,
+      query: ({ newName, DirId, ext }) => ({
+        url: `/${ext ? "file" : "directory"}/${DirId}`,
         method: "PATCH",
-        body: JSON.stringify({ newName }),
-        headers: { "content-type": "application/json" },
+        body: { newName },
       }),
-      invalidatesTags: (result, error, { DirId, type }) => [
-        { type: type ? "file" : "directory", id: DirId },
-      ],
+
+      invalidatesTags: ["file", "directory"],
     }),
 
     createDirectory: builder.mutation({
       query: ({ folderName, parentId }) => ({
-        url: `/directory/${parentId || ""}`,
+        url: `/directory/${parentId ?? ""}`,
         method: "POST",
-        body: JSON.stringify({ folderName }),
-        headers: { "content-type": "application/json" },
+        body: { folderName },
       }),
-      invalidatesTags: ["directory"],
+
+      invalidatesTags: [{ type: "directory", id: "LIST" }],
     }),
 
     openFile: builder.mutation({
-      query: ({ id, type }) => ({
-        url: `/${type ? "file" : "directory"}/${id}`,
+      query: ({ id }) => ({
+        url: `/file/${id}`,
         method: "GET",
       }),
     }),
 
     uploadFile: builder.mutation({
-      queryFn: ({ paramId, file, onProgress }) => {
-        return new Promise((resolve, reject) => {
-          const form = new FormData();
-          form.append("file", file);
+      query: ({ paramId, form }) => ({
+        url: `/file${paramId ? `/${paramId}` : ""}`,
+        method: "POST",
+        body: form,
+      }),
 
-          const xhr = new XMLHttpRequest();
-          const url = paramId
-            ? `${BASE_URL}file/${paramId}`
-            : `${BASE_URL}file`;
-
-          xhr.open("POST", url, true);
-          xhr.withCredentials = true;
-
-          xhr.upload.addEventListener("progress", (e) => {
-            const totalProgress = (e.loaded / e.total) * 100;
-            onProgress(totalProgress.toFixed(0));
-          });
-
-          xhr.onload = () => resolve({ data: xhr.responseText });
-          xhr.onerror = () =>
-            reject({ error: { status: xhr.status, data: xhr.statusText } });
-
-          xhr.send(form);
-        });
-      },
-      invalidatesTags: (result, error, { paramId }) => [
-        { type: "directory", id: paramId || "" },
-      ],
+      invalidatesTags: [{ type: "file", id: "LIST" }],
     }),
   }),
 });
@@ -111,3 +97,37 @@ export const {
   useUploadFileMutation,
   useOpenFileMutation,
 } = FileApiSlice;
+
+// async queryFn({ paramId, file }) {
+//         return new Promise((resolve, reject) => {
+//           const form = new FormData();
+//           form.append("file", file);
+
+//           const xhr = new XMLHttpRequest();
+
+//           xhr.open(
+//             "POST",
+//             `${BASE_URL}/file${paramId ? `/${paramId}` : ""}`,
+//             true,
+//           );
+
+//           xhr.withCredentials = true;
+
+//           xhr.onload = () => {
+//             resolve({
+//               data: JSON.parse(xhr.responseText),
+//             });
+//           };
+
+//           xhr.onerror = () => {
+//             reject({
+//               error: {
+//                 status: xhr.status,
+//                 data: xhr.statusText,
+//               },
+//             });
+//           };
+
+//           xhr.send(form);
+//         });
+//       }

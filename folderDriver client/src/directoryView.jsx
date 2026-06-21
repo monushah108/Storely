@@ -12,7 +12,6 @@ export default function DirectoryView() {
     isError,
     error,
   } = useGetFileQuery(param.id);
-  const [onProgress, setOnprogress] = useState(null);
 
   const navigate = useNavigate();
 
@@ -24,14 +23,14 @@ export default function DirectoryView() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-50 ">
-      <DirectoryHeader setOnprogress={setOnprogress} onProgress={onProgress} />
+      <DirectoryHeader />
       <main>
         {isError ? (
           "something is wrong"
         ) : isLoading ? (
           <p className="font-semibold text-lg m-3">...Fetching Data</p>
-        ) : DriveData.length > 0 ? (
-          <DirectoryList DriveData={DriveData} onProgress={onProgress} />
+        ) : DriveData?.length ? (
+          <DirectoryList DriveData={DriveData} />
         ) : (
           <div className="flex h-full items-center justify-center text-gray-500 mt-4 font-semibold">
             No files or directories found.

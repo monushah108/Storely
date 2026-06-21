@@ -13,7 +13,7 @@ export const Store = configureStore({
     return getDefaultMiddleware().concat(
       FileApiSlice.middleware,
       UserApiSlice.middleware,
-      adminApiSlice.middleware
+      adminApiSlice.middleware,
     );
   },
 });

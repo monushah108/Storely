@@ -11,6 +11,7 @@ export default function Register() {
   });
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState({});
 
   const navigate = useNavigate();
 
@@ -23,7 +24,9 @@ export default function Register() {
   const handleRegister = async (userContent) => {
     const data = await register(userContent);
     if (data?.error) {
-      toast.error(data?.error?.data.error);
+      console.log(data?.error?.data);
+      toast.error("invalid credentials");
+      setError(data?.error?.data);
     } else if (data?.data) {
       toast.success("Registration successful!");
       setIsSuccess(true);
@@ -32,6 +35,8 @@ export default function Register() {
       }, 2000);
     }
   };
+
+  console.log(error);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -66,6 +71,7 @@ export default function Register() {
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {error?.name && <p className="text-red-500 text-sm">{error.name}</p>}
         </div>
 
         {/* Email */}
@@ -82,6 +88,9 @@ export default function Register() {
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {error?.email && (
+            <p className="text-red-500 text-sm">{error.email}</p>
+          )}
         </div>
 
         {/* Password */}
@@ -98,6 +107,9 @@ export default function Register() {
             required
             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {error?.password && (
+            <p className="text-red-500 text-sm">{error.password}</p>
+          )}
         </div>
 
         {/* Submit */}

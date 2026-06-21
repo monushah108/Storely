@@ -11,7 +11,7 @@ import {
   useLogoutMutation,
 } from "../store/slices/UserSlice";
 
-export default function DirectoryHeader({ onProgress, setOnprogress }) {
+export default function DirectoryHeader() {
   const param = useParams();
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
@@ -20,10 +20,10 @@ export default function DirectoryHeader({ onProgress, setOnprogress }) {
 
   //modle
   const [openModle, setOpenModle] = useState(false);
-  const [uploadFile] = useUploadFileMutation();
+  const [uploadFile, { isLoading, isError }] = useUploadFileMutation();
   const [createDirectory] = useCreateDirectoryMutation();
   const { data, error } = useFetchUserQuery();
-  const [logout] = useLogoutMutation();
+  const [logout, isSucess] = useLogoutMutation();
 
   const navigate = useNavigate();
 
@@ -33,28 +33,28 @@ export default function DirectoryHeader({ onProgress, setOnprogress }) {
     }
   }, [error]);
 
-  useEffect(() => {
-    if (onProgress == 100) {
-      setOnprogress(null);
-    }
-  }, [onProgress]);
-
   const handleLogout = () => {
     logout();
+    if (isSucess) {
+      navigate("/login");
+    }
     setUser(null);
     setOpen(false);
   };
 
   const handleUplaodFile = (e) => {
     const file = e.target.files[0];
-
-    uploadFile({ paramId: param.id, file, onProgress: setOnprogress });
+    const form = new FormData();
+    form.append("file", file);
+    uploadFile({ paramId: param.id, form });
   };
 
   return (
     <div className="flex items-center justify-between bg-white px-6 py-3 shadow-md">
       {/* Logo/Title */}
-      <h2 className="text-xl font-bold text-gray-700">📂 Folder Driver</h2>
+      <h2 className="text-xl flex items-center gap-2 font-bold text-gray-700">
+        <img src="icon.png" height="30px" width="30px" /> storely
+      </h2>
 
       {/* Action buttons */}
       <div className="flex items-center gap-4 justify-center">
