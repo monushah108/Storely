@@ -12,20 +12,14 @@ import checkRole from "../rbac/RoleMiddleware.js";
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "storage/");
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
+const storage = multer.memoryStorage();
 
-    const name = path.basename(file.originalname, ext);
-
-    cb(null, `${name}${ext}`);
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
   },
 });
-
-const upload = multer({ storage });
 
 router.use(checkAuth);
 

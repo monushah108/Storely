@@ -12,10 +12,15 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.5.2",
     "google-auth-library": "^10.3.0",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
     "mime-type": "^5.0.3",
     "mime-types": "^2.1.35",
     "mongoose": "^8.12.1",
@@ -23,7 +28,9 @@
     "passport": "^0.7.0",
     "passport-github": "^1.1.0",
     "passport-github2": "^0.1.12",
-    "redis": "^5.8.2"
+    "redis": "^5.8.2",
+    "sanitize-html": "^2.17.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "prettier": "^3.4.2"

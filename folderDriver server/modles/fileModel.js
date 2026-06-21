@@ -6,12 +6,26 @@ const fileSchema = new Schema(
       type: String,
       required: true,
     },
+
     extension: {
       type: String,
       required: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    publicId: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    resourceType: {
+      type: String,
       required: true,
     },
     parentDirId: {
@@ -21,7 +35,7 @@ const fileSchema = new Schema(
   },
   {
     strict: "throw",
-  }
+  },
 );
 
 const File = model("File", fileSchema);

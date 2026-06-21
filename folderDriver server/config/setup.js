@@ -93,12 +93,26 @@ try {
     validator: {
       $jsonSchema: {
         bsonType: "object",
-        required: ["_id", "name", "extension", "userId", "parentDirId"],
+        required: [
+          "_id",
+          "name",
+          "extension",
+          "userId",
+          "parentDirId",
+          "publicId",
+          "url",
+        ],
         properties: {
           _id: {
             bsonType: "objectId",
           },
           name: {
+            bsonType: "string",
+          },
+          publicId: {
+            bsonType: "string",
+          },
+          url: {
             bsonType: "string",
           },
           extension: {

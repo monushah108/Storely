@@ -6,6 +6,7 @@ const directorySchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
     },
+
     name: {
       type: String,
       required: true,
@@ -18,7 +19,7 @@ const directorySchema = new Schema(
   },
   {
     strict: "throw",
-  }
+  },
 );
 
 const Directory = model("Directory", directorySchema);

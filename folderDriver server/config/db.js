@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export async function connectDB() {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/Driver");
+    await mongoose.connect(process.env.MONGODB_URI);
 
     console.log("Database connected");
   } catch (err) {

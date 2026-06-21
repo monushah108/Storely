@@ -1,4 +1,4 @@
-import { rm } from "fs/promises";
+import cloudinary from "../config/cloudinary.js";
 import Directory from "../modles/directoryModel.js";
 import File from "../modles/fileModel.js";
 
@@ -16,8 +16,12 @@ export const getDirectory = async (req, res) => {
 
     return res.status(200).json({
       ...directory,
-      directories: directories.map((dirId) => ({ ...dirId, id: dirId._id })),
-      files: files.map((dirId) => ({ ...dirId, id: dirId._id })),
+      directories: directories.map((dirId) => ({
+        ...dirId,
+        type: "directory",
+        id: dirId._id,
+      })),
+      files: files.map((dirId) => ({ ...dirId, type: "file", id: dirId._id })),
     });
   } catch (err) {
     return res.status(500).json(err);
@@ -33,7 +37,7 @@ export const renameDirectory = async (req, res, next) => {
       {
         name,
       },
-      { new: true }
+      { new: true },
     );
     if (!directory) {
       res.status(404).json({ message: "Directory not found" });
@@ -80,7 +84,7 @@ export const deleteDirectory = async (req, res, next) => {
 
     async function getDirectoryContents(id) {
       let files = await File.find({ parentDirId: id })
-        .select("extension name")
+        .select("_id publicId resourceType")
         .lean();
 
       let directories = await Directory.find({ parentDirId: id })
@@ -100,8 +104,10 @@ export const deleteDirectory = async (req, res, next) => {
 
     const { files, directories } = await getDirectoryContents(id);
 
-    for (const { name, extension } of files) {
-      await rm(`./storage/${name}`);
+    for (const { publicId, resourceType } of files) {
+      await cloudinary.uploader.destroy(publicId, {
+        resource_type: resourceType,
+      });
     }
 
     await File.deleteMany({

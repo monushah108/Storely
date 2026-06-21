@@ -28,6 +28,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Directory",
     },
+
     picture: {
       type: String,
       default:
@@ -45,7 +46,7 @@ const userSchema = new Schema(
   },
   {
     strict: "throw",
-  }
+  },
 );
 
 userSchema.pre("save", async function (next) {

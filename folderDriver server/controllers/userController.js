@@ -4,9 +4,18 @@ import mongoose, { Types } from "mongoose";
 import Directory from "../modles/directoryModel.js";
 import File from "../modles/fileModel.js";
 import { rm } from "fs/promises";
+import form from "../validators/form.js";
+import sanitize from "sanitize-html";
 
 export const register = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { data, success, error } = form.safeParse(req.body);
+
+  if (!success) {
+    return res.status(400).json(error.flatten()?.fieldErrors);
+  }
+
+  const { name, email, password } = data;
+
   const session = await mongoose.startSession();
 
   try {
@@ -22,7 +31,7 @@ export const register = async (req, res, next) => {
         parentDirId: null,
         userId,
       },
-      { session }
+      { session },
     );
 
     await User.insertOne(
@@ -33,7 +42,7 @@ export const register = async (req, res, next) => {
         password,
         rootDirId,
       },
-      { session }
+      { session },
     );
 
     session.commitTransaction();
@@ -61,7 +70,13 @@ export const register = async (req, res, next) => {
 };
 
 export const login = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { data, success, error } = form.safeParse(req.body);
+  if (!success) {
+    return res.status(400).json(error.flatten()?.fieldErrors);
+  }
+
+  const { email, password } = data;
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -84,7 +99,15 @@ export const login = async (req, res, next) => {
   if (allSessions.length >= 2) {
     await allSessions[0].deleteOne();
   }
+  // const sessionId = crypto.randomUUID();
+  // const redisKey = `session:${sessionId}`;
+  // const sessionExpiryTime = 7 * 24 * 60 * 60;
+  // const session = await redisClient.json.set(redisKey, "$", {
+  //   userId: user._id,
+  //   rootDirId: user.rootDirId,
+  // });
 
+  // await redisClient.expire(redisKey, sessionExpiryTime);
 
   const session = await Session.create({
     userId: user._id,
@@ -94,7 +117,7 @@ export const login = async (req, res, next) => {
   res.cookie("sid", session._id, {
     httpOnly: true,
     signed: true,
-    maxAge: 7 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   res.json({ message: "logged in" });
 };
@@ -102,6 +125,7 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res) => {
   const { sid } = req.signedCookies;
   await Session.findByIdAndDelete(sid);
+  // await redisClient.del(`session:${sid}`);
   res.clearCookie("sid");
   res.status(204).end();
 };
@@ -138,6 +162,8 @@ export const getAllUsers = async (req, res) => {
 
 export const logoutUser = async (req, res, next) => {
   const { userId } = req.params;
+  // const clean = sanitize(userId.toString())
+  console.log(userId);
 
   try {
     await Session.deleteMany({ userId });
@@ -207,7 +233,7 @@ export const RecoverUser = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { deleted: false },
-      { new: true }
+      { new: true },
     );
 
     res.status(201).json({ message: "User has been recovered successfully" });
@@ -234,7 +260,7 @@ export const SearchUser = async (req, res, next) => {
   const allSessionUserIdSet = new Set(allSessionUserId);
   const searchedUser = user
     .filter(
-      (user) => user.email.toLocaleLowerCase() == email.toLocaleLowerCase()
+      (user) => user.email.toLocaleLowerCase() == email.toLocaleLowerCase(),
     )
     .map(({ _id, name, email, role }) => ({
       id: _id,
@@ -251,6 +277,7 @@ export const FileExpoler = async (req, res, next) => {
   const { userId, dirId } = req.params;
 
   try {
+    // decide which parent directory we need to query
     let parentDirId = dirId;
 
     if (!parentDirId) {
