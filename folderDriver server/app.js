@@ -19,14 +19,6 @@ dotenv.config();
 await connectDB();
 const app = express();
 
-const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000,
-  max: 10,
-  message: {
-    error: "Too many requests, please try again later.",
-  },
-});
-
 app.use(
   cors({
     origin: process.env.ORIGIN,

@@ -127,7 +127,7 @@ export default function Users() {
                     <td>
                       <button
                         className="px-3 py-1.5 text-sm rounded bg-green-600 text-white hover:bg-green-800 transition-colors"
-                        onClick={() => navigate(`/dashboard/data/${user.id}`)}
+                        onClick={() => navigate(`data/${user.id}`)}
                       >
                         Access Files
                       </button>

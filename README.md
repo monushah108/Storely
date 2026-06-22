@@ -1,5 +1,5 @@
 <h1 style="display:flex; align-items:center; gap:5px;">
-<img src="./client/public/icon.png" height="30px" > storely
+<img src="./folderDriver client/public/icon.png" height="30px" > storely
  </h1>
 
 Storely is a cloud-based code storage and management platform designed for developers to securely store, organize, and manage their source code files. The platform provides authentication, role-based access control, administrative monitoring, and secure file management features to create a centralized workspace for development assets.

@@ -48,7 +48,7 @@ export default function Layout() {
         {/* NAV */}
         <nav className="flex flex-col gap-2">
           <NavLink
-            to="/dashboard"
+            to="/users"
             onClick={() => setOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition ${
@@ -57,20 +57,7 @@ export default function Layout() {
             }
           >
             <RiDashboardFill size={20} />
-            Dashboard
-          </NavLink>
-
-          <NavLink
-            to="users"
-            onClick={() => setOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition ${
-                isActive ? "bg-blue-600" : "hover:bg-slate-800"
-              }`
-            }
-          >
-            <FiUsers size={20} />
-            Users
+            users
           </NavLink>
 
           <NavLink

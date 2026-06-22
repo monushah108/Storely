@@ -4,11 +4,10 @@ import Layout from "../pages/layout.jsx";
 import FileExplorer from "../pages/fileExplorer.jsx";
 import Staff from "../pages/staff.jsx";
 import ProtectedRoutes from "./protectedRoutes.jsx";
-import Dashboard from "../pages/dashboard.jsx";
 
 export default function privateRoutes() {
   return {
-    path: "/dashboard",
+    path: "/users",
 
     element: (
       <ProtectedRoutes>
@@ -18,12 +17,9 @@ export default function privateRoutes() {
     children: [
       {
         index: true,
-        element: <Dashboard />,
-      },
-      {
-        path: "users",
         element: <Users />,
       },
+
       {
         path: "recover",
         element: <Recover />,

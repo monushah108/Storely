@@ -56,10 +56,10 @@ export default function DirItem({
           {/* RIGHT ACTIONS */}
           <div
             className="
-              flex items-center gap-1 sm:gap-2
-              opacity-100 sm:opacity-0 sm:group-hover:opacity-100
+              flex items-center gap-1 md:gap-2
+              opacity-100  md:group-hover:opacity-100
               transition
-              shrink-0
+           
             "
           >
             {/* Open */}
