@@ -84,7 +84,9 @@ export default function DirectoryList({ DriveData }) {
               <p className="truncate grow px-5 text-left font-medium text-gray-700">
                 {deleteId == _id
                   ? `${name.slice(0, 10)} is deleting...`
-                  : name.slice(0, 20)}
+                  : name.length > 20
+                    ? name.slice(0, 20) + "..."
+                    : name}
               </p>
 
               <button

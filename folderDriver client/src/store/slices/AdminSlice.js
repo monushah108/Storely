@@ -67,12 +67,12 @@ export const adminApiSlice = createApi({
     }),
 
     renameUserData: builder.mutation({
-      query: ({ userId, DirId, type, NewdirName }) => {
+      query: ({ userId, DirId, type, newName }) => {
         const path = type ? "file" : "directory";
         return {
           url: `/users/${userId}/${path}/${DirId}`,
           method: "PATCH",
-          body: { NewdirName },
+          body: { newName },
         };
       },
       invalidatesTags: ["UserFiles"],
@@ -115,6 +115,14 @@ export const adminApiSlice = createApi({
       query: (searchTerm) => `/users/search?query=${searchTerm}`,
       providesTags: ["User"],
     }),
+
+    searchFiles: builder.query({
+      query: ({ userId, search }) => ({
+        url: `users/${userId}/search?query=${encodeURIComponent(search)}`,
+        method: "GET",
+      }),
+      providesTags: ["UserFiles"],
+    }),
   }),
 });
 
@@ -132,4 +140,6 @@ export const {
   useSoftDeleteUserMutation,
   useHardDeleteUserMutation,
   useSearchUsersQuery,
+  useSearchFilesQuery,
+  useLazySearchFilesQuery,
 } = adminApiSlice;

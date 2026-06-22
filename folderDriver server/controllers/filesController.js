@@ -72,7 +72,7 @@ export const renameFile = async (req, res, next) => {
 
     return res.status(200).json({
       message: "File renamed successfully",
-      file,
+      // file,
     });
   } catch (err) {
     next(err);

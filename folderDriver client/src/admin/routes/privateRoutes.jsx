@@ -1,4 +1,4 @@
-import UsersPage from "../pages/UsersPage.jsx";
+import Users from "../pages/Users.jsx";
 import Recover from "../pages/recover.jsx";
 import Layout from "../pages/layout.jsx";
 import FileExplorer from "../pages/fileExplorer.jsx";
@@ -22,7 +22,7 @@ export default function privateRoutes() {
       },
       {
         path: "users",
-        element: <UsersPage />,
+        element: <Users />,
       },
       {
         path: "recover",

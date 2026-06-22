@@ -13,6 +13,7 @@ import {
   SearchUser,
   FileExpoler,
   updateRoles,
+  searchFileItem,
 } from "../controllers/userController.js";
 import checkAuth from "../middleware/authMilddleware.js";
 import {
@@ -44,33 +45,33 @@ route.post(
   "/users/:userId/logout",
   checkAuth,
   checkRole("user:logout"),
-  logoutUser
+  logoutUser,
 );
 
 route.delete(
   "/users/:userId",
   checkAuth,
   checkRole("user:soft_delete"),
-  deleteUser
+  deleteUser,
 );
 route.delete(
   "/users/:userId/hard",
   checkAuth,
   checkRole("user:hard_delete"),
-  hardDeleteUser
+  hardDeleteUser,
 );
 
 route.post(
   "/users/:userId/recover",
   checkAuth,
   checkRole("user:recover"),
-  RecoverUser
+  RecoverUser,
 );
 route.get(
   "/users/deleted",
   checkAuth,
 
-  DeletedUser
+  DeletedUser,
 );
 
 route.get("/users/search", checkAuth, SearchUser);
@@ -78,53 +79,60 @@ route.get(
   "/users/:userId/:dirId?",
   checkAuth,
   checkRole("user:file:read"),
-  FileExpoler
+  FileExpoler,
 );
 
 route.get(
   "/users/:userId/file/:id",
   checkAuth,
   checkRole("user:file:read"),
-  getFile
+  getFile,
 );
 
 route.patch(
   "/users/:userId/file/:id",
   checkAuth,
   checkRole("user:file:write"),
-  renameFile
+  renameFile,
 );
 route.delete(
   "/users/:userId/file/:id",
   checkAuth,
   checkRole("user:file:delete"),
-  DeleteFile
+  DeleteFile,
 );
 
 route.get(
   "/users/:userId/directory/:id",
   checkAuth,
   checkRole("user:file:read"),
-  getDirectory
+  getDirectory,
 );
 route.patch(
   "/users/:userId/directory/:id",
   checkAuth,
   checkRole("user:file:write"),
-  renameDirectory
+  renameDirectory,
 );
 route.delete(
   "/users/:userId/directory/:id",
   checkAuth,
   checkRole("user:file:delete"),
-  deleteDirectory
+  deleteDirectory,
 );
 
 route.patch(
   "/users/:userId/role",
   checkAuth,
   checkRole(["roles:assign_admin", "roles:assign_manager"]),
-  updateRoles
+  updateRoles,
+);
+
+route.get(
+  "/users/:userId/search",
+  checkAuth,
+  checkRole(["roles:assign_admin", "roles:assign_manager"]),
+  searchFileItem,
 );
 
 export default route;

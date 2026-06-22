@@ -3,7 +3,7 @@ import Session from "../modles/SessionModel.js";
 import mongoose, { Types } from "mongoose";
 import Directory from "../modles/directoryModel.js";
 import File from "../modles/fileModel.js";
-import { rm } from "fs/promises";
+
 import form from "../validators/form.js";
 import sanitize from "sanitize-html";
 
@@ -310,4 +310,34 @@ export const updateRoles = async (req, res) => {
   await User.findByIdAndUpdate(userId, { role: newRole });
 
   return res.status(201).json({ message: "role Changed successfully" });
+};
+
+export const searchFileItem = async (req, res) => {
+  try {
+    const { query, dirId } = req.query;
+
+    if (!query?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Search query is required",
+      });
+    }
+
+    const files = await File.find({
+      parentDirectory: dirId,
+      name: { $regex: query, $options: "i" },
+    });
+
+    const directories = await Directory.find({
+      parentDirectory: dirId,
+      name: { $regex: query, $options: "i" },
+    });
+
+    res.status(200).json({
+      files,
+      directories,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
