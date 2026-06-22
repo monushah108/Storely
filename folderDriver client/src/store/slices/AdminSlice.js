@@ -115,14 +115,6 @@ export const adminApiSlice = createApi({
       query: (searchTerm) => `/users/search?query=${searchTerm}`,
       providesTags: ["User"],
     }),
-
-    searchFiles: builder.query({
-      query: ({ userId, search }) => ({
-        url: `users/${userId}/search?query=${encodeURIComponent(search)}`,
-        method: "GET",
-      }),
-      providesTags: ["UserFiles"],
-    }),
   }),
 });
 
@@ -140,6 +132,4 @@ export const {
   useSoftDeleteUserMutation,
   useHardDeleteUserMutation,
   useSearchUsersQuery,
-  useSearchFilesQuery,
-  useLazySearchFilesQuery,
 } = adminApiSlice;

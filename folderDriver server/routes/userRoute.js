@@ -13,7 +13,6 @@ import {
   SearchUser,
   FileExpoler,
   updateRoles,
-  searchFileItem,
 } from "../controllers/userController.js";
 import checkAuth from "../middleware/authMilddleware.js";
 import {
@@ -75,6 +74,7 @@ route.get(
 );
 
 route.get("/users/search", checkAuth, SearchUser);
+
 route.get(
   "/users/:userId/:dirId?",
   checkAuth,
@@ -126,13 +126,6 @@ route.patch(
   checkAuth,
   checkRole(["roles:assign_admin", "roles:assign_manager"]),
   updateRoles,
-);
-
-route.get(
-  "/users/:userId/search",
-  checkAuth,
-  checkRole(["roles:assign_admin", "roles:assign_manager"]),
-  searchFileItem,
 );
 
 export default route;

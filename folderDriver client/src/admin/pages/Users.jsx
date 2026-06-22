@@ -14,38 +14,59 @@ import {
 export default function Users() {
   const navigate = useNavigate();
 
+  // Modal state (optimized)
   const [portal, setPortal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [hardDeleteConfirm, setHardDeleteConfirm] = useState(false);
 
   const { data: profile } = useGetProfileQuery();
+
   const {
     data: users = [],
     isLoading,
     isError,
   } = useGetUsersQuery(profile?.role);
 
-  //  Mutations
+  // Mutations
   const [logoutUser] = useLogoutUserMutation();
   const [softDeleteUser] = useSoftDeleteUserMutation();
   const [hardDeleteUser] = useHardDeleteUserMutation();
 
+  // Logout handler
   const handleLogout = (user) => {
     if (confirm(`Logging out user: ${user.email}?`)) {
       logoutUser(user.id);
     }
   };
 
-  const handleUserDelete = (user) => {
+  // Open modal
+  const openDeleteModal = (user) => {
+    setSelectedUser(user);
+    setPortal(true);
+    setHardDeleteConfirm(false);
+  };
+
+  // Delete handler
+  const handleUserDelete = () => {
+    if (!selectedUser) return;
+
     if (hardDeleteConfirm) {
       const confirmed = confirm("Are you sure you want to permanently delete?");
+
       if (confirmed) {
-        hardDeleteUser(user.id);
-        setPortal(false);
+        hardDeleteUser(selectedUser.id);
       }
     } else {
-      softDeleteUser(user.id);
-      setPortal(false);
+      softDeleteUser(selectedUser.id);
     }
+
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setPortal(false);
+    setSelectedUser(null);
+    setHardDeleteConfirm(false);
   };
 
   if (isLoading) return <p>Loading users...</p>;
@@ -65,64 +86,47 @@ export default function Users() {
               <th>Email</th>
               <th>Status</th>
               <th></th>
+
               <CanAccess role={["owner", "admin"]}>
-                <th>File Access</th>
-                <th></th>
+                <>
+                  <th>File Access</th>
+                  <th></th>
+                </>
               </CanAccess>
             </tr>
           </thead>
+
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.isLoggedIn ? "Logged In" : "Logged Out"}</td>
+
                 <td>
                   <button
-                    className="px-3 py-1.5 text-sm rounded bg-blue-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-800 transition-colors"
+                    className="px-3 py-1.5 text-sm rounded bg-blue-600 text-white disabled:bg-gray-400 hover:bg-blue-800 transition-colors"
                     onClick={() => handleLogout(user)}
                     disabled={!user.isLoggedIn}
                   >
                     Logout
                   </button>
                 </td>
+
                 <CanAccess role={["owner", "admin"]}>
                   <>
                     <td>
                       <button
-                        className="px-3 py-1.5 text-sm rounded bg-red-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-red-800 transition-colors"
-                        onClick={() => setPortal(true)}
+                        className="px-3 py-1.5 text-sm rounded bg-red-600 text-white hover:bg-red-800 transition-colors"
+                        onClick={() => openDeleteModal(user)}
                       >
                         Delete
                       </button>
-                      <Modal
-                        isOpen={portal}
-                        onClose={setPortal}
-                        children={
-                          <div className="flex flex-col gap-4">
-                            <h2 className="text-xl font-medium">Delete user</h2>
-                            <label className="flex gap-2 items-center">
-                              <input
-                                type="checkbox"
-                                onChange={(e) =>
-                                  setHardDeleteConfirm(e.target.checked)
-                                }
-                              />
-                              <p>Permanently delete this user</p>
-                            </label>
-                            <button
-                              onClick={() => handleUserDelete(user)}
-                              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        }
-                      />
                     </td>
+
                     <td>
                       <button
-                        className="px-3 py-1.5 text-sm rounded bg-green-600 text-white disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-green-800 transition-colors"
+                        className="px-3 py-1.5 text-sm rounded bg-green-600 text-white hover:bg-green-800 transition-colors"
                         onClick={() => navigate(`/dashboard/data/${user.id}`)}
                       >
                         Access Files
@@ -134,6 +138,33 @@ export default function Users() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {/* SINGLE GLOBAL MODAL */}
+      {portal && selectedUser && (
+        <Modal isOpen={portal} onClose={closeModal}>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-xl font-medium">
+              Delete user: {selectedUser.name}
+            </h2>
+
+            <label className="flex gap-2 items-center">
+              <input
+                type="checkbox"
+                checked={hardDeleteConfirm}
+                onChange={(e) => setHardDeleteConfirm(e.target.checked)}
+              />
+              <p>Permanently delete this user</p>
+            </label>
+
+            <button
+              onClick={handleUserDelete}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </div>
+        </Modal>
       )}
     </div>
   );

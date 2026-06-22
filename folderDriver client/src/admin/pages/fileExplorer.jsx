@@ -32,7 +32,6 @@ export default function FileExplorer() {
   const [deleteUserData] = useDeleteUserDataMutation();
   const [renameUserData] = useRenameUserDataMutation();
   const [triggerOpenUserData] = useLazyOpenUserDataQuery();
-  const [triggerSearch, { data: searchData }] = useLazySearchFilesQuery();
 
   const combined = [...folders, ...files].filter((item) =>
     item.name?.toLowerCase().includes(search.toLowerCase()),
@@ -73,13 +72,6 @@ export default function FileExplorer() {
     const value = e.target.value;
 
     setSearch(value);
-
-    if (value.trim()) {
-      triggerSearch({
-        userId,
-        search: value,
-      });
-    }
   };
 
   if (isLoading) {
@@ -142,8 +134,7 @@ export default function FileExplorer() {
               type="text"
               placeholder="Search files and folders..."
               value={search}
-              onKeyDown={(e) => e.key == "enter" && handleSearch}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearch}
               className="w-full rounded-xl border bg-slate-50 pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

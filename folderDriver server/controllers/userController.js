@@ -311,33 +311,3 @@ export const updateRoles = async (req, res) => {
 
   return res.status(201).json({ message: "role Changed successfully" });
 };
-
-export const searchFileItem = async (req, res) => {
-  try {
-    const { query, dirId } = req.query;
-
-    if (!query?.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Search query is required",
-      });
-    }
-
-    const files = await File.find({
-      parentDirectory: dirId,
-      name: { $regex: query, $options: "i" },
-    });
-
-    const directories = await Directory.find({
-      parentDirectory: dirId,
-      name: { $regex: query, $options: "i" },
-    });
-
-    res.status(200).json({
-      files,
-      directories,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
