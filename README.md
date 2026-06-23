@@ -223,18 +223,7 @@ GOOGLE_CLIENT_SECRET=
 
 ---
 
-## Future Improvements
 
-- Real-time collaboration
-- Version history
-- Code sharing
-- Team workspaces
-- File encryption
-- Activity logs
-- Notifications
-- AI-powered code assistance
-
----
 
 ## Author
 
