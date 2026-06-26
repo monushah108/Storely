@@ -13,6 +13,7 @@ import checkAuth from "./middleware/authMilddleware.js";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import multer from "multer";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -23,6 +24,12 @@ app.use(
   cors({
     origin: process.env.ORIGIN,
     credentials: true,
+  }),
+);
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
   }),
 );
 

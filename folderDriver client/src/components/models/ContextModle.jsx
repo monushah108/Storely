@@ -38,14 +38,14 @@ export default function ContextModle({
     }
   };
 
-  const deleteFunc = useCallback((id, type) => {
+  const handleDelete = useCallback((id, type) => {
     setDeleteId(id);
     deleteFile({ id, type });
     setMenuOpenId(null);
     setMenu((pre) => ({ ...pre, visible: false }));
   }, []);
 
-  const renameFunc = useCallback((id, name, ext) => {
+  const handleRename = useCallback((id, name, ext) => {
     setDirId(id);
     setNewname(name);
     setMenuOpenId(null);
