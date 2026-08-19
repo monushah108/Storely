@@ -10,45 +10,57 @@ import NotFound from "./pages/not-found.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import Guest from "./pages/guest.jsx";
 import FileView from "./pages/FileView.jsx";
+import Home from "./pages/home.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DirectoryView />,
+    element: <Home />,
     errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "/dirItem/:id",
-        element: <DirectoryView />,
-      },
-    ],
   },
-  {
-    path: "/file/:id",
-    element: <FileView />,
-  },
-  {
-    path: "/guest/:id",
-    element: <Guest />,
-  },
-  {
-    path: "/register",
-    element: <Register />,
-  },
+
   {
     path: "/login",
     element: <Login />,
   },
 
   {
+    path: "/register",
+    element: <Register />,
+  },
+
+  {
     path: "/login/password",
     element: <PasswordForm />,
   },
+
+  {
+    path: "/dashboard",
+    element: <DirectoryView />,
+    children: [
+      {
+        path: "dirItem/:id",
+        element: <DirectoryView />,
+      },
+    ],
+  },
+
+  {
+    path: "/file/:id",
+    element: <FileView />,
+  },
+
+  {
+    path: "/guest/:id",
+    element: <Guest />,
+  },
+
+  privateRoutes(),
+
   {
     path: "*",
     element: <NotFound />,
   },
-  privateRoutes(),
 ]);
 function App() {
   return <RouterProvider router={router} />;
