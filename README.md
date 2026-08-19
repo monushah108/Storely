@@ -1,239 +1,147 @@
-<h1 style="display:flex; align-items:center; gap:5px;">
-<img src="./folderDriver client/public/icon.png" height="30px" > storely
- </h1>
+<h1 align="center">
+  <img src="./folderDriver client/public/icon.png" height="35" align="center" />
+  Storely
+</h1>
 
-Storely is a cloud-based code storage and management platform designed for developers to securely store, organize, and manage their source code files. The platform provides authentication, role-based access control, administrative monitoring, and secure file management features to create a centralized workspace for development assets.
+<p align="center">
+  A simple cloud-based file storage and management platform.
+</p>
+
+<p align="center">
+  Store, organize, manage, and share your files securely from one place.
+</p>
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Home Page
+
+<p align="center">
+  <img src="folderDriver client/public/home.png" alt="Storely Home Page" width="900" />
+</p>
+
+### 🔐 Login
+
+<p align="center">
+  <img src="./folderDriver client/public/login.png" alt="Storely Login Page" width="700" />
+</p>
+
+### 📁 Dashboard
+
+<p align="center">
+  <img src="./folderDriver client/public/dashboard.png" alt="Storely Dashboard" width="900" />
+</p>
+
+---
+
+# 📦 About Storely
+
+Storely is a cloud-based file storage and management platform designed to provide users with a simple and secure place to upload, organize, manage, and share their files.
+
+The platform includes user authentication, cloud file storage, file and folder management, sharing functionality, storage quota tracking, and an administrative system for managing users and platform activity.
+
+Storely focuses on keeping file management **simple, clean, and easy to use**.
+
+---
 
 ## 🚀 Features
 
-### User Authentication
+### 🔐 User Authentication
 
-- Secure user registration and login
-- Google OAuth Authentication
+- User registration and login
+- Google OAuth authentication
+- GitHub OAuth authentication
 - Session management
 - Protected routes
-- JWT-based authentication
+- Secure authentication flow
+- Password-based authentication
 
-### Authorization & Security
+### 📁 File Management
 
-- Role-Based Access Control (RBAC)
-- User and Admin permissions
-- Protected APIs
-- Secure password hashing
-- Middleware-based authorization
-
-### Code Storage System
-
-- Store and manage source code files
-- Organize files efficiently
-- Cloud-based access
+- Upload files
+- View files and folders
+- Create directories
+- Rename files and folders
+- Delete files and folders
+- Open files
 - File metadata management
-- Fast retrieval system
+- File type detection
+- File size information
 
-### Admin Dashboard
+### ☁️ Cloud Storage
 
-- Monitor registered users
-- Manage user permissions
-- Track platform activity
-- User management tools
+- Cloudinary-based file storage
+- Secure file uploads
+- Cloud-based file access
+- File storage quota
+- Used storage tracking
+- Remaining storage calculation
+
+### 🔗 File Sharing
+
+- Share files with others
+- Generate accessible file links
+- Guest file access
+
+### 👤 User Management
+
+- User profile
+- Profile image
+- Email information
+- Storage usage
+- Account management
+- Logout functionality
+
+### 🛡️ Security
+
+- Protected API routes
+- Authentication middleware
+- Authorization checks
+- Secure password handling
+- Environment-based secrets
+- Input validation
+- Protected database operations
+
+### 👨‍💻 Admin Dashboard
+
+- Monitor users
+- Manage user accounts
+- Manage permissions
+- Monitor platform activity
 - Administrative controls
 
-### User Management
-
-- Profile management
-- Account settings
-- Role assignment
-- Activity monitoring
-
-### Security Features
-
-- Authentication middleware
-- Authorization validation
-- Protected database operations
-- Secure API architecture
-- Input validation and sanitization
-
 ---
 
-## 🏗️ System Architecture
+# 🏗️ System Architecture
 
-Storely follows a modern full-stack architecture:
+Storely follows a client-server architecture.
 
-Client (Next.js)
-↓
-API Layer
-↓
-Authentication & Authorization
-↓
-Business Logic Layer
-↓
-MongoDB Database
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- Next.js
-- React.js
-- TypeScript
-- Tailwind CSS
-- Shadcn UI
-
-### Backend
-
-- Next.js API Routes
-- Node.js
-- Express Concepts
-- JWT Authentication
-
-### Database
-
-- MongoDB
-- Mongoose ODM
-
-### Authentication
-
-- Google OAuth
-- JWT
-- Session Management
-
-### State Management
-
-- Redux Toolkit
-- RTK Query
-
-### Deployment
-
-- Vercel
-- MongoDB Atlas
-
----
-
-## 📂 Database Design
-
-### User Collection
-
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  email: String,
-  image: String,
-  role: "user" | "admin",
-  provider: String,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### File Collection
-
-```javascript
-{
-  _id: ObjectId,
-  fileName: String,
-  fileContent: String,
-  ownerId: ObjectId,
-  language: String,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### Role Permissions
-
-```javascript
-{
-  admin: [
-    "manage_users",
-    "view_all_files",
-    "delete_files",
-    "assign_roles"
-  ],
-
-  user: [
-    "create_files",
-    "update_own_files",
-    "delete_own_files",
-    "view_own_files"
-  ]
-}
-```
-
----
-
-## 🔐 Authentication Flow
-
-1. User signs in using Google OAuth.
-2. User identity is verified.
-3. JWT token/session is generated.
-4. Protected routes validate user access.
-5. RBAC middleware checks permissions.
-6. Authorized actions are executed.
-
----
-
-## 📁 Project Structure
-
-```bash
-src/
-├── app/
-├── components/
-├── features/
-├── hooks/
-├── lib/
-├── middleware/
-├── model/
-├── services/
-├── store/
-├── types/
-└── utils/
-```
-
----
-
-## ⚡ Installation
-
-```bash
-git clone https://github.com/monushah108/Storely.git
-
-cd Storely
-
-npm install
-
-npm run dev
-```
-
----
-
-## Environment Variables
-
-```env
-MONGODB_URI=
-
-GOOGLE_CLIENT_ID=
-
-GOOGLE_CLIENT_SECRET=
-
-
-
-```
-
----
-
-
-
-## Author
-
-Monu Shah
-
-Frontend Developer | React Developer | Next.js Developer
-
-GitHub:
-https://github.com/monushah108
-
-```
-
+```text
+┌─────────────────────┐
+│      React Client   │
+│                     │
+│  React Router       │
+│  Redux Toolkit      │
+│  RTK Query          │
+│  Tailwind CSS       │
+└──────────┬──────────┘
+           │
+           │ HTTP / API
+           ▼
+┌─────────────────────┐
+│      Backend        │
+│                     │
+│  Node.js / Express  │
+│  Authentication     │
+│  Authorization      │
+│  File Management    │
+└──────────┬──────────┘
+           │
+      ┌────┴─────┐
+      ▼          ▼
+┌──────────┐ ┌────────────┐
+│ MongoDB  │ │ Cloudinary │
+│ Database │ │ File Store │
+└──────────┘ └────────────┘
 ```
