@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FileText, Loader, Skull, User } from "lucide-react";
+import { toast, Toaster } from "sonner";
 
 export default function Guest() {
   const { id } = useParams();
@@ -35,6 +36,7 @@ export default function Guest() {
       setFile(data);
       setLoading(false);
     } catch (err) {
+      toast.error("failed to load data");
       console.log(err);
       setLoading(false);
     }
@@ -63,6 +65,7 @@ export default function Guest() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
+      <Toaster richColors position="top-center" />
       <div className="mx-auto max-w-6xl space-y-4">
         {/* Header */}
         <div className="rounded-2xl bg-white p-5 shadow">

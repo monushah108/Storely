@@ -35,8 +35,9 @@ export default function DirectoryList({ DriveData }) {
   const renderFileIcon = RenderFileIcon;
 
   const handleContextMenu = (e, id, name, extension) => {
+    console.log(e);
     e.preventDefault();
-    setMenu({ visible: true, x: e.clientX / 100, y: e.clientY });
+    setMenu({ visible: true, x: e.clientX / 100, y: e.clientY / 100 });
     setDirId(id);
     setNewname(name);
     setExt(extension);
@@ -53,7 +54,7 @@ export default function DirectoryList({ DriveData }) {
   };
 
   return (
-    <div className="space-y-3 px-5 py-2">
+    <div className="space-y-3 px-5 py-2 relative">
       <Toaster richColors position="top-center" />
       {!DriveData?.length ? (
         <h1 className="flex h-full items-center justify-center text-gray-500 mt-4 font-semibold">

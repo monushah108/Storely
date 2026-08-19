@@ -64,7 +64,7 @@ export default function ContextModle({
     <div
       ref={menuRef}
       style={{ top: menu.y, right: menu.x }}
-      className="absolute right-2 top-10 z-10 w-32 rounded  bg-white shadow"
+      className="absolute  z-99 w-32 rounded  bg-white shadow"
     >
       <button
         className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"

@@ -8,10 +8,6 @@ export const FileApiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     credentials: "include",
-    // prepareHeaders: (headers) => {
-    //   headers.set("content-type", "application/json");
-    //   return headers;
-    // },
   }),
 
   tagTypes: ["file", "directory"],

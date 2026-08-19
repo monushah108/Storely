@@ -153,7 +153,6 @@ export const profile = async (req, res, next) => {
       quota.storageLimit > 0
         ? Number(((quota.storageUsed / quota.storageLimit) * 100).toFixed(1))
         : 0;
-
     res.status(200).json({
       email: user.email,
       name: user.name,

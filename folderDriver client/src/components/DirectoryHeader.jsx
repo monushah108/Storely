@@ -10,15 +10,25 @@ import {
   useFetchUserQuery,
   useLogoutMutation,
 } from "../store/slices/UserSlice";
+import { toast, Toaster } from "sonner";
+import StateModle from "./models/stateModle";
 
 export default function DirectoryHeader() {
   const param = useParams();
   const [open, setOpen] = useState(false);
 
   const [directoryName, setDirectoryName] = useState("");
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const [openModle, setOpenModle] = useState(false);
-  const [uploadFile, { isLoading, isError }] = useUploadFileMutation();
+  const [
+    uploadFile,
+    {
+      isLoading: isUploadLoading,
+      isError: isUploadError,
+      error: uploadError,
+      reset: resetUpload,
+    },
+  ] = useUploadFileMutation();
   const [createDirectory] = useCreateDirectoryMutation();
   const { data, error } = useFetchUserQuery();
   const [logout, isSucess] = useLogoutMutation();
@@ -40,15 +50,26 @@ export default function DirectoryHeader() {
 
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      toast.error("Logout failed");
     }
   };
 
   const handleUplaodFile = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setSelectedFile(file);
+
     const form = new FormData();
     form.append("file", file);
-    uploadFile({ paramId: param.id, form });
+
+    uploadFile({
+      paramId: param.id,
+      form,
+    });
+
+    e.target.value = "";
   };
 
   const formatBytes = (bytes) => {
@@ -67,7 +88,8 @@ export default function DirectoryHeader() {
     <div className="flex items-center justify-between bg-white px-6 py-3 shadow-md">
       {/* Logo/Title */}
       <h2 className="text-xl flex items-center gap-2 font-bold text-gray-700">
-        <img src="icon.png" height="30px" width="30px" /> storely
+        <img src="icon.png" height="30px" width="30px" />
+        storely
       </h2>
 
       {/* Action buttons */}
@@ -180,6 +202,17 @@ export default function DirectoryHeader() {
         }}
         InputValue={directoryName}
         onInputChange={(e) => setDirectoryName(e.target.value)}
+      />
+
+      <StateModle
+        file={selectedFile}
+        isLoading={isUploadLoading}
+        isError={isUploadError}
+        error={uploadError}
+        onClose={() => {
+          resetUpload();
+          setSelectedFile(null);
+        }}
       />
     </div>
   );

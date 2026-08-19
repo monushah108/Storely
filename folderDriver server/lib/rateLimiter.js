@@ -11,8 +11,6 @@ export function consumeToken(request, response, next) {
     request.ip ||
     "anonymous";
 
-  console.log("RATE LIMIT KEY:", key);
-
   let bucket = buckets.get(key);
 
   if (!bucket) {

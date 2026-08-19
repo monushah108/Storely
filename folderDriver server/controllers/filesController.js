@@ -1,7 +1,9 @@
 import File from "../modles/fileModel.js";
 import mime from "mime-types";
 import cloudinary from "../config/cloudinary.js";
-import Quota from "../modles/qouteModel.js";
+import Quota from "../modles/quotaModel.js";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export const getFile = async (req, res, next) => {
   try {
@@ -26,7 +28,15 @@ export const uploadFile = async (req, res, next) => {
         message: "No file provided",
       });
     }
+
     const fileSize = req.file.size;
+
+    if (req.file.size > MAX_FILE_SIZE) {
+      return res.status(413).json({
+        message: "File size cannot exceed 10 MB",
+      });
+    }
+
     const quota = await Quota.findOne({
       userId: req.user._id,
     });
@@ -37,10 +47,8 @@ export const uploadFile = async (req, res, next) => {
       });
     }
 
-    // Calculate remaining storage
     const remainingStorage = quota.storageLimit - quota.storageUsed;
 
-    // Check whether file fits
     if (fileSize > remainingStorage) {
       return res.status(413).json({
         message: "Storage limit exceeded",
@@ -49,6 +57,8 @@ export const uploadFile = async (req, res, next) => {
         remainingStorage,
       });
     }
+
+    // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
@@ -64,6 +74,7 @@ export const uploadFile = async (req, res, next) => {
         .end(req.file.buffer);
     });
 
+    // Create file record
     const file = await File.create({
       name: req.file.originalname,
       extension: mime.extension(req.file.mimetype),
@@ -74,6 +85,21 @@ export const uploadFile = async (req, res, next) => {
       resourceType: result.resource_type,
       size: fileSize,
     });
+
+    // Update user's storage usage
+    await Quota.findOneAndUpdate(
+      {
+        userId: req.user._id,
+      },
+      {
+        $inc: {
+          storageUsed: fileSize,
+        },
+      },
+      {
+        new: true,
+      },
+    );
 
     return res.status(201).json({
       message: "File uploaded successfully",
@@ -119,10 +145,24 @@ export const DeleteFile = async (req, res, next) => {
       });
     }
 
+    // Delete from Cloudinary
     await cloudinary.uploader.destroy(file.publicId, {
       resource_type: file.resourceType,
     });
 
+    // Decrease user's storage usage
+    await Quota.findOneAndUpdate(
+      {
+        userId: req.user._id,
+      },
+      {
+        $inc: {
+          storageUsed: -file.size,
+        },
+      },
+    );
+
+    // Delete database record
     await file.deleteOne();
 
     return res.status(200).json({

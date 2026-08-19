@@ -36,8 +36,6 @@ export default function Register() {
     }
   };
 
-  console.log(error);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     handleRegister(formData);
