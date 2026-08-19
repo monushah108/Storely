@@ -14,6 +14,7 @@ import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import multer from "multer";
 import helmet from "helmet";
+import { consumeToken } from "./lib/rateLimiter.js";
 
 dotenv.config();
 
@@ -30,17 +31,41 @@ app.use(
 app.use(
   helmet({
     contentSecurityPolicy: false,
+
+    crossOriginEmbedderPolicy: false,
+
+    crossOriginOpenerPolicy: {
+      policy: "same-origin-allow-popups",
+    },
+
+    referrerPolicy: {
+      policy: "strict-origin-when-cross-origin",
+    },
+
+    frameguard: {
+      action: "deny",
+    },
+
+    hidePoweredBy: true,
+
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+
+    noSniff: true,
   }),
 );
 
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(express.json());
 
-app.use("/directory", checkAuth, directoryRoute);
-app.use("/file", checkAuth, fileRoute);
+app.use("/directory", checkAuth, consumeToken, directoryRoute);
+app.use("/file", checkAuth, consumeToken, fileRoute);
 app.use("/", userRoute);
 app.use("/auth", authRoute);
-app.use("/share", shareRoute);
+app.use("/share", consumeToken, shareRoute);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
