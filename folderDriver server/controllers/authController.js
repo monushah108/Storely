@@ -3,6 +3,7 @@ import User from "../modles/userModel.js";
 import { verifyIdToken } from "../services/googleAuthservice.js";
 import Directory from "../modles/directoryModel.js";
 import Session from "../modles/SessionModel.js";
+import Quota from "../modles/quotaModel.js";
 
 export const loginWithGoogle = async (req, res, next) => {
   const { idToken } = req.body;
@@ -11,8 +12,6 @@ export const loginWithGoogle = async (req, res, next) => {
   const { email, name, picture } = userData;
 
   let user = await User.findOne({ email }).select("-__v");
-
-  console.log(user);
 
   if (user) {
     if (user.deleted) {
@@ -56,7 +55,7 @@ export const loginWithGoogle = async (req, res, next) => {
           parentDirId: null,
           userId,
         },
-        { mongooseSession }
+        { mongooseSession },
       );
 
       await User.insertOne(
@@ -67,7 +66,14 @@ export const loginWithGoogle = async (req, res, next) => {
           picture,
           rootDirId,
         },
-        { mongooseSession }
+        { mongooseSession },
+      );
+
+      await Quota.insertOne(
+        {
+          userId,
+        },
+        { mongooseSession },
       );
 
       const session = await Session.create({ userId });
@@ -116,8 +122,9 @@ export const loginWithGithub = async (req, res, next) => {
       signed: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
-    res.redirect("http://localhost:5173");
+    return res.status(200).json({
+      message: "logged in",
+    });
   } else {
     const mongooseSession = await mongoose.startSession();
 
@@ -134,7 +141,7 @@ export const loginWithGithub = async (req, res, next) => {
           parentDirId: null,
           userId,
         },
-        { mongooseSession }
+        { mongooseSession },
       );
 
       await User.insertOne(
@@ -145,7 +152,14 @@ export const loginWithGithub = async (req, res, next) => {
           picture,
           rootDirId,
         },
-        { mongooseSession }
+        { mongooseSession },
+      );
+
+      await Quota.insertOne(
+        {
+          userId,
+        },
+        { mongooseSession },
       );
 
       const session = await Session.create({ userId });
@@ -157,8 +171,9 @@ export const loginWithGithub = async (req, res, next) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       mongooseSession.commitTransaction();
-
-      res.redirect("http://localhost:5173");
+      return res.status(200).json({
+        message: "logged in",
+      });
     } catch (err) {
       mongooseSession.abortTransaction();
 

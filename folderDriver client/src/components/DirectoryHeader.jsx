@@ -13,12 +13,10 @@ import {
 
 export default function DirectoryHeader() {
   const param = useParams();
-  const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
-  // Create folder modal
+
   const [directoryName, setDirectoryName] = useState("");
 
-  //modle
   const [openModle, setOpenModle] = useState(false);
   const [uploadFile, { isLoading, isError }] = useUploadFileMutation();
   const [createDirectory] = useCreateDirectoryMutation();
@@ -33,13 +31,17 @@ export default function DirectoryHeader() {
     }
   }, [error]);
 
-  const handleLogout = () => {
-    logout();
-    if (isSucess) {
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+
+      setUser(null);
+      setOpen(false);
+
       navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
-    setUser(null);
-    setOpen(false);
   };
 
   const handleUplaodFile = (e) => {
@@ -47,6 +49,18 @@ export default function DirectoryHeader() {
     const form = new FormData();
     form.append("file", file);
     uploadFile({ paramId: param.id, form });
+  };
+
+  const formatBytes = (bytes) => {
+    if (!bytes || bytes === 0) {
+      return "0 Bytes";
+    }
+
+    const units = ["Bytes", "KB", "MB", "GB", "TB"];
+
+    const index = Math.floor(Math.log(bytes) / Math.log(1024));
+
+    return `${(bytes / Math.pow(1024, index)).toFixed(1)} ${units[index]}`;
   };
 
   return (
@@ -100,10 +114,51 @@ export default function DirectoryHeader() {
             </button>
 
             {open && (
-              <div className="absolute right-0 mt-2 w-48 rounded-lg border bg-white p-4 shadow-lg">
+              <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-white p-4 shadow-lg">
+                {/* User information */}
                 <p className="font-medium text-gray-800">{data.name}</p>
+
                 <p className="text-sm text-gray-500">{data.email}</p>
-                <hr className="my-2" />
+
+                <hr className="my-3" />
+
+                {/* Storage */}
+                {data.storage && (
+                  <div className="mb-4">
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">
+                        Storage
+                      </span>
+
+                      <span className="text-xs text-gray-500">
+                        {data.storage.percentage.toFixed(1)}%
+                      </span>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                        style={{
+                          width: `${Math.min(data.storage.percentage, 100)}%`,
+                        }}
+                      />
+                    </div>
+
+                    {/* Storage numbers */}
+                    <div className="mt-1 flex justify-between text-xs text-gray-500">
+                      <span>{formatBytes(data.storage.used)}</span>
+
+                      <span>{formatBytes(data.storage.limit)}</span>
+                    </div>
+
+                    <p className="mt-2 text-xs text-gray-500">
+                      {formatBytes(data.storage.remaining)} available
+                    </p>
+                  </div>
+                )}
+
+                {/* Logout */}
                 <button
                   onClick={handleLogout}
                   className="w-full rounded-md bg-red-500 px-3 py-1 text-sm font-semibold text-white hover:bg-red-600"

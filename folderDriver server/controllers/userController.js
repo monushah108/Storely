@@ -6,7 +6,7 @@ import File from "../modles/fileModel.js";
 
 import form from "../validators/form.js";
 import sanitize from "sanitize-html";
-import Quota from "../modles/qouteModel.js";
+import Quota from "../modles/quotaModel.js";
 
 export const register = async (req, res, next) => {
   const { data, success, error } = form.safeParse(req.body);
@@ -42,6 +42,13 @@ export const register = async (req, res, next) => {
         email,
         password,
         rootDirId,
+      },
+      { session },
+    );
+
+    await Quota.insertOne(
+      {
+        userId,
       },
       { session },
     );
@@ -100,15 +107,6 @@ export const login = async (req, res, next) => {
   if (allSessions.length >= 2) {
     await allSessions[0].deleteOne();
   }
-  // const sessionId = crypto.randomUUID();
-  // const redisKey = `session:${sessionId}`;
-  // const sessionExpiryTime = 7 * 24 * 60 * 60;
-  // const session = await redisClient.json.set(redisKey, "$", {
-  //   userId: user._id,
-  //   rootDirId: user.rootDirId,
-  // });
-
-  // await redisClient.expire(redisKey, sessionExpiryTime);
 
   const session = await Session.create({
     userId: user._id,
@@ -132,19 +130,46 @@ export const logout = async (req, res) => {
 };
 
 export const profile = async (req, res, next) => {
-  const quota = await Quota.findOne({ userId: user._id }).lean();
-  const user = await User.findById(req.user._id).lean();
+  try {
+    const user = await User.findById(req.user._id).lean();
 
-  const StoragePer = (user.storageUsed / user.storageLimit) * 100;
+    const quota = await Quota.findOne({
+      userId: req.user._id,
+    }).lean();
 
-  res.status(200).json({
-    email: user.email,
-    name: user.name,
-    picture: user.picture,
-    role: user.role,
-    StoragePer,
-    limit: quota.storageLimit,
-  });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (!quota) {
+      return res.status(404).json({
+        message: "Storage quota not found",
+      });
+    }
+
+    const storagePer =
+      quota.storageLimit > 0
+        ? Number(((quota.storageUsed / quota.storageLimit) * 100).toFixed(1))
+        : 0;
+
+    res.status(200).json({
+      email: user.email,
+      name: user.name,
+      picture: user.picture,
+      role: user.role,
+
+      storage: {
+        used: quota.storageUsed,
+        limit: quota.storageLimit,
+        remaining: quota.storageLimit - quota.storageUsed,
+        percentage: storagePer,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const getAllUsers = async (req, res) => {
