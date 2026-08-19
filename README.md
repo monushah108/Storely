@@ -37,8 +37,6 @@
 
 # 📦 About Storely
 
-# 📦 Storely
-
 **Storely** is a full-stack cloud file management application built with **React, Node.js, Express, MongoDB, and Cloudinary**.
 
 It allows users to securely upload, organize, manage, and share files through a modern web interface. Storely also supports **Google and GitHub OAuth authentication**, role-based access control, directories, file sharing, and an administrative dashboard.
@@ -103,32 +101,6 @@ Administrators can:
 - Input validation
 - Owner-level file authorization
 - Role-based permission checks
-
----
-
-## 🖼️ Screenshots
-
-Storely includes screenshots demonstrating the main parts of the application.
-
-### 🏠 Home Page
-
-<p align="center">
-  <img src="./docs/screenshots/home.png" alt="Storely Home Page" width="850">
-</p>
-
-### 🔐 Login Page
-
-<p align="center">
-  <img src="./docs/screenshots/login.png" alt="Storely Login Page" width="850">
-</p>
-
-### 📊 Dashboard
-
-<p align="center">
-  <img src="./docs/screenshots/dashboard.png" alt="Storely Dashboard" width="850">
-</p>
-
-> **Tip:** Keep all project screenshots inside `docs/screenshots/` and use descriptive filenames such as `home.png`, `login.png`, `dashboard.png`, `file-view.png`, and `admin-dashboard.png`.
 
 ---
 
