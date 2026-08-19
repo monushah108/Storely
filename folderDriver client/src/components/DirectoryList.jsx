@@ -68,8 +68,8 @@ export default function DirectoryList({ DriveData = [] }) {
 
     setMenu({
       visible: true,
-      x: event.clientX / 100,
-      y: event.clientY / 100,
+      x: event.clientX,
+      y: event.clientY,
     });
 
     setDirId(id);

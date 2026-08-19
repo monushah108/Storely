@@ -38,7 +38,7 @@ export default function ContextModle({
     closeMenu();
 
     try {
-      const data = await openFile({ id, type }).unwrap();
+      const data = await openFile({ id, type });
 
       if (!type) {
         navigate(`dirItem/${id}`);
@@ -58,7 +58,7 @@ export default function ContextModle({
       closeMenu();
 
       try {
-        await deleteFile({ id, type }).unwrap();
+        await deleteFile({ id, type });
       } catch (error) {
         console.error("Failed to delete:", error);
         setDeleteId(null);
