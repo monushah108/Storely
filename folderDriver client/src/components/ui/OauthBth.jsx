@@ -17,7 +17,7 @@ function GoogleBtn() {
       }
 
       toast.success("Logged in successfully");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       toast.error("Something went wrong");
       console.error(error);

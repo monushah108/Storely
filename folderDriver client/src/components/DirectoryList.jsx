@@ -1,136 +1,213 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaEllipsisV, FaFolder } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
 import RenderFileIcon from "../hook/RenderFileIcon.jsx";
 import RenameModle from "./models/RenameModle.jsx";
 import ContextModle from "./models/ContextModle.jsx";
-import { useRenameFileMutation } from "../store/slices/Flieslice.js";
-import { toast, Toaster } from "sonner";
-import { Loader } from "lucide-react";
 import ShareModle from "./models/ShareModle.jsx";
 
-export default function DirectoryList({ DriveData }) {
-  const [menu, setMenu] = useState({ x: 0, y: 0, visible: false });
+import { useRenameFileMutation } from "../store/slices/Flieslice.js";
+
+export default function DirectoryList({ DriveData = [] }) {
+  const [menu, setMenu] = useState({
+    x: 0,
+    y: 0,
+    visible: false,
+  });
+
   const [renameModal, setRenameModal] = useState(false);
-  const [newName, setNewname] = useState("");
-  const [DirId, setDirId] = useState("");
-  const [ext, setExt] = useState();
+  const [newName, setNewName] = useState("");
+  const [dirId, setDirId] = useState("");
+  const [ext, setExt] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [shareId, setShareId] = useState("");
+  const [isShare, setIsShare] = useState(false);
 
-  const menuRef = useRef();
+  const menuRef = useRef(null);
+
   const [renameFile] = useRenameFileMutation();
 
-  const [IsShare, setIsShare] = useState(false);
-
+  // Close context menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenu((pre) => ({ ...pre, visible: false }));
+        setMenu((prev) => ({
+          ...prev,
+          visible: false,
+        }));
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  const renderFileIcon = RenderFileIcon;
+  // Open context menu
+  const handleContextMenu = (event, id, name, extension) => {
+    event.preventDefault();
 
-  const handleContextMenu = (e, id, name, extension) => {
-    console.log(e);
-    e.preventDefault();
-    setMenu({ visible: true, x: e.clientX / 100, y: e.clientY / 100 });
+    setMenu({
+      visible: true,
+      x: event.clientX,
+      y: event.clientY,
+    });
+
     setDirId(id);
-    setNewname(name);
-    setExt(extension);
+    setNewName(name);
+    setExt(extension || "");
   };
 
+  // Open menu from three-dot button
+  const handleMenuClick = (event, id, name, extension) => {
+    event.stopPropagation();
+
+    setMenu({
+      visible: true,
+      x: event.clientX / 100,
+      y: event.clientY / 100,
+    });
+
+    setDirId(id);
+    setNewName(name);
+    setExt(extension || "");
+  };
+
+  // Rename file/folder
   const handleRename = async () => {
+    const trimmedName = newName.trim();
+
+    if (!trimmedName) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+
     try {
-      const data = await renameFile({ newName, DirId, ext }).unwrap();
-      toast.info(data.message);
+      const data = await renameFile({
+        newName: trimmedName,
+        DirId: dirId,
+        ext,
+      }).unwrap();
+
+      toast.success(data.message || "Renamed successfully");
+
       setRenameModal(false);
     } catch (err) {
-      toast.error(err?.data.error);
+      toast.error(err?.data?.error || err?.data?.message || "Failed to rename");
     }
   };
 
+  if (!DriveData.length) {
+    return (
+      <div className="flex min-h-[250px] items-center justify-center">
+        <p className="text-sm font-medium text-gray-400">
+          No files or folders found
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-3 px-5 py-2 relative">
-      <Toaster richColors position="top-center" />
-      {!DriveData?.length ? (
-        <h1 className="flex h-full items-center justify-center text-gray-500 mt-4 font-semibold">
-          No File and Direcotry found
-        </h1>
-      ) : (
-        DriveData.map(({ name, _id, extension }) => (
-          <div
-            key={_id}
-            className={`flex items-center ${deleteId == _id && "cursor-not-allowed "}`}
-            onContextMenu={(e) =>
-              deleteId == _id || handleContextMenu(e, _id, name, extension)
-            }
-          >
+    <>
+      <div className="divide-y divide-gray-100 relative">
+        {DriveData.map(({ name, _id, extension }) => {
+          const isDeleting = deleteId === _id;
+
+          return (
             <div
-              className={`flex flex-1 items-center justify-between ${deleteId == _id && "bg-red-500 border-red-500 rounded px-5 py-1 text-white"}`}
+              key={_id}
+              onContextMenu={(event) => {
+                if (!isDeleting) {
+                  handleContextMenu(event, _id, name, extension);
+                }
+              }}
+              className={`group flex min-h-[58px] items-center gap-3 px-3 transition ${
+                isDeleting ? "cursor-not-allowed bg-red-50" : "hover:bg-gray-50"
+              }`}
             >
-              <div>
-                {deleteId == _id ? (
-                  <Loader className="animate-spin h-4 w-4" />
+              {/* File / Folder icon */}
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center">
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-red-500" />
                 ) : extension ? (
-                  renderFileIcon(extension)
+                  RenderFileIcon(extension)
                 ) : (
-                  <FaFolder size={40} className="text-blue-500" />
+                  <FaFolder className="text-xl text-blue-500" />
                 )}
               </div>
 
-              <p className="truncate grow px-5 text-left font-medium text-gray-700">
-                {deleteId == _id
-                  ? `${name.slice(0, 10)} is deleting...`
-                  : name.length > 20
-                    ? name.slice(0, 20) + "..."
-                    : name}
-              </p>
+              {/* Name */}
+              <div className="min-w-0 flex-1">
+                <p
+                  title={name}
+                  className={`truncate text-sm font-medium ${
+                    isDeleting ? "text-red-600" : "text-gray-700"
+                  }`}
+                >
+                  {isDeleting ? `${name.slice(0, 20)}... is deleting` : name}
+                </p>
+              </div>
 
-              <button
-                onClick={(e) =>
-                  deleteId == _id || handleContextMenu(e, _id, name, extension)
-                }
-              >
-                <FaEllipsisV />
-              </button>
+              {/* File type */}
+              <span className="hidden w-24 truncate text-xs text-gray-400 sm:block">
+                {extension || "Folder"}
+              </span>
+
+              {/* Menu */}
+              {!isDeleting && (
+                <button
+                  type="button"
+                  onClick={(event) =>
+                    handleMenuClick(event, _id, name, extension)
+                  }
+                  className="rounded-md p-2 text-gray-400 opacity-0 transition hover:bg-gray-100 hover:text-gray-700 group-hover:opacity-100 focus:opacity-100"
+                  aria-label={`Options for ${name}`}
+                >
+                  <FaEllipsisV className="text-sm" />
+                </button>
+              )}
             </div>
-          </div>
-        ))
-      )}
+          );
+        })}
+      </div>
 
+      {/* Context menu */}
       <ContextModle
         menuRef={menuRef}
         menu={menu}
         setMenu={setMenu}
         setRenameModal={setRenameModal}
-        setNewname={setNewname}
+        setNewname={setNewName}
         setDirId={setDirId}
         setExt={setExt}
         setIsShare={setIsShare}
-        id={DirId}
+        id={dirId}
         name={newName}
         ext={ext}
         setDeleteId={setDeleteId}
         setShareId={setShareId}
       />
 
+      {/* Rename */}
       <RenameModle
         renameModal={renameModal}
         newName={newName}
-        setNewname={setNewname}
+        setNewname={setNewName}
         closeModal={setRenameModal}
         HandleRename={handleRename}
       />
+
+      {/* Share */}
       <ShareModle
-        IsShare={IsShare}
+        IsShare={isShare}
         setIsShare={setIsShare}
         shareId={shareId}
         isFile={ext}
       />
-    </div>
+    </>
   );
 }

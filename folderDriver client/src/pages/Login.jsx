@@ -18,7 +18,7 @@ export default function Login() {
     try {
       const data = await login({ email, password }).unwrap();
       toast.success(data.messsage);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       toast.error(err.data.error || "login failed");
     }
@@ -31,7 +31,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <Toaster richColors position="top-center" />
+      {/* <Toaster richColors position="top-center" /> */}
       <form
         className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl space-y-6"
         onSubmit={handleSubmit}
@@ -101,7 +101,7 @@ export default function Login() {
           {/* github login  */}
           <button
             onClick={() => {
-              window.location.href = "http://localhost:4000/auth/github";
+              window.location.href = `${import.meta.env.CLIENT_URL}/auth/github`;
             }}
             className="flex items-center justify-center gap-2 
                  bg-gray-900 text-white rounded-md hover:bg-gray-800 

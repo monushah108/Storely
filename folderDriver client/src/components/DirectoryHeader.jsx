@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaFolderPlus, FaUser, FaUpload } from "react-icons/fa";
 import Modle from "./models/modle";
 import {
@@ -12,6 +12,7 @@ import {
 } from "../store/slices/UserSlice";
 import { toast, Toaster } from "sonner";
 import StateModle from "./models/stateModle";
+import { Cloud } from "lucide-react";
 
 export default function DirectoryHeader() {
   const param = useParams();
@@ -87,10 +88,13 @@ export default function DirectoryHeader() {
   return (
     <div className="flex items-center justify-between bg-white px-6 py-3 shadow-md">
       {/* Logo/Title */}
-      <h2 className="text-xl flex items-center gap-2 font-bold text-gray-700">
-        <img src="icon.png" height="30px" width="30px" />
+      <Link
+        to="/"
+        className="text-xl flex items-center gap-2 font-bold text-gray-700"
+      >
+        <Cloud className="h-7 w-7 " />
         storely
-      </h2>
+      </Link>
 
       {/* Action buttons */}
       <div className="flex items-center gap-4 justify-center">
@@ -119,46 +123,71 @@ export default function DirectoryHeader() {
 
         {/* User Menu */}
         {data && (
-          <div className="relative align-text-bottom">
+          <div className="relative">
+            {/* Avatar */}
             <button
-              className="rounded-full  hover:bg-gray-300 cursor-pointer align-bottom"
-              onClick={() => setOpen(!open)}
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-gray-50 transition hover:border-gray-300 hover:bg-gray-100"
             >
               {data.picture ? (
                 <img
                   src={data.picture}
-                  alt={data.name}
-                  className="h-8 rounded-full"
+                  alt={data.name || "User"}
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <FaUser />
+                <FaUser className="text-sm text-gray-500" />
               )}
             </button>
 
+            {/* Dropdown */}
             {open && (
-              <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-white p-4 shadow-lg">
-                {/* User information */}
-                <p className="font-medium text-gray-800">{data.name}</p>
+              <div className="absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                {/* User */}
+                <div className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                      {data.picture ? (
+                        <img
+                          src={data.picture}
+                          alt={data.name || "User"}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <FaUser className="text-sm text-gray-500" />
+                      )}
+                    </div>
 
-                <p className="text-sm text-gray-500">{data.email}</p>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-gray-800">
+                        {data.name || "User"}
+                      </p>
 
-                <hr className="my-3" />
+                      <p className="truncate text-xs text-gray-500">
+                        {data.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-100" />
 
                 {/* Storage */}
                 {data.storage && (
-                  <div className="mb-4">
-                    <div className="mb-1 flex items-center justify-between">
+                  <div className="p-4">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">
                         Storage
                       </span>
 
-                      <span className="text-xs text-gray-500">
-                        {data.storage.percentage.toFixed(1)}%
+                      <span className="text-xs font-medium text-gray-500">
+                        {Math.min(data.storage.percentage, 100).toFixed(1)}%
                       </span>
                     </div>
 
-                    {/* Progress bar */}
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    {/* Progress */}
+                    <div className="h-2 overflow-hidden rounded-full bg-gray-100">
                       <div
                         className="h-full rounded-full bg-blue-500 transition-all duration-300"
                         style={{
@@ -167,9 +196,9 @@ export default function DirectoryHeader() {
                       />
                     </div>
 
-                    {/* Storage numbers */}
-                    <div className="mt-1 flex justify-between text-xs text-gray-500">
-                      <span>{formatBytes(data.storage.used)}</span>
+                    {/* Storage info */}
+                    <div className="mt-2 flex items-center justify-between text-xs text-gray-400">
+                      <span>{formatBytes(data.storage.used)} used</span>
 
                       <span>{formatBytes(data.storage.limit)}</span>
                     </div>
@@ -180,13 +209,18 @@ export default function DirectoryHeader() {
                   </div>
                 )}
 
+                <div className="border-t border-gray-100" />
+
                 {/* Logout */}
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-md bg-red-500 px-3 py-1 text-sm font-semibold text-white hover:bg-red-600"
-                >
-                  Logout
-                </button>
+                <div className="p-3">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             )}
           </div>
