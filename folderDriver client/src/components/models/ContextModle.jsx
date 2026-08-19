@@ -68,13 +68,13 @@ export default function ContextModle({
     >
       <button
         className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-        onClick={() => deleteFunc(id, ext)}
+        onClick={() => handleDelete(id, ext)}
       >
         Delete
       </button>
       <button
         className="block w-full px-4 py-2 text-left text-sm text-blue-600 hover:bg-blue-50"
-        onClick={() => renameFunc(id, name, ext)}
+        onClick={() => handleRename(id, name, ext)}
       >
         Rename
       </button>

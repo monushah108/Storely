@@ -28,6 +28,10 @@ const fileSchema = new Schema(
       type: String,
       required: true,
     },
+    size: {
+      type: Number,
+      required: true,
+    },
     parentDirId: {
       type: Schema.Types.ObjectId,
       ref: "Directory",

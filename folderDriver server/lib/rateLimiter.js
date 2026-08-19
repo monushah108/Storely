@@ -1,13 +1,17 @@
 const buckets = new Map();
 
-const CAPACITY = 2; // maximum tokens
-const REFILL_INTERVAL = 10000; // every 10 seconds
+const CAPACITY = 10;
+const REFILL_INTERVAL = 10000;
 
 export function consumeToken(request, response, next) {
   const now = Date.now();
+
   const key =
-    request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
-    "anonymous"; // or some other unique identifier
+    request.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    request.ip ||
+    "anonymous";
+
+  console.log("RATE LIMIT KEY:", key);
 
   let bucket = buckets.get(key);
 
@@ -20,8 +24,10 @@ export function consumeToken(request, response, next) {
     buckets.set(key, bucket);
   }
 
-  // Calculate how many tokens should be added
+  // Calculate elapsed time
   const elapsed = now - bucket.lastRefill;
+
+  // Calculate tokens to refill
   const tokensToAdd = Math.floor(elapsed / REFILL_INTERVAL);
 
   if (tokensToAdd > 0) {
@@ -30,7 +36,7 @@ export function consumeToken(request, response, next) {
     bucket.lastRefill += tokensToAdd * REFILL_INTERVAL;
   }
 
-  // Reject request if no tokens remain
+  // No tokens left
   if (bucket.tokens <= 0) {
     return response.status(429).json({
       success: false,
@@ -39,7 +45,7 @@ export function consumeToken(request, response, next) {
     });
   }
 
-  // Consume one token
+  // Consume token
   bucket.tokens--;
 
   return next();

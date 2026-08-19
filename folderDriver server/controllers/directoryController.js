@@ -24,6 +24,7 @@ export const getDirectory = async (req, res) => {
       files: files.map((dirId) => ({ ...dirId, type: "file", id: dirId._id })),
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json(err);
   }
 };

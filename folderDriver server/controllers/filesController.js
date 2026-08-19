@@ -1,6 +1,7 @@
 import File from "../modles/fileModel.js";
 import mime from "mime-types";
 import cloudinary from "../config/cloudinary.js";
+import Quota from "../modles/qouteModel.js";
 
 export const getFile = async (req, res, next) => {
   try {
@@ -20,6 +21,34 @@ export const getFile = async (req, res, next) => {
 
 export const uploadFile = async (req, res, next) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No file provided",
+      });
+    }
+    const fileSize = req.file.size;
+    const quota = await Quota.findOne({
+      userId: req.user._id,
+    });
+
+    if (!quota) {
+      return res.status(404).json({
+        message: "Storage quota not found",
+      });
+    }
+
+    // Calculate remaining storage
+    const remainingStorage = quota.storageLimit - quota.storageUsed;
+
+    // Check whether file fits
+    if (fileSize > remainingStorage) {
+      return res.status(413).json({
+        message: "Storage limit exceeded",
+        storageLimit: quota.storageLimit,
+        storageUsed: quota.storageUsed,
+        remainingStorage,
+      });
+    }
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
@@ -43,6 +72,7 @@ export const uploadFile = async (req, res, next) => {
       url: result.secure_url,
       publicId: result.public_id,
       resourceType: result.resource_type,
+      size: fileSize,
     });
 
     return res.status(201).json({

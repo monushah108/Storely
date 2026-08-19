@@ -6,6 +6,7 @@ import File from "../modles/fileModel.js";
 
 import form from "../validators/form.js";
 import sanitize from "sanitize-html";
+import Quota from "../modles/qouteModel.js";
 
 export const register = async (req, res, next) => {
   const { data, success, error } = form.safeParse(req.body);
@@ -131,12 +132,18 @@ export const logout = async (req, res) => {
 };
 
 export const profile = async (req, res, next) => {
+  const quota = await Quota.findOne({ userId: user._id }).lean();
   const user = await User.findById(req.user._id).lean();
+
+  const StoragePer = (user.storageUsed / user.storageLimit) * 100;
+
   res.status(200).json({
     email: user.email,
     name: user.name,
     picture: user.picture,
     role: user.role,
+    StoragePer,
+    limit: quota.storageLimit,
   });
 };
 
@@ -193,12 +200,9 @@ export const hardDeleteUser = async (req, res, next) => {
     await User.findByIdAndDelete(userId);
     await Session.deleteMany({ userId });
     await Directory.deleteMany({ userId });
+    await Quota.deleteOne({ userId });
 
     const file = await File.find({ userId }).lean();
-
-    for (const { name } of file) {
-      await rm(`./storage/${name}`);
-    }
 
     await File.deleteMany({ userId });
 
