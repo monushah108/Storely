@@ -17,7 +17,7 @@ const adminAccessSchema = new Schema(
       required: true,
     },
 
-    tokenHash: {
+    token: {
       type: String,
       required: true,
       unique: true,

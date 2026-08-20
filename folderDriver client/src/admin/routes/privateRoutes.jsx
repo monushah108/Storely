@@ -6,6 +6,7 @@ import FileExplorer from "../pages/fileExplorer.jsx";
 import ProtectedRoutes from "./protectedRoutes.jsx";
 import GrantAdminAccess from "../pages/grantAcess.jsx";
 import Settings from "../pages/settings.jsx";
+import AdminAccessVerify from "../pages/verifyAccess.jsx";
 
 export default function privateRoutes() {
   return [
@@ -44,6 +45,10 @@ export default function privateRoutes() {
           element: <Settings />,
         },
       ],
+    },
+    {
+      path: "/admin/verify/:token",
+      element: <AdminAccessVerify />,
     },
   ];
 }
