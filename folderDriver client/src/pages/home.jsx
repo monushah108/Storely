@@ -1,6 +1,7 @@
-import Footer from "./ui/footer";
-import Hero from "./ui/hero";
-import Header from "./ui/header";
+import Footer from "../components/home/footer";
+import Header from "../components/home/header";
+import Hero from "../components/home/hero";
+
 import { useFetchUserQuery } from "../store/slices/UserSlice";
 
 export default function Home() {

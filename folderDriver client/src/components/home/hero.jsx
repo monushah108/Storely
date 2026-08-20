@@ -197,24 +197,82 @@ export default function Hero({ data }) {
       </section>
 
       {/* Simple CTA */}
+
       <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-2xl border border-gray-200 bg-white px-6 py-12 text-center shadow-sm sm:px-12">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Ready to organize your files?
-          </h2>
+        <div className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          {data ? (
+            /* Logged in CTA */
+            <div className="px-6 py-12 text-center sm:px-12">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                <Cloud className="h-6 w-6 text-blue-600" />
+              </div>
 
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500">
-            Create your Storely account and start keeping everything in one
-            simple place.
-          </p>
+              <h2 className="mt-5 text-3xl font-bold text-gray-900">
+                Your files are waiting.
+              </h2>
 
-          <button
-            onClick={() => navigate("/register")}
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
-          >
-            Create your account
-            <ArrowRight className="h-4 w-4" />
-          </button>
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500">
+                Continue managing your files, create folders, upload new files,
+                and keep everything organized in your Storely dashboard.
+              </p>
+
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="
+            mt-6
+            inline-flex
+            items-center
+            gap-2
+            rounded-lg
+            bg-blue-600
+            px-5
+            py-3
+            text-sm
+            font-medium
+            text-white
+            transition
+            hover:bg-blue-700
+          "
+              >
+                Go to dashboard
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            /* Logged out CTA */
+            <div className="px-6 py-12 text-center sm:px-12">
+              <h2 className="text-3xl font-bold text-gray-900">
+                Ready to organize your files?
+              </h2>
+
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500">
+                Create your Storely account and start keeping everything in one
+                simple place.
+              </p>
+
+              <button
+                onClick={() => navigate("/register")}
+                className="
+            mt-6
+            inline-flex
+            items-center
+            gap-2
+            rounded-lg
+            bg-blue-600
+            px-5
+            py-3
+            text-sm
+            font-medium
+            text-white
+            transition
+            hover:bg-blue-700
+          "
+              >
+                Create your account
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </main>
