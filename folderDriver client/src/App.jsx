@@ -63,7 +63,7 @@ const router = createBrowserRouter([
     element: <Guest />,
   },
 
-  privateRoutes(),
+  ...privateRoutes(),
 
   {
     path: "*",

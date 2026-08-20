@@ -9,8 +9,7 @@ import shareRoute from "./routes/shareRoute.js";
 import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import checkAuth from "./middleware/authMilddleware.js";
-
-import rateLimit from "express-rate-limit";
+// import adminRoute from "./routes/adminRoute.js";
 import dotenv from "dotenv";
 import multer from "multer";
 import helmet from "helmet";
@@ -61,11 +60,12 @@ app.use(
 app.use(cookieParser(process.env.SECRET_KEY));
 app.use(express.json());
 
-app.use("/directory", checkAuth, consumeToken, directoryRoute);
-app.use("/file", checkAuth, consumeToken, fileRoute);
 app.use("/", userRoute);
 app.use("/auth", authRoute);
+app.use("/directory", checkAuth, consumeToken, directoryRoute);
+app.use("/file", checkAuth, consumeToken, fileRoute);
 app.use("/share", consumeToken, shareRoute);
+// app.use("/admin", consumeToken, checkAuth, adminRoute);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {

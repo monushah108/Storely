@@ -1,29 +1,48 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoutes({ role, children }) {
-  const roles = ["admin", "owner"];
-  const navigate = useNavigate();
-  const VITE_BASE_URL = "http://localhost:4000";
+export default function ProtectedRoutes({ children }) {
+  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
-    fetchUser();
+    const checkAccess = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          setStatus("unauthorized");
+          return;
+        }
+
+        const data = await res.json();
+
+        if (!data.success || !data.isAdmin) {
+          setStatus("unauthorized");
+          return;
+        }
+
+        setStatus("authorized");
+      } catch (error) {
+        setStatus("unauthorized");
+      }
+    };
+
+    checkAccess();
   }, []);
 
-  const fetchUser = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/user/profile`, {
-        credentials: "include",
-      });
-      const { role } = await res.json();
-      if (!roles.includes(role)) {
-        navigate("/");
-        return;
-      }
-    } catch (err) {
-      navigate("/auth/login");
-    }
-  };
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Checking access...</p>
+      </div>
+    );
+  }
+
+  if (status === "unauthorized") {
+    return <Navigate to="/" replace />;
+  }
 
   return children;
 }

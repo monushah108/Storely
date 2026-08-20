@@ -1,9 +1,14 @@
 import { IoMdMenu, IoMdPerson, IoMdLogOut } from "react-icons/io";
 import { MdOutlineManageAccounts } from "react-icons/md";
-import { FiUserX, FiUsers } from "react-icons/fi";
+import { FiShield, FiUserX, FiUsers } from "react-icons/fi";
 import { RiDashboardFill } from "react-icons/ri";
 import { HiOutlineX, HiOutlineChevronRight } from "react-icons/hi";
-import { ShieldCheck, LayoutDashboard, Users } from "lucide-react";
+import {
+  ShieldCheck,
+  LayoutDashboard,
+  Users,
+  UserRoundKey,
+} from "lucide-react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { useGetProfileQuery } from "@/store/slices/AdminSlice";
@@ -12,24 +17,6 @@ export default function Layout() {
   const [open, setOpen] = useState(false);
 
   const { data: user, isLoading } = useGetProfileQuery();
-
-  const navigation = [
-    {
-      name: "Users",
-      path: "/users",
-      icon: FiUsers,
-    },
-    {
-      name: "Recover",
-      path: "recover",
-      icon: FiUserX,
-    },
-    {
-      name: "Staff",
-      path: "staffes",
-      icon: MdOutlineManageAccounts,
-    },
-  ];
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100">
@@ -93,7 +80,7 @@ export default function Layout() {
 
           <nav className="space-y-1">
             <NavLink
-              to="/users"
+              to="/admin"
               onClick={() => setOpen(false)}
               className={({ isActive }) => `
           group relative flex items-center gap-3
@@ -169,7 +156,7 @@ export default function Layout() {
             </NavLink>
 
             <NavLink
-              to="staffes"
+              to="access"
               onClick={() => setOpen(false)}
               className={({ isActive }) => `
           group relative flex items-center gap-3
@@ -194,7 +181,45 @@ export default function Layout() {
                     }
                   />
 
-                  <span>Staff</span>
+                  <span>user Acess</span>
+
+                  {isActive && (
+                    <HiOutlineChevronRight
+                      size={15}
+                      className="ml-auto text-blue-100"
+                    />
+                  )}
+                </>
+              )}
+            </NavLink>
+
+            <NavLink
+              to="setting"
+              onClick={() => setOpen(false)}
+              className={({ isActive }) => `
+          group relative flex items-center gap-3
+          rounded-xl px-3 py-2.5
+          text-[13px] font-medium
+          transition-all duration-200
+          ${
+            isActive
+              ? "bg-blue-600 text-white shadow-md shadow-blue-600/10"
+              : "text-gray-400 hover:bg-white/[0.045] hover:text-gray-100"
+          }
+        `}
+            >
+              {({ isActive }) => (
+                <>
+                  <MdOutlineManageAccounts
+                    size={19}
+                    className={
+                      isActive
+                        ? "text-white"
+                        : "text-gray-500 group-hover:text-gray-300"
+                    }
+                  />
+
+                  <span>setting</span>
 
                   {isActive && (
                     <HiOutlineChevronRight
