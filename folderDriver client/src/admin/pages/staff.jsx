@@ -10,10 +10,11 @@ import {
   useSoftDeleteUserMutation,
   useHardDeleteUserMutation,
   useUpdateUserRoleMutation,
-} from "@/store/slices/AdminSlice";
+} from "../../store/slices/AdminSlice.js";
+
 import { toast } from "sonner";
 
-export default function Users() {
+export default function Staff() {
   const navigate = useNavigate();
 
   const [portal, setPortal] = useState(false);
@@ -26,8 +27,9 @@ export default function Users() {
     data: users = [],
     isLoading,
     isError,
-  } = useGetUsersQuery(profile?.role);
-
+  } = useGetUsersQuery(profile?.role, {
+    skip: !profile?.role,
+  });
   const [logoutUser] = useLogoutUserMutation();
   const [softDeleteUser] = useSoftDeleteUserMutation();
   const [hardDeleteUser] = useHardDeleteUserMutation();
@@ -168,16 +170,23 @@ export default function Users() {
                     {/* User */}
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-600">
-                          {user.name?.charAt(0)?.toUpperCase() || "U"}
-                        </div>
+                        {user.picture ? (
+                          <img
+                            src={user.picture}
+                            alt={user.name || "User"}
+                            className="h-9 w-9 shrink-0 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-600">
+                            {user.name?.charAt(0)?.toUpperCase() || "U"}
+                          </div>
+                        )}
 
                         <span className="text-sm font-medium text-slate-700">
                           {user.name || "Unknown"}
                         </span>
                       </div>
                     </td>
-
                     {/* Email */}
                     <td className="px-5 py-4">
                       <span className="text-sm text-gray-500">

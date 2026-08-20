@@ -181,19 +181,22 @@ export const getAllUsers = async (req, res) => {
   const allSession = await Session.find().lean();
   const allSessionUserId = allSession.map(({ userId }) => userId.toString());
   const allSessionUserIdSet = new Set(allSessionUserId);
-  const transformedUsers = allusers.map(({ _id, name, email, role }) => ({
-    id: _id,
-    name,
-    email,
-    role,
-    isLoggedIn: allSessionUserIdSet.has(_id.toString()),
-  }));
+  const transformedUsers = allusers.map(
+    ({ _id, name, email, role, picture }) => ({
+      id: _id,
+      name,
+      picture,
+      email,
+      role,
+      isLoggedIn: allSessionUserIdSet.has(_id.toString()),
+    }),
+  );
   return res.status(200).json(transformedUsers);
 };
 
 export const logoutUser = async (req, res, next) => {
   const { userId } = req.params;
-  // const clean = sanitize(userId.toString())
+
   console.log(userId);
 
   try {

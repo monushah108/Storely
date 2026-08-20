@@ -29,8 +29,9 @@ export default function FileExplorer() {
 
   const files = data?.file || [];
   const folders = data?.directory || [];
+  const [deleteUserData, { isLoading: deleting }] = useDeleteUserDataMutation();
 
-  const [deleteUserData] = useDeleteUserDataMutation();
+  const [deletingId, setDeletingId] = useState(null);
   const [renameUserData] = useRenameUserDataMutation();
   const [triggerOpenUserData] = useLazyOpenUserDataQuery();
 
@@ -38,12 +39,20 @@ export default function FileExplorer() {
     item.name?.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const handleDelete = (id, type) => {
-    deleteUserData({
-      userId,
-      id,
-      type,
-    });
+  const handleDelete = async (id, type) => {
+    try {
+      setDeletingId(id);
+
+      await deleteUserData({
+        userId,
+        id,
+        type,
+      }).unwrap();
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const handleRename = async () => {
@@ -236,6 +245,7 @@ export default function FileExplorer() {
             type={type}
             newName={newName}
             renameModal={renameModal}
+            deletingId={deletingId}
           />
         </div>
       )}
