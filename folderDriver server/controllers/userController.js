@@ -124,9 +124,9 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res) => {
   const { sid } = req.signedCookies;
   await Session.findByIdAndDelete(sid);
-  // await redisClient.del(`session:${sid}`);
+
   res.clearCookie("sid");
-  res.status(204).end();
+  res.status(204).json({ message: "logout" });
 };
 
 export const profile = async (req, res, next) => {

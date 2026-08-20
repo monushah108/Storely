@@ -1,8 +1,9 @@
 import { Cloud, Menu } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Profile from "../../components/ui/profile";
 
-export default function Header() {
+export default function Header({ data }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -19,29 +20,35 @@ export default function Header() {
         </div>
 
         {/* Desktop navigation */}
-        <div className="hidden items-center gap-3 sm:flex">
-          <button
-            onClick={() => navigate("/login")}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
-          >
-            Login
-          </button>
+        {data ? (
+          <Profile />
+        ) : (
+          <div className="hidden items-center gap-3 sm:flex">
+            <button
+              onClick={() => navigate("/login")}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+            >
+              Login
+            </button>
 
-          <button
-            onClick={() => navigate("/register")}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-          >
-            Get started
-          </button>
-        </div>
+            <button
+              onClick={() => navigate("/register")}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+            >
+              Get started
+            </button>
+          </div>
+        )}
 
         {/* Mobile menu */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 sm:hidden"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+        {!data && (
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 sm:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {menuOpen && (

@@ -1,7 +1,9 @@
 import { ArrowRight, Check, Cloud, Folder, Lock, Upload } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Hero() {
+export default function Hero({ data }) {
+  const navigate = useNavigate();
   return (
     <main>
       <section className="px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
@@ -22,23 +24,32 @@ export default function Hero() {
                 Storely gives you a simple place to upload, organize, and manage
                 your files without the clutter.
               </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              {data ? (
                 <button
-                  onClick={() => navigate("/register")}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                  onClick={() => navigate("/dashboard")}
+                  className=" mt-8  inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                 >
-                  Get started
+                  Dashboard
                   <ArrowRight className="h-4 w-4" />
                 </button>
+              ) : (
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                  >
+                    Get started
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
 
-                <button
-                  onClick={() => navigate("/login")}
-                  className="rounded-lg border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                >
-                  Sign in
-                </button>
-              </div>
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="rounded-lg border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                  >
+                    Sign in
+                  </button>
+                </div>
+              )}
 
               <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2">
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
