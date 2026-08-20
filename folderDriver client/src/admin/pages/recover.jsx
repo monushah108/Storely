@@ -1,8 +1,9 @@
+import { useState } from "react";
+import { FaUndo } from "react-icons/fa";
 import {
   useGetDeletedUsersQuery,
   useRecoverUserMutation,
 } from "@/store/slices/AdminSlice";
-import { FaUserCircle, FaUndo } from "react-icons/fa";
 
 export default function Recover() {
   const {
@@ -11,108 +12,163 @@ export default function Recover() {
     isError,
   } = useGetDeletedUsersQuery();
 
-  const [recoverUser, { isLoading: recovering }] = useRecoverUserMutation();
+  const [recoverUser] = useRecoverUserMutation();
+  const [recoveringId, setRecoveringId] = useState(null);
 
+  const handleRecover = async (userId) => {
+    try {
+      setRecoveringId(userId);
+
+      await recoverUser(userId).unwrap();
+    } catch (error) {
+      console.error("Failed to recover user:", error);
+    } finally {
+      setRecoveringId(null);
+    }
+  };
+
+  // Loading
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64 text-gray-500">
-        Loading deleted users...
+      <div className="w-full">
+        <div className="mb-6">
+          <div className="h-7 w-44 animate-pulse rounded bg-gray-200" />
+          <div className="mt-2 h-4 w-64 animate-pulse rounded bg-gray-100" />
+        </div>
+
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div className="space-y-4 p-5">
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                key={item}
+                className="flex animate-pulse items-center justify-between"
+              >
+                <div className="space-y-2">
+                  <div className="h-4 w-32 rounded bg-gray-200" />
+                  <div className="h-3 w-48 rounded bg-gray-100" />
+                </div>
+
+                <div className="h-8 w-20 rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
+  // Error
   if (isError) {
     return (
-      <div className="text-center text-red-500 mt-10">
-        Failed to fetch deleted users.
+      <div className="w-full">
+        <h1 className="text-2xl font-semibold text-slate-800">Recover Users</h1>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Restore deleted user accounts.
+        </p>
+
+        <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5">
+          <p className="text-sm font-medium text-red-600">
+            Failed to load deleted users.
+          </p>
+
+          <p className="mt-1 text-xs text-red-500">Please try again later.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="w-full">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-800">Recover Users</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-slate-800">Recover Users</h1>
 
-        <p className="text-gray-500 mt-1">
+        <p className="mt-1 text-sm text-gray-500">
           Restore deleted accounts back into the system.
         </p>
       </div>
 
-      {/* Empty State */}
+      {/* Empty state */}
       {deletedUsers.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-sm border p-10 text-center">
-          <h2 className="text-lg font-semibold text-slate-700">
-            No Deleted Users
-          </h2>
+        <div className="rounded-xl border border-gray-200 bg-white px-6 py-12 text-center">
+          <p className="text-sm font-medium text-gray-600">No deleted users</p>
 
-          <p className="text-gray-500 mt-2">
-            There are currently no users to recover.
+          <p className="mt-1 text-sm text-gray-400">
+            There are currently no accounts available for recovery.
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded border shadow-sm overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
           <div className="overflow-x-auto">
-            <div className="min-w-[800px]">
-              {/* Header */}
-              <div className="grid grid-cols-[80px_1fr_250px_150px_150px] px-6 py-4 bg-slate-50 border-b font-semibold text-slate-600">
-                <div>#</div>
-                <div>User</div>
-                <div>Email</div>
-                <div>Role</div>
-                <div>Action</div>
-              </div>
+            <table className="w-full min-w-[650px] text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-5 py-3 text-left font-medium text-gray-500">
+                    Name
+                  </th>
 
-              {/* Rows */}
-              {deletedUsers.map((user, index) => (
-                <div
-                  key={user.id}
-                  className="grid grid-cols-[80px_1fr_250px_150px_150px] px-6 py-5 border-b last:border-none items-center hover:bg-gray-50 transition"
-                >
-                  <div>{index + 1}</div>
+                  <th className="px-5 py-3 text-left font-medium text-gray-500">
+                    Email
+                  </th>
 
-                  <div className="flex items-center gap-3 min-w-0">
-                    <FaUserCircle
-                      size={40}
-                      className="text-slate-400 flex-shrink-0"
-                    />
+                  <th className="px-5 py-3 text-left font-medium text-gray-500">
+                    Role
+                  </th>
 
-                    <h3 className="font-semibold text-slate-800 truncate">
-                      {user.name}
-                    </h3>
-                  </div>
+                  <th className="px-5 py-3 text-right font-medium text-gray-500">
+                    Action
+                  </th>
+                </tr>
+              </thead>
 
-                  <div className="text-gray-500 truncate">{user.email}</div>
+              <tbody>
+                {deletedUsers.map((user) => {
+                  const isRecovering = recoveringId === user.id;
 
-                  <div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium
-              ${
-                user.role === "admin"
-                  ? "bg-purple-100 text-purple-700"
-                  : user.role === "owner"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-700"
-              }`}
+                  return (
+                    <tr
+                      key={user.id}
+                      className="border-b border-gray-100 last:border-0 transition hover:bg-gray-50"
                     >
-                      {user.role}
-                    </span>
-                  </div>
+                      {/* Name */}
+                      <td className="px-5 py-4">
+                        <p className="font-medium text-slate-700">
+                          {user.name || "Unknown"}
+                        </p>
+                      </td>
 
-                  <div>
-                    <button
-                      disabled={recovering}
-                      onClick={() => recoverUser(user.id)}
-                      className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition disabled:opacity-50 whitespace-nowrap"
-                    >
-                      <FaUndo />
-                      {recovering ? "Recovering..." : "Recover"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      {/* Email */}
+                      <td className="px-5 py-4 text-gray-500">{user.email}</td>
+
+                      {/* Role */}
+                      <td className="px-5 py-4">
+                        <span className="text-gray-500 capitalize">
+                          {user.role || "user"}
+                        </span>
+                      </td>
+
+                      {/* Action */}
+                      <td className="px-5 py-4 text-right">
+                        <button
+                          type="button"
+                          disabled={isRecovering}
+                          onClick={() => handleRecover(user.id)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-green-200 px-3 py-1.5 text-xs font-medium text-green-600 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <FaUndo
+                            className={isRecovering ? "animate-spin" : ""}
+                            size={12}
+                          />
+
+                          {isRecovering ? "Recovering..." : "Recover"}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
