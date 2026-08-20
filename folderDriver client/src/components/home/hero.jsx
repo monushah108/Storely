@@ -35,7 +35,7 @@ export default function Hero({ data }) {
               ) : (
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <button
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/auth/register")}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                   >
                     Get started
@@ -43,7 +43,7 @@ export default function Hero({ data }) {
                   </button>
 
                   <button
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/auth/login")}
                     className="rounded-lg border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
                   >
                     Sign in
@@ -251,7 +251,7 @@ export default function Hero({ data }) {
               </p>
 
               <button
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/auth/register")}
                 className="
             mt-6
             inline-flex

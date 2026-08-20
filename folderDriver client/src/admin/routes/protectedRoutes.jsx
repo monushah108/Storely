@@ -21,7 +21,7 @@ export default function ProtectedRoutes({ role, children }) {
         return;
       }
     } catch (err) {
-      navigate("/login");
+      navigate("/auth/login");
     }
   };
 

@@ -25,14 +25,14 @@ export default function Header({ data }) {
         ) : (
           <div className="hidden items-center gap-3 sm:flex">
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/auth/login")}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
             >
               Login
             </button>
 
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/auth/register")}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
             >
               Get started
@@ -55,14 +55,14 @@ export default function Header({ data }) {
         <div className="border-t border-gray-100 bg-white px-4 py-3 sm:hidden">
           <div className="flex flex-col gap-2">
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/auth/login")}
               className="rounded-lg px-4 py-2.5 text-left text-sm text-gray-600 hover:bg-gray-50"
             >
               Login
             </button>
 
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/auth/register")}
               className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white"
             >
               Get started

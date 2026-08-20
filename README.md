@@ -294,16 +294,16 @@ http://localhost:8000
 
 ## 🌐 Application Routes
 
-| Route          | Description         |
-| -------------- | ------------------- |
-| `/`            | Storely home page   |
-| `/login`       | User login          |
-| `/register`    | User registration   |
-| `/dashboard`   | User file dashboard |
-| `/dirItem/:id` | Directory contents  |
-| `/file/:id`    | File view           |
-| `/guest/:id`   | Shared/guest file   |
-| `/admin/*`     | Admin dashboard     |
+| Route            | Description         |
+| ---------------- | ------------------- |
+| `/`              | Storely home page   |
+| `/login`         | User login          |
+| `/auth/register` | User registration   |
+| `/dashboard`     | User file dashboard |
+| `/dirItem/:id`   | Directory contents  |
+| `/file/:id`      | File view           |
+| `/guest/:id`     | Shared/guest file   |
+| `/admin/*`       | Admin dashboard     |
 
 ---
 

@@ -19,7 +19,7 @@ export default function Profile() {
       await logout().unwrap();
 
       setOpen(false);
-      navigate("/login");
+      navigate("/auth/login");
     } catch (error) {
       toast.error("Logout failed");
     }
