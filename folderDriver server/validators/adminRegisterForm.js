@@ -1,4 +1,4 @@
-import form from "./form";
+import form from "./form.js";
 
 export const registerForm = form.pick({
   password: true,

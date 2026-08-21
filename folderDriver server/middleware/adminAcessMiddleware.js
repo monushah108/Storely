@@ -1,4 +1,7 @@
-export const checkAdminAccess = async (req, res, next) => {
+import AdminAccess from "../modles/adminAcessModel.js";
+import User from "../modles/userModel.js";
+
+const checkAdminAccess = async (req, res, next) => {
   try {
     const token = req.cookies.admin_access_token;
 
@@ -26,6 +29,23 @@ export const checkAdminAccess = async (req, res, next) => {
       });
     }
 
+    const user = await User.findById(access.userId);
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "User no longer exists",
+      });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin access denied",
+      });
+    }
+
+    req.user = user;
     req.adminAccess = access;
 
     next();
@@ -33,3 +53,5 @@ export const checkAdminAccess = async (req, res, next) => {
     next(error);
   }
 };
+
+export default checkAdminAccess;

@@ -5,10 +5,10 @@ import {
   updateAdminCredentials,
   registerAdmin,
   logoutAdmin,
-} from "../controllers/adminAccessController.js";
+} from "../controllers/adminController.js";
 
 import checkAuth from "../middleware/authMilddleware.js";
-import requireOwner from "../middleware/requireOwner.js";
+import checkRole from "../rbac/RoleMiddleware.js";
 
 const route = express.Router();
 
@@ -17,13 +17,18 @@ const route = express.Router();
 // ========================================
 
 // Create admin access for a user
-route.post("/:userId", checkAuth, requireOwner, createAdminAccess);
+route.post(
+  "/:userId",
+  checkAuth,
+  checkRole("roles:assign_admin"),
+  createAdminAccess,
+);
 
 // Update admin credential
 route.patch(
   "/credentials/:userId",
   checkAuth,
-  requireOwner,
+  checkRole("roles:assign_admin"),
   updateAdminCredentials,
 );
 

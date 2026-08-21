@@ -4,7 +4,7 @@ import File from "../modles/fileModel.js";
 import Quota from "../modles/quotaModel.js";
 import Session from "../modles/SessionModel.js";
 import User from "../modles/userModel.js";
-import sanitize from "sanitize-html";
+
 import { registerForm } from "../validators/adminRegisterForm.js";
 import AdminCredential from "../modles/adminModel.js";
 

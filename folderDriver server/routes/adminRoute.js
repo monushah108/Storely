@@ -10,7 +10,7 @@ import {
   updateRoles,
   getAllUsers,
   SearchUser,
-} from "../controllersController.js";
+} from "../controllers/adminController.js";
 
 import {
   DeleteFile,
@@ -24,7 +24,7 @@ import {
   renameDirectory,
 } from "../controllers/directoryController.js";
 
-import checkAdminAccess from "../middleware/checkAdminAccess.js";
+import checkAdminAccess from "../middleware/adminAcessMiddleware.js";
 import checkRole from "../rbac/RoleMiddleware.js";
 
 const route = express.Router();
