@@ -171,7 +171,7 @@ Storely/
 Create a `.env` file in the appropriate project directory and configure the following variables:
 
 ```env
-VITE_BASE_URL=
+VITE_API_URL=
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -193,7 +193,7 @@ GITHUB_CLIENT_SECRET=
 
 | Variable               | Description                                      |
 | ---------------------- | ------------------------------------------------ |
-| `VITE_BASE_URL`        | Base URL of the backend API used by the frontend |
+| `VITE_API_URL`         | Base URL of the backend API used by the frontend |
 | `GOOGLE_CLIENT_ID`     | Google OAuth client ID                           |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret                       |
 | `CLOUDNARY_NAME`       | Cloudinary cloud name                            |
@@ -497,7 +497,7 @@ Before deploying, configure all required environment variables in your hosting p
 For production, update the frontend environment variable:
 
 ```env
-VITE_BASE_URL=https://your-production-api-url.com
+VITE_API_URL=https://your-production-api-url.com
 ```
 
 ---
