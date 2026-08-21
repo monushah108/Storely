@@ -1,46 +1,29 @@
-import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useGetProfileQuery } from "../../store/slices/AdminSlice";
 
 export default function ProtectedRoutes({ children }) {
-  const [status, setStatus] = useState("loading");
+  const { data: user, isLoading, isError } = useGetProfileQuery();
 
-  useEffect(() => {
-    const checkAccess = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/users`, {
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          setStatus("unauthorized");
-          return;
-        }
-
-        const data = await res.json();
-
-        if (!data.success || !data.isAdmin) {
-          setStatus("unauthorized");
-          return;
-        }
-
-        setStatus("authorized");
-      } catch (error) {
-        setStatus("unauthorized");
-      }
-    };
-
-    checkAccess();
-  }, []);
-
-  if (status === "loading") {
+  // Still checking authentication
+  if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Checking access...</p>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-slate-700" />
+
+          <p className="mt-3 text-sm text-gray-500">Checking access...</p>
+        </div>
       </div>
     );
   }
 
-  if (status === "unauthorized") {
+  // Not authenticated / profile request failed
+  if (isError || !user) {
+    return <Navigate to="/" replace />;
+  }
+
+  // User exists but doesn't have permission
+  if (!["owner", "admin"].includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 

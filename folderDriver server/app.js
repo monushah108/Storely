@@ -10,6 +10,7 @@ import { connectDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import checkAuth from "./middleware/authMilddleware.js";
 import adminRoute from "./routes/adminRoute.js";
+import adminAccessRoute from "./routes/adminAcessRoute.js";
 import dotenv from "dotenv";
 import multer from "multer";
 import helmet from "helmet";
@@ -65,7 +66,8 @@ app.use("/auth", authRoute);
 app.use("/directory", checkAuth, consumeToken, directoryRoute);
 app.use("/file", checkAuth, consumeToken, fileRoute);
 app.use("/share", consumeToken, shareRoute);
-app.use("/admin", consumeToken, checkAuth, adminRoute);
+app.use("/admin/access", adminAccessRoute);
+app.use("/admin", adminRoute);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {

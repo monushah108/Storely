@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const adminCredentialSchema = new Schema(
   {
@@ -7,6 +8,7 @@ const adminCredentialSchema = new Schema(
       ref: "User",
       required: true,
       unique: true,
+      index: true,
     },
 
     password: {
@@ -19,6 +21,22 @@ const adminCredentialSchema = new Schema(
     timestamps: true,
   },
 );
+
+// Hash password before saving
+adminCredentialSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  next();
+});
+
+// Compare password
+adminCredentialSchema.methods.comparePassword = function (password) {
+  return bcrypt.compare(password, this.password);
+};
 
 const AdminCredential = model("AdminCredential", adminCredentialSchema);
 

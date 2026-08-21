@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
-import { useGetProfileQuery } from "@/store/slices/AdminSlice";
+import { useGetProfileQuery } from "../../store/slices/AdminSlice";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);

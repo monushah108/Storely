@@ -1,10 +1,12 @@
-import AdminAccess from "../modles/adminAcessModel";
-import Directory from "../modles/directoryModel";
-import File from "../modles/fileModel";
-import Quota from "../modles/quotaModel";
-import Session from "../modles/SessionModel";
-import User from "../modles/userModel";
+import AdminAccess from "../modles/adminAcessModel.js";
+import Directory from "../modles/directoryModel.js";
+import File from "../modles/fileModel.js";
+import Quota from "../modles/quotaModel.js";
+import Session from "../modles/SessionModel.js";
+import User from "../modles/userModel.js";
 import sanitize from "sanitize-html";
+import { registerForm } from "../validators/adminRegisterForm.js";
+import AdminCredential from "../modles/adminModel.js";
 
 export const getAllUsers = async (req, res) => {
   const { role } = req.query;
@@ -176,19 +178,125 @@ export const updateRoles = async (req, res) => {
   return res.status(201).json({ message: "role Changed successfully" });
 };
 
-export const checkAdminAccess = async (req, res, next) => {
+export const createAdminAccess = async (req, res, next) => {
   try {
-    const token = req.cookies.admin_access_token;
-
-    if (!token) {
-      return res.status(401).json({
+    // Only owner can grant admin access
+    if (req.user.role !== "owner") {
+      return res.status(403).json({
         success: false,
-        message: "Admin authentication required",
+        message: "Only owner can grant admin access",
       });
     }
 
+    const { data, success, error } = registerForm.safeParse(req.body);
+
+    if (!success) {
+      return res.status(400).json({
+        success: false,
+        errors: error.flatten().fieldErrors,
+      });
+    }
+
+    const { password } = data;
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Make sure target user exists
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Don't allow granting admin access to owner
+    if (user.role === "owner") {
+      return res.status(400).json({
+        success: false,
+        message: "Owner does not need admin access",
+      });
+    }
+
+    // Remove old credential if it exists
+    await AdminCredential.findOneAndDelete({
+      userId,
+    });
+
+    // Create new credential
+    await AdminCredential.create({
+      userId,
+      password,
+    });
+
+    // Generate access token
+    const token = AdminAccess.generateToken();
+
     const tokenHash = AdminAccess.hashToken(token);
 
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    // Remove previous unused access tokens
+    await AdminAccess.deleteMany({
+      userId,
+      usedAt: null,
+    });
+
+    await AdminAccess.create({
+      userId,
+      role: "admin",
+      tokenHash,
+      expiresAt,
+    });
+
+    // IMPORTANT:
+    // Do NOT put this token into owner's cookie.
+    // Owner is creating access for another user.
+    const accessUrl = `${process.env.FRONTEND_URL}/admin/access/${token}`;
+
+    return res.status(201).json({
+      success: true,
+      message: "Admin access created successfully",
+      accessUrl,
+      expiresAt,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const registerAdmin = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Access token is required",
+      });
+    }
+
+    const { data, success, error } = registerForm.safeParse(req.body);
+
+    if (!success) {
+      return res.status(400).json({
+        success: false,
+        errors: error.flatten().fieldErrors,
+      });
+    }
+
+    const { password } = data;
+
+    const tokenHash = AdminAccess.hashToken(token);
+
+    // Find valid unused access
     const access = await AdminAccess.findOne({
       tokenHash,
       role: "admin",
@@ -205,41 +313,150 @@ export const checkAdminAccess = async (req, res, next) => {
       });
     }
 
-    req.adminAccess = access;
+    // Find credential
+    const credential = await AdminCredential.findOne({
+      userId: access.userId,
+    }).select("+password");
 
-    next();
+    if (!credential) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin credential not found",
+      });
+    }
+
+    // Compare password
+    const isValid = await credential.comparePassword(password);
+
+    if (!isValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid admin password",
+      });
+    }
+
+    // Grant admin role
+    const user = await User.findByIdAndUpdate(
+      access.userId,
+      {
+        role: "admin",
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Mark access link as consumed
+    access.usedAt = new Date();
+
+    await access.save();
+
+    // Create admin session token
+    const sessionToken = AdminAccess.generateToken();
+
+    const sessionHash = AdminAccess.hashToken(sessionToken);
+
+    const sessionExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    // Create a new AdminAccess record for the session
+    await AdminAccess.create({
+      userId: user._id,
+      role: "admin",
+      tokenHash: sessionHash,
+      expiresAt: sessionExpiresAt,
+    });
+
+    // Store session token in HTTP-only cookie
+    res.cookie("admin_access_token", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin access granted successfully",
+      user: {
+        id: user._id,
+        role: user.role,
+      },
+    });
   } catch (error) {
     next(error);
   }
 };
 
-export const createAdminAccess = async (req, res, next) => {
+export const logoutAdmin = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    res.clearCookie("admin_access_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
 
-    if (!userId) {
-      return res.status(400).json({
+    return res.status(200).json({
+      success: true,
+      message: "Admin logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAdminCredentials = async (req, res, next) => {
+  try {
+    if (req.user.role !== "owner") {
+      return res.status(403).json({
         success: false,
-        message: "User ID is required",
+        message: "Only owner can update admin credentials",
       });
     }
 
-    const token = AdminAccess.generateToken();
-    const tokenHash = AdminAccess.hashToken(token);
+    const { userId } = req.params;
 
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const { data, success, error } = registerForm.safeParse(req.body);
 
-    await AdminAccess.create({
+    if (!success) {
+      return res.status(400).json({
+        success: false,
+        errors: error.flatten().fieldErrors,
+      });
+    }
+
+    const { password } = data;
+
+    const credential = await AdminCredential.findOne({
       userId,
-      role: "admin",
-      tokenHash,
-      expiresAt,
     });
 
-    return res.status(201).json({
+    if (!credential) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin credential not found",
+      });
+    }
+
+    credential.password = password;
+
+    // pre("save") will hash it
+    await credential.save();
+
+    // Revoke existing access links/sessions
+    await AdminAccess.deleteMany({
+      userId,
+    });
+
+    return res.status(200).json({
       success: true,
-      token,
-      expiresAt,
+      message: "Admin credential updated successfully",
     });
   } catch (error) {
     next(error);

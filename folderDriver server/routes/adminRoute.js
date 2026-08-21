@@ -1,6 +1,6 @@
 import express from "express";
+
 import {
-  getAllusers,
   logoutUser,
   deleteUser,
   hardDeleteUser,
@@ -8,105 +8,102 @@ import {
   DeletedUser,
   FileExpoler,
   updateRoles,
-} from "../controllers/adminController";
+  getAllUsers,
+  SearchUser,
+} from "../controllersController.js";
+
 import {
   DeleteFile,
   getFile,
   renameFile,
-} from "../controllers/filesController";
+} from "../controllers/filesController.js";
+
 import {
   deleteDirectory,
   getDirectory,
   renameDirectory,
-} from "../controllers/directoryController";
+} from "../controllers/directoryController.js";
+
+import checkAdminAccess from "../middleware/checkAdminAccess.js";
+import checkRole from "../rbac/RoleMiddleware.js";
+
 const route = express.Router();
 
-route.get("/admin", checkAuth, checkRole("user:read"), getAllusers);
+// ========================================
+// ADMIN AUTHENTICATION
+// ========================================
 
-route.post(
-  "/admin/:userId/logout",
-  checkAuth,
-  checkRole("user:logout"),
-  logoutUser,
-);
+route.use(checkAdminAccess);
 
-route.delete(
-  "/admin/:userId",
-  checkAuth,
-  checkRole("user:soft_delete"),
-  deleteUser,
-);
-route.delete(
-  "/admin/:userId/hard",
-  checkAuth,
-  checkRole("user:hard_delete"),
-  hardDeleteUser,
-);
+// ========================================
+// USERS
+// ========================================
 
-route.post(
-  "/admin/:userId/recover",
-  checkAuth,
-  checkRole("user:recover"),
-  RecoverUser,
-);
-route.get(
-  "/admin/deleted",
-  checkAuth,
+// Get all users
+route.get("/", checkRole("user:read"), getAllUsers);
 
-  DeletedUser,
-);
+// Deleted users
+route.get("/deleted", checkRole("user:read"), DeletedUser);
 
-route.get("/admin/search", checkAuth, SearchUser);
+// Search users
+route.get("/search", checkRole("user:read"), SearchUser);
 
-route.get(
-  "/admin/:userId/:dirId?",
-  checkAuth,
-  checkRole("user:file:read"),
-  FileExpoler,
-);
+// Logout a user
+route.post("/:userId/logout", checkRole("user:logout"), logoutUser);
 
-route.get(
-  "/admin/:userId/file/:id",
-  checkAuth,
-  checkRole("user:file:read"),
-  getFile,
-);
+// Soft delete user
+route.delete("/:userId", checkRole("user:soft_delete"), deleteUser);
+
+// Hard delete user
+route.delete("/:userId/hard", checkRole("user:hard_delete"), hardDeleteUser);
+
+// Recover user
+route.post("/:userId/recover", checkRole("user:recover"), RecoverUser);
+
+// ========================================
+// USER FILE EXPLORER
+// ========================================
+
+// Root directory
+route.get("/:userId", checkRole("user:file:read"), FileExpoler);
+
+// Specific directory
+route.get("/:userId/:dirId", checkRole("user:file:read"), FileExpoler);
+
+// ========================================
+// USER FILES
+// ========================================
+
+route.get("/:userId/file/:id", checkRole("user:file:read"), getFile);
+
+route.patch("/:userId/file/:id", checkRole("user:file:write"), renameFile);
+
+route.delete("/:userId/file/:id", checkRole("user:file:delete"), DeleteFile);
+
+// ========================================
+// USER DIRECTORIES
+// ========================================
+
+route.get("/:userId/directory/:id", checkRole("user:file:read"), getDirectory);
 
 route.patch(
-  "/admin/:userId/file/:id",
-  checkAuth,
-  checkRole("user:file:write"),
-  renameFile,
-);
-route.delete(
-  "/admin/:userId/file/:id",
-  checkAuth,
-  checkRole("user:file:delete"),
-  DeleteFile,
-);
-
-route.get(
-  "/admin/:userId/directory/:id",
-  checkAuth,
-  checkRole("user:file:read"),
-  getDirectory,
-);
-route.patch(
-  "/admin/:userId/directory/:id",
-  checkAuth,
+  "/:userId/directory/:id",
   checkRole("user:file:write"),
   renameDirectory,
 );
+
 route.delete(
-  "/admin/:userId/directory/:id",
-  checkAuth,
+  "/:userId/directory/:id",
   checkRole("user:file:delete"),
   deleteDirectory,
 );
 
+// ========================================
+// ROLE MANAGEMENT
+// ========================================
+
 route.patch(
-  "/admin/:userId/role",
-  checkAuth,
+  "/:userId/role",
   checkRole(["roles:assign_admin", "roles:assign_manager"]),
   updateRoles,
 );

@@ -1,5 +1,5 @@
-import crypto from "crypto";
 import { Schema, model } from "mongoose";
+import crypto from "crypto";
 
 const adminAccessSchema = new Schema(
   {
@@ -14,19 +14,18 @@ const adminAccessSchema = new Schema(
       type: String,
       enum: ["admin"],
       default: "admin",
-      required: true,
     },
 
-    token: {
+    tokenHash: {
       type: String,
       required: true,
       unique: true,
+      index: true,
     },
 
     expiresAt: {
       type: Date,
       required: true,
-      index: true,
     },
 
     usedAt: {
@@ -45,10 +44,6 @@ adminAccessSchema.statics.generateToken = function () {
 
 adminAccessSchema.statics.hashToken = function (token) {
   return crypto.createHash("sha256").update(token).digest("hex");
-};
-
-adminAccessSchema.methods.isValid = function () {
-  return !this.usedAt && this.expiresAt > new Date();
 };
 
 const AdminAccess = model("AdminAccess", adminAccessSchema);

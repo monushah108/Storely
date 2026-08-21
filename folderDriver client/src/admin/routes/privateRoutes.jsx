@@ -13,9 +13,9 @@ export default function privateRoutes() {
     {
       path: "/admin",
       element: (
-        // <ProtectedRoutes>
-        <Layout />
-        // {/* </ProtectedRoutes> */}
+        <ProtectedRoutes>
+          <Layout />
+        </ProtectedRoutes>
       ),
       children: [
         {
