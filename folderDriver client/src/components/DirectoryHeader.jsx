@@ -3,8 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaFolderPlus, FaUser, FaUpload, FaSignOutAlt } from "react-icons/fa";
 import { ChevronDown, Cloud, HardDrive, Settings } from "lucide-react";
 
-import Modle from "./models/modle";
-import StateModle from "./models/stateModle";
+import Modle from "./models/Modle.jsx";
+import StateModle from "./models/stateModle.jsx";
 
 import {
   useCreateDirectoryMutation,
