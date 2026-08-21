@@ -38,9 +38,12 @@ export default function FileView() {
               </h1>
               <p className="text-sm text-gray-500">Previewing file</p>
             </div>
-            <button className="text-blue-600 px-2">
+            <a
+              href={url.replace("/upload/", "/upload/fl_attachment/")}
+              className="text-blue-600 px-2"
+            >
               <Download />
-            </button>
+            </a>
           </div>
         </div>
 

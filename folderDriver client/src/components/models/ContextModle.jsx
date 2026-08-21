@@ -38,13 +38,12 @@ export default function ContextModle({
     closeMenu();
 
     try {
-      const data = await openFile({ id, type });
-
+      const { data } = await openFile({ id, type });
       if (!type) {
         navigate(`dirItem/${id}`);
       } else {
         navigate(`/file/${id}`, {
-          state: data,
+          state: { ...data },
         });
       }
     } catch (error) {
