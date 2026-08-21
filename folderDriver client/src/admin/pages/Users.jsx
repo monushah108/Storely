@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CanAccess from "../components/CanAccess.jsx";
-import Modal from "../components/Modle.jsx";
+import Modal from "../../components/models/Modle.jsx";
 
 import {
   useGetUsersQuery,
