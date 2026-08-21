@@ -1,4 +1,4 @@
-import { FaCheck, FaCopy } from "react-icons/fa";
+import { FaCheck, FaCopy, FaKey } from "react-icons/fa";
 
 export default function SettingToken({
   expiresInDays,

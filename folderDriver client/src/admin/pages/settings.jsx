@@ -9,13 +9,13 @@ export default function Settings() {
   // ADMIN PASSWORD
   // ========================================
 
-  const { data: credentialStatus, isLoading: checkingPassword } =
-    useGetAdminCredentialStatusQuery();
+  // const { data: credentialStatus, isLoading: checkingPassword } =
+  //   useGetAdminCredentialStatusQuery();
 
   // const [setAdminPassword] = useSetAdminPasswordMutation();
   // const [updateAdminCredentials] = useUpdateAdminCredentialsMutation();
 
-  const hasPassword = credentialStatus?.hasPassword ?? false;
+  const hasPassword = false;
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -82,7 +82,7 @@ export default function Settings() {
     }
 
     try {
-      setChangingPassword(true);
+      // setChangingPassword(true);
 
       if (hasPassword) {
         // Change existing password
@@ -115,7 +115,7 @@ export default function Settings() {
         error,
       );
     } finally {
-      setChangingPassword(false);
+      // setChangingPassword(false);
     }
   };
 
@@ -164,17 +164,17 @@ export default function Settings() {
     }
   };
 
-  if (checkingPassword) {
-    return (
-      <div className="w-full">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
+  // if (checkingPassword) {
+  //   return (
+  //     <div className="w-full">
+  //       <div className="mb-6">
+  //         <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
 
-          <p className="mt-1 text-sm text-gray-500">Loading settings...</p>
-        </div>
-      </div>
-    );
-  }
+  //         <p className="mt-1 text-sm text-gray-500">Loading settings...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="w-full">

@@ -7,6 +7,7 @@ import ProtectedRoutes from "./protectedRoutes.jsx";
 import GrantAdminAccess from "../pages/grantAcess.jsx";
 import Settings from "../pages/settings.jsx";
 import AdminAccessVerify from "../pages/verifyAccess.jsx";
+import ErrorPage from "../../pages/ErrorPage.jsx";
 
 export default function privateRoutes() {
   return [
@@ -17,6 +18,8 @@ export default function privateRoutes() {
           <Layout />
         </ProtectedRoutes>
       ),
+      errorElement: <ErrorPage />,
+
       children: [
         {
           index: true,
@@ -49,6 +52,7 @@ export default function privateRoutes() {
     {
       path: "/admin/verify/:token",
       element: <AdminAccessVerify />,
+      errorElement: <ErrorPage />,
     },
   ];
 }

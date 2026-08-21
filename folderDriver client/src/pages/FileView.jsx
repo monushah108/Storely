@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { ChevronLeft, FileText } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { ChevronLeft, Download, FileText } from "lucide-react";
 
 export default function FileView() {
   const { state } = useLocation();
@@ -32,12 +32,15 @@ export default function FileView() {
               <FileText className="h-6 w-6 text-blue-600" />
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="truncate text-lg font-semibold sm:text-xl">
-                {name}
+                {name?.split(" ").splice(0, 15).join("") + "..."}
               </h1>
               <p className="text-sm text-gray-500">Previewing file</p>
             </div>
+            <button className="text-blue-600 px-2">
+              <Download />
+            </button>
           </div>
         </div>
 
