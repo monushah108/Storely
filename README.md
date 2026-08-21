@@ -13,8 +13,6 @@
 
 ---
 
-## 📸 Screenshots
-
 ### 🏠 Home Page
 
 <p align="center">
