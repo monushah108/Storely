@@ -3,8 +3,7 @@ import { ChevronLeft, FileText } from "lucide-react";
 
 export default function FileView() {
   const { state } = useLocation();
-
-  if (!state?.data) {
+  if (!state) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-100">
         <p className="text-gray-500 text-lg">No file selected.</p>
@@ -12,7 +11,7 @@ export default function FileView() {
     );
   }
 
-  const { name, url } = state.data;
+  const { name, url } = state;
 
   return (
     <div className="min-h-screen bg-slate-100 p-3 sm:p-6">

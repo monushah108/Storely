@@ -12,6 +12,7 @@ import {
 import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { useGetProfileQuery } from "../../store/slices/AdminSlice";
+import CanAccess from "../components/CanAccess";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
@@ -154,11 +155,11 @@ export default function Layout() {
                 </>
               )}
             </NavLink>
-
-            <NavLink
-              to="access"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) => `
+            <CanAccess role={["owner"]}>
+              <NavLink
+                to="access"
+                onClick={() => setOpen(false)}
+                className={({ isActive }) => `
           group relative flex items-center gap-3
           rounded-xl px-3 py-2.5
           text-[13px] font-medium
@@ -169,34 +170,35 @@ export default function Layout() {
               : "text-gray-400 hover:bg-white/[0.045] hover:text-gray-100"
           }
         `}
-            >
-              {({ isActive }) => (
-                <>
-                  <MdOutlineManageAccounts
-                    size={19}
-                    className={
-                      isActive
-                        ? "text-white"
-                        : "text-gray-500 group-hover:text-gray-300"
-                    }
-                  />
-
-                  <span>user Acess</span>
-
-                  {isActive && (
-                    <HiOutlineChevronRight
-                      size={15}
-                      className="ml-auto text-blue-100"
+              >
+                {({ isActive }) => (
+                  <>
+                    <MdOutlineManageAccounts
+                      size={19}
+                      className={
+                        isActive
+                          ? "text-white"
+                          : "text-gray-500 group-hover:text-gray-300"
+                      }
                     />
-                  )}
-                </>
-              )}
-            </NavLink>
 
-            <NavLink
-              to="setting"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) => `
+                    <span>user Acess</span>
+
+                    {isActive && (
+                      <HiOutlineChevronRight
+                        size={15}
+                        className="ml-auto text-blue-100"
+                      />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            </CanAccess>
+            <CanAccess role={["owner"]}>
+              <NavLink
+                to="setting"
+                onClick={() => setOpen(false)}
+                className={({ isActive }) => `
           group relative flex items-center gap-3
           rounded-xl px-3 py-2.5
           text-[13px] font-medium
@@ -207,29 +209,30 @@ export default function Layout() {
               : "text-gray-400 hover:bg-white/[0.045] hover:text-gray-100"
           }
         `}
-            >
-              {({ isActive }) => (
-                <>
-                  <MdOutlineManageAccounts
-                    size={19}
-                    className={
-                      isActive
-                        ? "text-white"
-                        : "text-gray-500 group-hover:text-gray-300"
-                    }
-                  />
-
-                  <span>setting</span>
-
-                  {isActive && (
-                    <HiOutlineChevronRight
-                      size={15}
-                      className="ml-auto text-blue-100"
+              >
+                {({ isActive }) => (
+                  <>
+                    <MdOutlineManageAccounts
+                      size={19}
+                      className={
+                        isActive
+                          ? "text-white"
+                          : "text-gray-500 group-hover:text-gray-300"
+                      }
                     />
-                  )}
-                </>
-              )}
-            </NavLink>
+
+                    <span>setting</span>
+
+                    {isActive && (
+                      <HiOutlineChevronRight
+                        size={15}
+                        className="ml-auto text-blue-100"
+                      />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            </CanAccess>
           </nav>
         </div>
 

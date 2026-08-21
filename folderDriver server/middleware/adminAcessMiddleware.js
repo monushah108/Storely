@@ -3,6 +3,12 @@ import User from "../modles/userModel.js";
 
 const checkAdminAccess = async (req, res, next) => {
   try {
+    // OWNER gets direct access
+    if (req.user?.role === "owner") {
+      return next();
+    }
+
+    // ADMIN needs admin access token
     const token = req.cookies.admin_access_token;
 
     if (!token) {

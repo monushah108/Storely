@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 import { FaGithub } from "react-icons/fa";
 import { Loader } from "lucide-react";
@@ -11,17 +11,18 @@ export default function Login() {
   const [email, setEmail] = useState("sonu@gmail.com");
   const [password, setPassword] = useState("12345678");
 
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const data = await login({ email, password }).unwrap();
-      toast.success(data.messsage);
+      await login({ email, password }).unwrap();
+      toast.success("loged in successfuly");
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.data.error || "login failed");
+      const error = err.data.error ? err.data.message : "login failed";
+      toast.error(error);
     }
   };
 

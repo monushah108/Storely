@@ -80,7 +80,6 @@ export default function FileExplorer() {
         id,
         extension,
       }).unwrap();
-
       if (!extension) {
         navigate(`${id}`);
       } else {

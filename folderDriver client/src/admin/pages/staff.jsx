@@ -280,7 +280,7 @@ export default function Staff() {
                         <CanAccess role={["owner", "admin"]}>
                           <>
                             <button
-                              onClick={() => navigate(`/users/data/${user.id}`)}
+                              onClick={() => navigate(`/admin/data/${user.id}`)}
                               className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-100"
                             >
                               Files

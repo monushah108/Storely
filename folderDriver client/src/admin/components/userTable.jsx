@@ -142,7 +142,7 @@ export default function UserTable({
                       <td className="px-6 py-4">
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => navigate(`/users/data/${user.id}`)}
+                            onClick={() => navigate(`/admin/data/${user.id}`)}
                             title="Access files"
                             className="
                               rounded-lg border border-gray-200
@@ -234,7 +234,7 @@ export default function UserTable({
 
                     <CanAccess role={["owner", "admin"]}>
                       <button
-                        onClick={() => navigate(`/users/data/${user.id}`)}
+                        onClick={() => navigate(`/admin/data/${user.id}`)}
                         className="rounded-lg border border-blue-200 bg-blue-50 p-2 text-blue-600"
                       >
                         <FiFolder size={15} />

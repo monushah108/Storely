@@ -67,7 +67,7 @@ app.use("/directory", checkAuth, consumeToken, directoryRoute);
 app.use("/file", checkAuth, consumeToken, fileRoute);
 app.use("/share", consumeToken, shareRoute);
 app.use("/admin/access", adminAccessRoute);
-app.use("/admin", adminRoute);
+app.use("/admin", checkAuth, adminRoute);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
