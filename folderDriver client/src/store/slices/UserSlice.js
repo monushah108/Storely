@@ -3,7 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const UserApiSlice = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BASE_URL}/user`,
+    baseUrl: `${import.meta.env.VITE_API_URL}/user`,
     credentials: "include",
   }),
   tagTypes: ["profile"],

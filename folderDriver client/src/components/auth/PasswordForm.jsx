@@ -7,10 +7,10 @@ export default function PasswordForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const passwordRef = useRef("");
-  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
+  const VITE_API_URL = import.meta.env.VITE_API_URL;
 
   const Savepassword = async () => {
-    const res = await fetch(`${VITE_BASE_URL}/auth/login/password`, {
+    const res = await fetch(`${VITE_API_URL}/auth/login/password`, {
       method: "PUT",
       credentials: "include",
       headers: {

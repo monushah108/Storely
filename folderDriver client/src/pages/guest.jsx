@@ -10,7 +10,7 @@ export default function Guest() {
   const [error, setError] = useState("");
   const [file, setFile] = useState(null);
 
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     getData();

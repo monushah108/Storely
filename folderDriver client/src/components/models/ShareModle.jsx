@@ -14,7 +14,7 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (!IsShare || !shareId) return;
