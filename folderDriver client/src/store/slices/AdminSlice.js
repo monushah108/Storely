@@ -173,6 +173,11 @@ export const adminApiSlice = createApi({
     // ADMIN ACCESS
     // ========================================
 
+    getAdminCredentials: builder.query({
+      query: () => "/admin/access/credentials",
+      providesTags: ["AdminCredential"],
+    }),
+
     // OWNER:
     // Create admin credential + one-time access token
     createAdminAccess: builder.mutation({
@@ -193,9 +198,7 @@ export const adminApiSlice = createApi({
       query: ({ userId, password }) => ({
         url: `/admin/access/credentials/${userId}`,
         method: "PATCH",
-        body: {
-          password,
-        },
+        body: { password },
       }),
 
       invalidatesTags: ["AdminAccess", "AdminCredential"],
@@ -274,6 +277,7 @@ export const {
   useSearchUsersQuery,
 
   // Admin access
+  useGetAdminCredentialsQuery,
   useCreateAdminAccessMutation,
   useUpdateAdminCredentialsMutation,
   useRedeemAdminAccessMutation,

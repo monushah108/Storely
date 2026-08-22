@@ -178,6 +178,37 @@ export const updateRoles = async (req, res) => {
   return res.status(201).json({ message: "role Changed successfully" });
 };
 
+export const getAdminCredentials = async (req, res, next) => {
+  try {
+    if (req.user.role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Only owner can access admin credentials",
+      });
+    }
+
+    const { userId } = req.params;
+
+    const credential = await AdminCredential.findOne({ userId })
+      .populate("userId", "name email role")
+      .select("-password");
+
+    if (!credential) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin credentials not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      credential,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createAdminAccess = async (req, res, next) => {
   try {
     // Only owner can grant admin access

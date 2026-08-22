@@ -5,6 +5,7 @@ import {
   updateAdminCredentials,
   registerAdmin,
   logoutAdmin,
+  getAdminCredentials,
 } from "../controllers/adminController.js";
 
 import checkAuth from "../middleware/authMilddleware.js";
@@ -15,6 +16,13 @@ const route = express.Router();
 // ========================================
 // OWNER
 // ========================================
+
+route.get(
+  "credentials/:userId",
+  checkAuth,
+  checkRole("roles:assign_admin"),
+  getAdminCredentials,
+);
 
 // Create admin access for a user
 route.post(

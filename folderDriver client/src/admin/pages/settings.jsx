@@ -4,18 +4,25 @@ import { FaLock } from "react-icons/fa";
 import SettingForm from "../components/settingForm";
 import SettingToken from "../components/settingToken";
 
+import {
+  useGetAdminCredentialsQuery,
+  useCreateAdminAccessMutation,
+  useUpdateAdminCredentialsMutation,
+} from "../../store/slices/AdminSlice";
+
 export default function Settings() {
   // ========================================
   // ADMIN PASSWORD
   // ========================================
 
-  // const { data: credentialStatus, isLoading: checkingPassword } =
-  //   useGetAdminCredentialStatusQuery();
+  const { data: credentialStatus, isLoading: checkingPassword } =
+    useGetAdminCredentialsQuery();
 
-  // const [setAdminPassword] = useSetAdminPasswordMutation();
-  // const [updateAdminCredentials] = useUpdateAdminCredentialsMutation();
+  const [updateAdminCredentials] = useUpdateAdminCredentialsMutation();
+  const [createAdminAccess] = useCreateAdminAccessMutation();
 
-  const hasPassword = false;
+  // Get password status from backend
+  const hasPassword = credentialStatus?.hasPassword ?? false;
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
@@ -64,11 +71,6 @@ export default function Settings() {
 
     const { currentPassword, newPassword, confirmPassword } = passwords;
 
-    // Current password is required only when changing
-    if (hasPassword && !currentPassword) {
-      return;
-    }
-
     if (!newPassword || !confirmPassword) {
       return;
     }
@@ -82,31 +84,28 @@ export default function Settings() {
     }
 
     try {
-      // setChangingPassword(true);
+      setChangingPassword(true);
 
       if (hasPassword) {
         // Change existing password
-        // await updateAdminCredentials({
-        //   currentPassword,
-        //   newPassword,
-        // }).unwrap();
+        await updateAdminCredentials({
+          userId,
+          currentPassword,
+          password: newPassword,
+        }).unwrap();
       } else {
         // Set password for the first time
-        // await setAdminPassword({
-        //   password: newPassword,
-        // }).unwrap();
+        await createAdminAccess({
+          userId,
+          password: newPassword,
+        }).unwrap();
       }
 
-      // Clear form
       setPasswords({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
-
-      // Optional:
-      // credential status query should automatically be invalidated
-      // by your RTK Query API configuration.
     } catch (error) {
       console.error(
         hasPassword
@@ -115,7 +114,7 @@ export default function Settings() {
         error,
       );
     } finally {
-      // setChangingPassword(false);
+      setChangingPassword(false);
     }
   };
 
@@ -129,18 +128,13 @@ export default function Settings() {
       setToken("");
       setExpiresAt("");
 
-      // Replace this with your actual mutation
-      // const data = await createAdminAccess({
-      //   userId,
-      //   expiresInDays,
-      // }).unwrap();
-
-      // setToken(data.token);
-      // setExpiresAt(data.expiresAt);
-
-      console.log("Generate token", {
+      const data = await createAdminAccess({
+        userId,
         expiresInDays,
-      });
+      }).unwrap();
+
+      setToken(data.token);
+      setExpiresAt(data.expiresAt);
     } catch (error) {
       console.error("Failed to generate token:", error);
     } finally {
@@ -164,17 +158,17 @@ export default function Settings() {
     }
   };
 
-  // if (checkingPassword) {
-  //   return (
-  //     <div className="w-full">
-  //       <div className="mb-6">
-  //         <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
+  if (checkingPassword) {
+    return (
+      <div className="w-full">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
 
-  //         <p className="mt-1 text-sm text-gray-500">Loading settings...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+          <p className="mt-1 text-sm text-gray-500">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

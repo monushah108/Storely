@@ -11,13 +11,18 @@ import {
 } from "lucide-react";
 import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
-import { useGetProfileQuery } from "../../store/slices/AdminSlice";
+import {
+  useGetProfileQuery,
+  useLogoutAdminMutation,
+} from "../../store/slices/AdminSlice";
 import CanAccess from "../components/CanAccess";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
 
   const { data: user, isLoading } = useGetProfileQuery();
+
+  const [logoutAdmin] = useLogoutAdminMutation();
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100">
@@ -268,9 +273,11 @@ export default function Layout() {
           </div>
 
           {/* Logout */}
-          <button
-            type="button"
-            className="
+          <CanAccess role={["admin"]}>
+            <button
+              onClick={() => logoutAdmin()}
+              type="button"
+              className="
         group flex w-full items-center gap-3
         rounded-xl px-3 py-2.5
         text-[13px] font-medium text-gray-500
@@ -278,14 +285,15 @@ export default function Layout() {
         hover:bg-red-500/10
         hover:text-red-400
       "
-          >
-            <IoMdLogOut
-              size={19}
-              className="transition-transform duration-200 group-hover:-translate-x-0.5"
-            />
+            >
+              <IoMdLogOut
+                size={19}
+                className="transition-transform duration-200 group-hover:-translate-x-0.5"
+              />
 
-            <span>Logout</span>
-          </button>
+              <span>Logout</span>
+            </button>
+          </CanAccess>
         </div>
       </aside>
 
