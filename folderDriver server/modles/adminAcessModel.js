@@ -3,19 +3,11 @@ import crypto from "crypto";
 
 const adminAccessSchema = new Schema(
   {
-    userId: {
+    ownerId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
-
-    role: {
-      type: String,
-      enum: ["admin"],
-      default: "admin",
-    },
-
     tokenHash: {
       type: String,
       required: true,

@@ -44,7 +44,7 @@ const checkAdminAccess = async (req, res, next) => {
       });
     }
 
-    if (user.role !== "admin") {
+    if (!["owner", "admin"].includes(user.role)) {
       return res.status(403).json({
         success: false,
         message: "Admin access denied",

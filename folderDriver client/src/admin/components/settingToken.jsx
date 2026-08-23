@@ -1,10 +1,12 @@
-import { FaCheck, FaCopy, FaKey } from "react-icons/fa";
+import { FaCheck, FaCopy, FaKey, FaTrash } from "react-icons/fa";
 
 export default function SettingToken({
   expiresInDays,
   setExpiresInDays,
   generatingToken,
   handleGenerateToken,
+  handleClearToken,
+  clearingToken,
   handleCopy,
   token,
   copied,
@@ -15,6 +17,7 @@ export default function SettingToken({
 
     return new Date(date).toLocaleString();
   };
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       {/* Header */}
@@ -80,30 +83,45 @@ export default function SettingToken({
               </p>
             </div>
 
-            <div className="flex overflow-hidden rounded-lg border border-gray-200 bg-white">
-              <input
-                type="text"
-                readOnly
-                value={token}
-                className="min-w-0 flex-1 bg-transparent px-3 py-2.5 font-mono text-xs text-gray-600 outline-none"
-              />
+            {/* Token + Actions */}
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="flex min-w-0 flex-1 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                <input
+                  type="text"
+                  readOnly
+                  value={token}
+                  className="min-w-0 flex-1 bg-transparent px-3 py-2.5 font-mono text-xs text-gray-600 outline-none"
+                />
 
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="flex shrink-0 items-center gap-2 border-l border-gray-200 px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-slate-700"
+                >
+                  {copied ? (
+                    <>
+                      <FaCheck size={11} />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <FaCopy size={11} />
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Clear Token */}
               <button
                 type="button"
-                onClick={handleCopy}
-                className="flex items-center gap-2 border-l border-gray-200 px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-50 hover:text-slate-700"
+                onClick={handleClearToken}
+                disabled={clearingToken}
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {copied ? (
-                  <>
-                    <FaCheck size={11} />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <FaCopy size={11} />
-                    Copy
-                  </>
-                )}
+                <FaTrash size={10} />
+
+                {clearingToken ? "Clearing..." : "Clear Access"}
               </button>
             </div>
 

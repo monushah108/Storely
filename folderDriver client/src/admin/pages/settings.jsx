@@ -8,6 +8,8 @@ import {
   useGetAdminCredentialsQuery,
   useCreateAdminAccessMutation,
   useUpdateAdminCredentialsMutation,
+  useGenerateAccessTokenMutation,
+  useClearAccessTokenMutation,
 } from "../../store/slices/AdminSlice";
 
 export default function Settings() {
@@ -20,6 +22,8 @@ export default function Settings() {
 
   const [updateAdminCredentials] = useUpdateAdminCredentialsMutation();
   const [createAdminAccess] = useCreateAdminAccessMutation();
+  const [generateAccessToken] = useGenerateAccessTokenMutation();
+  const [clearAccessToken] = useClearAccessTokenMutation();
 
   // Get password status from backend
   const hasPassword = credentialStatus?.hasPassword ?? false;
@@ -47,7 +51,7 @@ export default function Settings() {
   const [expiresAt, setExpiresAt] = useState("");
   const [generatingToken, setGeneratingToken] = useState(false);
   const [copied, setCopied] = useState(false);
-
+  const [clearingToken, setClearingToken] = useState(false);
   // ========================================
   // PASSWORD HANDLERS
   // ========================================
@@ -72,14 +76,17 @@ export default function Settings() {
     const { currentPassword, newPassword, confirmPassword } = passwords;
 
     if (!newPassword || !confirmPassword) {
+      console.log("both are null");
       return;
     }
 
     if (newPassword.length < 8) {
+      console.log("more than 8");
       return;
     }
 
     if (newPassword !== confirmPassword) {
+      console.log("not equla");
       return;
     }
 
@@ -89,14 +96,13 @@ export default function Settings() {
       if (hasPassword) {
         // Change existing password
         await updateAdminCredentials({
-          userId,
           currentPassword,
           password: newPassword,
         }).unwrap();
+        console.log("setting password");
       } else {
         // Set password for the first time
         await createAdminAccess({
-          userId,
           password: newPassword,
         }).unwrap();
       }
@@ -128,9 +134,8 @@ export default function Settings() {
       setToken("");
       setExpiresAt("");
 
-      const data = await createAdminAccess({
-        userId,
-        expiresInDays,
+      const data = await generateAccessToken({
+        expiryDate: expiresInDays,
       }).unwrap();
 
       setToken(data.token);
@@ -141,7 +146,21 @@ export default function Settings() {
       setGeneratingToken(false);
     }
   };
+  const handleClearToken = async () => {
+    try {
+      setClearingToken(true);
 
+      await clearAccessToken().unwrap();
+
+      setToken("");
+      setExpiresAt("");
+      setCopied(false);
+    } catch (error) {
+      console.error("Failed to clear admin access token:", error);
+    } finally {
+      setClearingToken(false);
+    }
+  };
   const handleCopy = async () => {
     if (!token) return;
 
@@ -211,15 +230,18 @@ export default function Settings() {
             passwords={passwords}
             showPassword={showPassword}
             changingPassword={changingPassword}
+            togglePassword={togglePassword}
             hasPassword={hasPassword}
           />
         </div>
 
         <SettingToken
-          expiresInDays={expiresInDays}
+          expiryDate={expiresInDays}
           setExpiresInDays={setExpiresInDays}
           generatingToken={generatingToken}
           handleGenerateToken={handleGenerateToken}
+          handleClearToken={handleClearToken}
+          clearingToken={clearingToken}
           handleCopy={handleCopy}
           token={token}
           copied={copied}

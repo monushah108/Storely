@@ -6,6 +6,8 @@ import {
   registerAdmin,
   logoutAdmin,
   getAdminCredentials,
+  generateAdminAccessToken,
+  clearAdminAccessToken,
 } from "../controllers/adminController.js";
 
 import checkAuth from "../middleware/authMilddleware.js";
@@ -18,7 +20,7 @@ const route = express.Router();
 // ========================================
 
 route.get(
-  "credentials/:userId",
+  "/credentials",
   checkAuth,
   checkRole("roles:assign_admin"),
   getAdminCredentials,
@@ -26,7 +28,7 @@ route.get(
 
 // Create admin access for a user
 route.post(
-  "/:userId",
+  "/credentials",
   checkAuth,
   checkRole("roles:assign_admin"),
   createAdminAccess,
@@ -39,6 +41,12 @@ route.patch(
   checkRole("roles:assign_admin"),
   updateAdminCredentials,
 );
+
+// genrate access token
+
+route.post("/token", checkAuth, generateAdminAccessToken);
+
+route.delete("/token", checkAuth, clearAdminAccessToken);
 
 // ========================================
 // PUBLIC

@@ -6,6 +6,8 @@ export default function SettingForm({
   passwords,
   showPassword,
   changingPassword,
+
+  togglePassword,
   hasPassword,
 }) {
   return (

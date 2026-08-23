@@ -181,8 +181,8 @@ export const adminApiSlice = createApi({
     // OWNER:
     // Create admin credential + one-time access token
     createAdminAccess: builder.mutation({
-      query: ({ userId, password }) => ({
-        url: `/admin/access/${userId}`,
+      query: ({ password }) => ({
+        url: `/admin/access/credentials`,
         method: "POST",
         body: {
           password,
@@ -195,13 +195,30 @@ export const adminApiSlice = createApi({
     // OWNER:
     // Change an existing user's admin password
     updateAdminCredentials: builder.mutation({
-      query: ({ userId, password }) => ({
-        url: `/admin/access/credentials/${userId}`,
+      query: ({ password }) => ({
+        url: `/admin/access/credentials`,
         method: "PATCH",
         body: { password },
       }),
 
       invalidatesTags: ["AdminAccess", "AdminCredential"],
+    }),
+
+    generateAccessToken: builder.mutation({
+      query: ({ expiryDate }) => ({
+        url: "/admin/access/token",
+        method: "POST",
+        body: { expiryDate },
+      }),
+      invalidatesTags: ["AdminAccess"],
+    }),
+
+    clearAccessToken: builder.mutation({
+      query: () => ({
+        url: "/admin/access/token",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["AdminAccess"],
     }),
 
     // ========================================
@@ -281,6 +298,8 @@ export const {
   useCreateAdminAccessMutation,
   useUpdateAdminCredentialsMutation,
   useRedeemAdminAccessMutation,
+  useGenerateAccessTokenMutation,
+  useClearAccessTokenMutation,
 
   // Admin
   useGetAdminProfileQuery,

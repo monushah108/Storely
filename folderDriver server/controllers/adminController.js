@@ -180,29 +180,19 @@ export const updateRoles = async (req, res) => {
 
 export const getAdminCredentials = async (req, res, next) => {
   try {
-    if (req.user.role !== "owner") {
-      return res.status(403).json({
-        success: false,
-        message: "Only owner can access admin credentials",
-      });
-    }
+    const ownerId = req.user._id;
 
-    const { userId } = req.params;
+    const credential = await AdminCredential.findOne({ ownerId }).select(
+      "_id createdAt updatedAt",
+    );
 
-    const credential = await AdminCredential.findOne({ userId })
-      .populate("userId", "name email role")
-      .select("-password");
-
-    if (!credential) {
-      return res.status(404).json({
-        success: false,
-        message: "Admin credentials not found",
-      });
-    }
+    const accessUrl = await AdminAccess.findOne({ ownerId });
 
     return res.status(200).json({
       success: true,
-      credential,
+      hasPassword: !!credential,
+      accessUrl,
+      credential: credential || null,
     });
   } catch (error) {
     next(error);
@@ -211,7 +201,6 @@ export const getAdminCredentials = async (req, res, next) => {
 
 export const createAdminAccess = async (req, res, next) => {
   try {
-    // Only owner can grant admin access
     if (req.user.role !== "owner") {
       return res.status(403).json({
         success: false,
@@ -229,60 +218,62 @@ export const createAdminAccess = async (req, res, next) => {
     }
 
     const { password } = data;
-    const { userId } = req.params;
+    const ownerId = req.user._id;
 
-    if (!userId) {
+    if (!ownerId) {
       return res.status(400).json({
         success: false,
         message: "User ID is required",
       });
     }
 
-    // Make sure target user exists
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    // Don't allow granting admin access to owner
-    if (user.role === "owner") {
-      return res.status(400).json({
-        success: false,
-        message: "Owner does not need admin access",
-      });
-    }
-
-    // Remove old credential if it exists
-    await AdminCredential.findOneAndDelete({
-      userId,
-    });
-
     // Create new credential
     await AdminCredential.create({
-      userId,
+      ownerId,
       password,
     });
 
+    return res.status(201).json({
+      success: true,
+      message: "Admin access created successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const generateAdminAccessToken = async (req, res, next) => {
+  try {
+    const { expiryDate } = req.body;
+    const ownerId = req.user._id;
+
+    const isCredentialsExists = AdminCredential.findOne({ ownerId });
+
+    if (!isCredentialsExists) {
+      return res.status(404).json({
+        message: "first set password than generate token",
+      });
+    }
+
+    if (!expiryDate) {
+      return res.status(404).json({ message: "date is not given" });
+    }
     // Generate access token
     const token = AdminAccess.generateToken();
 
     const tokenHash = AdminAccess.hashToken(token);
 
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + expiryDate * 24 * 60 * 60 * 1000);
 
-    // Remove previous unused access tokens
-    await AdminAccess.deleteMany({
-      userId,
-      usedAt: null,
-    });
+    const IsTokenExists = await AdminAccess.findOne({ ownerId });
+
+    if (IsTokenExists) {
+      return res.status(403).json({
+        message: "token alredy exists ",
+      });
+    }
 
     await AdminAccess.create({
-      userId,
-      role: "admin",
       tokenHash,
       expiresAt,
     });
@@ -290,13 +281,36 @@ export const createAdminAccess = async (req, res, next) => {
     // IMPORTANT:
     // Do NOT put this token into owner's cookie.
     // Owner is creating access for another user.
-    const accessUrl = `${process.env.FRONTEND_URL}/admin/access/${token}`;
+    const accessUrl = `/admin/access/${token}`;
 
     return res.status(201).json({
-      success: true,
-      message: "Admin access created successfully",
       accessUrl,
       expiresAt,
+      message: "generated successfully",
+    });
+  } catch {
+    return res.status(500).json({
+      message: "failed to generate",
+    });
+  }
+};
+
+export const clearAdminAccessToken = async (req, res, next) => {
+  try {
+    const ownerId = req.user._id;
+
+    const access = await AdminAccess.findOneAndDelete({ ownerId });
+
+    if (!access) {
+      return res.status(404).json({
+        success: false,
+        message: "No active admin access token found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin access token revoked successfully",
     });
   } catch (error) {
     next(error);

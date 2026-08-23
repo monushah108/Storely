@@ -3,18 +3,16 @@ import bcrypt from "bcryptjs";
 
 const adminCredentialSchema = new Schema(
   {
-    userId: {
+    ownerId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
-      index: true,
     },
 
     password: {
       type: String,
       required: true,
-      select: false,
+      select: true,
     },
   },
   {
