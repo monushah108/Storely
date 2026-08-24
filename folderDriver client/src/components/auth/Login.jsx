@@ -21,7 +21,8 @@ export default function Login() {
       toast.success("loged in successfuly");
       navigate("/dashboard");
     } catch (err) {
-      const error = err.error ? err.message : "login failed";
+      console.log(err);
+      const error = err.data.error || err.data.message || "login failed";
       toast.error(error);
     }
   };

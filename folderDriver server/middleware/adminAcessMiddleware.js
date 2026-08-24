@@ -1,10 +1,11 @@
 import AdminAccess from "../modles/adminAcessModel.js";
-import User from "../modles/userModel.js";
 
 const checkAdminAccess = async (req, res, next) => {
   try {
     // OWNER gets direct access
-    if (req.user?.role === "owner") {
+    const user = req.user;
+
+    if (user?.role === "owner") {
       return next();
     }
 
@@ -18,11 +19,8 @@ const checkAdminAccess = async (req, res, next) => {
       });
     }
 
-    const tokenHash = AdminAccess.hashToken(token);
-
     const access = await AdminAccess.findOne({
-      tokenHash,
-      role: "admin",
+      token,
       expiresAt: {
         $gt: new Date(),
       },
@@ -34,8 +32,6 @@ const checkAdminAccess = async (req, res, next) => {
         message: "Admin access expired or invalid",
       });
     }
-
-    const user = await User.findById(access.userId);
 
     if (!user) {
       return res.status(403).json({

@@ -6,8 +6,9 @@ import {
   registerAdmin,
   logoutAdmin,
   getAdminCredentials,
-  generateAdminAccessToken,
   clearAdminAccessToken,
+  generateAccessToken,
+  verifyAdminToken,
 } from "../controllers/adminController.js";
 
 import checkAuth from "../middleware/authMilddleware.js";
@@ -44,7 +45,7 @@ route.patch(
 
 // genrate access token
 
-route.post("/token", checkAuth, generateAdminAccessToken);
+route.post("/token", checkAuth, generateAccessToken);
 
 route.delete("/token", checkAuth, clearAdminAccessToken);
 
@@ -53,7 +54,8 @@ route.delete("/token", checkAuth, clearAdminAccessToken);
 // ========================================
 
 // Redeem one-time admin access link
-route.post("/:token/redeem", registerAdmin);
+route.get("/:token", checkAuth, verifyAdminToken);
+route.post("/:token/redeem", checkAuth, registerAdmin);
 
 // ========================================
 // ADMIN

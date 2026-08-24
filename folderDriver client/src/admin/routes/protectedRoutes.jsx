@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useGetProfileQuery } from "../../store/slices/AdminSlice";
+import NotFound from "../../pages/not-found";
 
 export default function ProtectedRoutes({ children }) {
   const { data: user, isLoading, isError } = useGetProfileQuery();
@@ -24,7 +25,7 @@ export default function ProtectedRoutes({ children }) {
 
   // User exists but doesn't have permission
   if (!["owner", "admin"].includes(user.role)) {
-    return <Navigate to="/" replace />;
+    return <NotFound />;
   }
 
   return children;

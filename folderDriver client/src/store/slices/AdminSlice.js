@@ -175,7 +175,7 @@ export const adminApiSlice = createApi({
 
     getAdminCredentials: builder.query({
       query: () => "/admin/access/credentials",
-      providesTags: ["AdminCredential"],
+      providesTags: ["AdminCredential", "AdminAccess"],
     }),
 
     // OWNER:
@@ -217,6 +217,14 @@ export const adminApiSlice = createApi({
       query: () => ({
         url: "/admin/access/token",
         method: "DELETE",
+      }),
+      invalidatesTags: ["AdminAccess"],
+    }),
+
+    verfiyAccessToken: builder.query({
+      query: ({ token }) => ({
+        url: `/admin/access/${token}`,
+        method: "GET",
       }),
       invalidatesTags: ["AdminAccess"],
     }),
@@ -294,6 +302,7 @@ export const {
   useSearchUsersQuery,
 
   // Admin access
+  useVerfiyAccessTokenQuery,
   useGetAdminCredentialsQuery,
   useCreateAdminAccessMutation,
   useUpdateAdminCredentialsMutation,

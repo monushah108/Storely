@@ -4,7 +4,7 @@ import File from "../modles/fileModel.js";
 import Quota from "../modles/quotaModel.js";
 import Session from "../modles/SessionModel.js";
 import User from "../modles/userModel.js";
-
+import Crypto from "crypto";
 import { registerForm } from "../validators/adminRegisterForm.js";
 import AdminCredential from "../modles/adminModel.js";
 
@@ -182,17 +182,27 @@ export const getAdminCredentials = async (req, res, next) => {
   try {
     const ownerId = req.user._id;
 
-    const credential = await AdminCredential.findOne({ ownerId }).select(
-      "_id createdAt updatedAt",
-    );
+    const credential = await AdminCredential.findOne({ ownerId })
+      .select("_id createdAt updatedAt")
+      .lean();
 
-    const accessUrl = await AdminAccess.findOne({ ownerId });
+    const access = await AdminAccess.findOne({ ownerId })
+      .select("token expiresAt")
+      .lean();
 
+    const isActive = access && new Date(access.expiresAt) > new Date();
     return res.status(200).json({
       success: true,
+
       hasPassword: !!credential,
-      accessUrl,
-      credential: credential || null,
+
+      accessToken: isActive
+        ? {
+            active: true,
+            url: `/admin/verify/${access.token}`,
+            expiresAt: access.expiresAt,
+          }
+        : null,
     });
   } catch (error) {
     next(error);
@@ -242,59 +252,6 @@ export const createAdminAccess = async (req, res, next) => {
   }
 };
 
-export const generateAdminAccessToken = async (req, res, next) => {
-  try {
-    const { expiryDate } = req.body;
-    const ownerId = req.user._id;
-
-    const isCredentialsExists = AdminCredential.findOne({ ownerId });
-
-    if (!isCredentialsExists) {
-      return res.status(404).json({
-        message: "first set password than generate token",
-      });
-    }
-
-    if (!expiryDate) {
-      return res.status(404).json({ message: "date is not given" });
-    }
-    // Generate access token
-    const token = AdminAccess.generateToken();
-
-    const tokenHash = AdminAccess.hashToken(token);
-
-    const expiresAt = new Date(Date.now() + expiryDate * 24 * 60 * 60 * 1000);
-
-    const IsTokenExists = await AdminAccess.findOne({ ownerId });
-
-    if (IsTokenExists) {
-      return res.status(403).json({
-        message: "token alredy exists ",
-      });
-    }
-
-    await AdminAccess.create({
-      tokenHash,
-      expiresAt,
-    });
-
-    // IMPORTANT:
-    // Do NOT put this token into owner's cookie.
-    // Owner is creating access for another user.
-    const accessUrl = `/admin/access/${token}`;
-
-    return res.status(201).json({
-      accessUrl,
-      expiresAt,
-      message: "generated successfully",
-    });
-  } catch {
-    return res.status(500).json({
-      message: "failed to generate",
-    });
-  }
-};
-
 export const clearAdminAccessToken = async (req, res, next) => {
   try {
     const ownerId = req.user._id;
@@ -320,6 +277,7 @@ export const clearAdminAccessToken = async (req, res, next) => {
 export const registerAdmin = async (req, res, next) => {
   try {
     const { token } = req.params;
+    const user = req.user;
 
     if (!token) {
       return res.status(400).json({
@@ -339,12 +297,12 @@ export const registerAdmin = async (req, res, next) => {
 
     const { password } = data;
 
-    const tokenHash = AdminAccess.hashToken(token);
+    // ========================================
+    // FIND ACCESS TOKEN
+    // ========================================
 
-    // Find valid unused access
     const access = await AdminAccess.findOne({
-      tokenHash,
-      role: "admin",
+      token,
       usedAt: null,
       expiresAt: {
         $gt: new Date(),
@@ -358,9 +316,12 @@ export const registerAdmin = async (req, res, next) => {
       });
     }
 
-    // Find credential
+    // ========================================
+    // FIND ADMIN CREDENTIAL
+    // ========================================
+
     const credential = await AdminCredential.findOne({
-      userId: access.userId,
+      ownerId: access.ownerId,
     }).select("+password");
 
     if (!credential) {
@@ -370,7 +331,10 @@ export const registerAdmin = async (req, res, next) => {
       });
     }
 
-    // Compare password
+    // ========================================
+    // VERIFY PASSWORD
+    // ========================================
+
     const isValid = await credential.comparePassword(password);
 
     if (!isValid) {
@@ -380,59 +344,54 @@ export const registerAdmin = async (req, res, next) => {
       });
     }
 
-    // Grant admin role
-    const user = await User.findByIdAndUpdate(
-      access.userId,
-      {
-        role: "admin",
-      },
-      {
-        new: true,
-      },
-    );
+    // ========================================
+    // GRANT ADMIN ROLE
+    // ========================================
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+    // const user = await User.findByIdAndUpdate(
+    //   userId,
+    //   {
+    //     role: "admin",
+    //   },
+    //   {
+    //     new: true,
+    //   },
+    // );
 
-    // Mark access link as consumed
+    // if (!user) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "User not found",
+    //   });
+    // }
+
+    // ========================================
+    // MARK TOKEN AS USED
+    // ========================================
+
     access.usedAt = new Date();
 
     await access.save();
 
-    // Create admin session token
-    const sessionToken = AdminAccess.generateToken();
+    // ========================================
+    // CREATE ADMIN SESSION
+    // ========================================
 
-    const sessionHash = AdminAccess.hashToken(sessionToken);
-
-    const sessionExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-    // Create a new AdminAccess record for the session
-    await AdminAccess.create({
-      userId: user._id,
-      role: "admin",
-      tokenHash: sessionHash,
-      expiresAt: sessionExpiresAt,
-    });
-
-    // Store session token in HTTP-only cookie
-    res.cookie("admin_access_token", sessionToken, {
+    res.cookie("admin_access_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // ========================================
+    // RESPONSE
+    // ========================================
+
     return res.status(200).json({
       success: true,
-      message: "Admin access granted successfully",
-      user: {
-        id: user._id,
-        role: user.role,
-      },
+      message: "Admin registered successfully",
+      access: user.role == "admin" ? "granted" : "pending",
     });
   } catch (error) {
     next(error);
@@ -502,6 +461,75 @@ export const updateAdminCredentials = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Admin credential updated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const generateAccessToken = async (req, res, next) => {
+  try {
+    const ownerId = req.user._id;
+    const { expiryDate = 7 } = req.body;
+
+    const token = Crypto.randomBytes(32).toString("hex");
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + Number(expiryDate));
+
+    await AdminAccess.findOneAndUpdate(
+      { ownerId },
+      {
+        ownerId,
+        token,
+        expiresAt,
+      },
+      {
+        upsert: true,
+        new: true,
+      },
+    );
+
+    return res.status(201).json({
+      success: true,
+      token,
+      accessUrl: `/admin/verify/${token}`,
+      expiresAt,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyAdminToken = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        message: "Token is required",
+      });
+    }
+
+    const tokenValid = await AdminAccess.findOne({
+      token,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!tokenValid) {
+      return res.status(403).json({
+        success: false,
+        valid: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      valid: true,
+      message: "Valid token",
     });
   } catch (error) {
     next(error);

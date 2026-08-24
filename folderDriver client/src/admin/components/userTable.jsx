@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import CanAccess from "./CanAccess";
 import { FiUsers, FiMail, FiLogOut, FiTrash2, FiFolder } from "react-icons/fi";
