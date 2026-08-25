@@ -21,6 +21,8 @@ dotenv.config();
 await connectDB();
 const app = express();
 
+const PORT = process.env.PORT || 8000;
+
 app.use(
   cors({
     origin: process.env.ORIGIN,
@@ -33,10 +35,6 @@ app.use(
     contentSecurityPolicy: false,
 
     crossOriginEmbedderPolicy: false,
-
-    crossOriginOpenerPolicy: {
-      policy: "same-origin-allow-popups",
-    },
 
     referrerPolicy: {
       policy: "strict-origin-when-cross-origin",
@@ -51,7 +49,6 @@ app.use(
     hsts: {
       maxAge: 31536000,
       includeSubDomains: true,
-      preload: true,
     },
 
     noSniff: true,
@@ -82,6 +79,6 @@ app.use((err, req, res, next) => {
   // res.json(err);
 });
 
-app.listen(4000, () => {
+app.listen(PORT, () => {
   console.log("runing server");
 });

@@ -402,8 +402,8 @@ export const logoutAdmin = async (req, res, next) => {
   try {
     res.clearCookie("admin_access_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({
