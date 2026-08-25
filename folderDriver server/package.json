@@ -4,7 +4,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch --no-deprecation app.js"
+    "dev": "node --watch --no-deprecation app.js",
+    "start": "node --no-deprecation app.js",
+    "build": "node install"
   },
   "keywords": [],
   "author": "",
