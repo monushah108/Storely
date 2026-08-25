@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node --watch --no-deprecation app.js",
     "start": "node --no-deprecation app.js",
-    "build": "node install"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
