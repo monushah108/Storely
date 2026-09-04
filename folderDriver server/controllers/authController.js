@@ -35,6 +35,8 @@ export const loginWithGoogle = async (req, res, next) => {
     res.cookie("sid", session.id, {
       httpOnly: true,
       signed: true,
+      sameSite: "none",
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -81,7 +83,8 @@ export const loginWithGoogle = async (req, res, next) => {
       res.cookie("sid", session._id, {
         httpOnly: true,
         signed: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       mongooseSession.commitTransaction();
@@ -120,6 +123,8 @@ export const loginWithGithub = async (req, res, next) => {
     res.cookie("sid", session.id, {
       httpOnly: true,
       signed: true,
+      sameSite: "none",
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).json({
@@ -167,7 +172,8 @@ export const loginWithGithub = async (req, res, next) => {
       res.cookie("sid", session._id, {
         httpOnly: true,
         signed: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       mongooseSession.commitTransaction();

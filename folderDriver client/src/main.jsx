@@ -7,6 +7,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import { Toaster } from "sonner";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
+
 createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={client_id}>
     <Provider store={Store}>

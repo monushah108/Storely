@@ -1,3 +1,4 @@
+import "dotenv/config";
 import "./services/GithubAuthservice.js";
 import express from "express";
 import cors from "cors";
@@ -11,12 +12,10 @@ import cookieParser from "cookie-parser";
 import checkAuth from "./middleware/authMilddleware.js";
 import adminRoute from "./routes/adminRoute.js";
 import adminAccessRoute from "./routes/adminAcessRoute.js";
-import dotenv from "dotenv";
+
 import multer from "multer";
 import helmet from "helmet";
 import { consumeToken } from "./lib/rateLimiter.js";
-
-dotenv.config();
 
 await connectDB();
 const app = express();
@@ -34,24 +33,13 @@ app.use(
   helmet({
     contentSecurityPolicy: false,
 
-    crossOriginEmbedderPolicy: false,
-
-    referrerPolicy: {
-      policy: "strict-origin-when-cross-origin",
+    crossOriginOpenerPolicy: {
+      policy: "same-origin-allow-popups",
     },
 
-    frameguard: {
-      action: "deny",
+    crossOriginResourcePolicy: {
+      policy: "cross-origin",
     },
-
-    hidePoweredBy: true,
-
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-    },
-
-    noSniff: true,
   }),
 );
 

@@ -104,7 +104,7 @@ export default function Login() {
           {/* github login  */}
           <button
             onClick={() => {
-              window.location.href = `${import.meta.env.CLIENT_URL}/auth/github`;
+              window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
             }}
             className="flex items-center justify-center gap-2 
                  bg-gray-900 text-white rounded-md hover:bg-gray-800 

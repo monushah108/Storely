@@ -10,6 +10,10 @@ export const loginWithGoogle = async (idToken) => {
     body: JSON.stringify({ idToken }),
   });
 
+  if (!response.ok) {
+    console.log(response);
+    return response;
+  }
   const data = await response.json();
   return data;
 };
