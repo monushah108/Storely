@@ -8,8 +8,8 @@ import GoogleBth from "../ui/OauthBth";
 import { useLoginMutation } from "../../store/slices/UserSlice";
 
 export default function Login() {
-  const [email, setEmail] = useState("sonu@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const [login, { isLoading }] = useLoginMutation();
 

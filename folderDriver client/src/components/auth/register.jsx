@@ -5,9 +5,9 @@ import { useRegisterMutation } from "../../store/slices/UserSlice";
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    name: "monu",
-    email: "monu@gmail.com",
-    password: "1234",
+    name: "",
+    email: "",
+    password: "",
   });
 
   const [isSuccess, setIsSuccess] = useState(false);
