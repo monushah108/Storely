@@ -1,16 +1,12 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { ExternalLink, Pencil, Share2, Trash2 } from "lucide-react";
 
-import {
-  useDeleteFileMutation,
-  useOpenFileMutation,
-} from "../../store/slices/Flieslice";
+import { ExternalLink, Pencil, Share2, Trash2 } from "lucide-react";
 
 export default function ContextModle({
   menu,
-  setMenu,
+
   handleOpen,
+  handleDelete,
   menuRef,
   setRenameModal,
   setNewname,
@@ -20,26 +16,9 @@ export default function ContextModle({
   id,
   name,
   ext,
-  setDeleteId,
+
   setShareId,
 }) {
-  const [deleteFile] = useDeleteFileMutation();
-
-  const handleDelete = useCallback(
-    async (id, type) => {
-      setDeleteId(id);
-      closeMenu();
-
-      try {
-        await deleteFile({ id, type });
-      } catch (error) {
-        console.error("Failed to delete:", error);
-        setDeleteId(null);
-      }
-    },
-    [deleteFile, setDeleteId],
-  );
-
   const handleRename = useCallback(
     (id, name, ext) => {
       setDirId(id);

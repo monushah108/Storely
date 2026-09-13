@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaEllipsisV, FaFolder } from "react-icons/fa";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import ContextModle from "./models/ContextModle.jsx";
 import ShareModle from "./models/ShareModle.jsx";
 
 import {
+  useDeleteFileMutation,
   useOpenFileMutation,
   useRenameFileMutation,
 } from "../store/slices/Flieslice.js";
@@ -33,6 +34,7 @@ export default function DirectoryList({ DriveData = [] }) {
 
   const [renameFile] = useRenameFileMutation();
   const [openFile] = useOpenFileMutation();
+  const [deleteFile] = useDeleteFileMutation();
 
   const navigate = useNavigate();
 
@@ -133,6 +135,22 @@ export default function DirectoryList({ DriveData = [] }) {
     }
   };
 
+  const handleDelete = useCallback(
+    async (id, type) => {
+      closeMenu();
+      setDeleteId(id);
+      closeMenu();
+
+      try {
+        await deleteFile({ id, type });
+      } catch (error) {
+        console.error("Failed to delete:", error);
+        setDeleteId(null);
+      }
+    },
+    [deleteFile, setDeleteId],
+  );
+
   if (!DriveData.length) {
     return (
       <div className="flex min-h-[250px] items-center justify-center">
@@ -214,17 +232,16 @@ export default function DirectoryList({ DriveData = [] }) {
       <ContextModle
         menuRef={menuRef}
         menu={menu}
-        setMenu={setMenu}
         setRenameModal={setRenameModal}
         setNewname={setNewName}
         setDirId={setDirId}
         setExt={setExt}
         setIsShare={setIsShare}
         handleOpen={handleOpen}
+        handleDelete={handleDelete}
         id={dirId}
         name={newName}
         ext={ext}
-        setDeleteId={setDeleteId}
         setShareId={setShareId}
       />
 
