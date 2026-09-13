@@ -10,6 +10,7 @@ import {
 export default function ContextModle({
   menu,
   setMenu,
+  handleOpen,
   menuRef,
   setRenameModal,
   setNewname,
@@ -23,33 +24,6 @@ export default function ContextModle({
   setShareId,
 }) {
   const [deleteFile] = useDeleteFileMutation();
-  const [openFile] = useOpenFileMutation();
-
-  const navigate = useNavigate();
-
-  const closeMenu = () => {
-    setMenu((prev) => ({
-      ...prev,
-      visible: false,
-    }));
-  };
-
-  const handleOpen = async (id, type) => {
-    closeMenu();
-
-    try {
-      const { data } = await openFile({ id, type });
-      if (!type) {
-        navigate(`dirItem/${id}`);
-      } else {
-        navigate(`/file/${id}`, {
-          state: { ...data },
-        });
-      }
-    } catch (error) {
-      console.error("Failed to open:", error);
-    }
-  };
 
   const handleDelete = useCallback(
     async (id, type) => {

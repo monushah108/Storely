@@ -8,7 +8,11 @@ import RenameModle from "./models/RenameModle.jsx";
 import ContextModle from "./models/ContextModle.jsx";
 import ShareModle from "./models/ShareModle.jsx";
 
-import { useRenameFileMutation } from "../store/slices/Flieslice.js";
+import {
+  useOpenFileMutation,
+  useRenameFileMutation,
+} from "../store/slices/Flieslice.js";
+import { useNavigate } from "react-router-dom";
 
 export default function DirectoryList({ DriveData = [] }) {
   const [menu, setMenu] = useState({
@@ -28,6 +32,9 @@ export default function DirectoryList({ DriveData = [] }) {
   const menuRef = useRef(null);
 
   const [renameFile] = useRenameFileMutation();
+  const [openFile] = useOpenFileMutation();
+
+  const navigate = useNavigate();
 
   // Close context menu when clicking outside
   useEffect(() => {
@@ -101,6 +108,31 @@ export default function DirectoryList({ DriveData = [] }) {
     }
   };
 
+  const closeMenu = () => {
+    setMenu((prev) => ({
+      ...prev,
+      visible: false,
+    }));
+  };
+
+  const handleOpen = async (id, type) => {
+    closeMenu();
+
+    try {
+      const { data } = await openFile({ id, type });
+      if (!type) {
+        navigate(`dirItem/${id}`);
+      } else {
+        navigate(`/file/${id}`, {
+          state: { ...data },
+        });
+      }
+    } catch (e) {
+      const error = e.message || e.error || "failed to open";
+      toast.error(error);
+    }
+  };
+
   if (!DriveData.length) {
     return (
       <div className="flex min-h-[250px] items-center justify-center">
@@ -120,13 +152,16 @@ export default function DirectoryList({ DriveData = [] }) {
           return (
             <div
               key={_id}
+              onClick={() => handleOpen(_id, extension)}
               onContextMenu={(event) => {
                 if (!isDeleting) {
                   handleContextMenu(event, _id, name, extension);
                 }
               }}
               className={`group flex min-h-[58px] items-center gap-3 px-3 transition ${
-                isDeleting ? "cursor-not-allowed bg-red-50" : "hover:bg-gray-50"
+                isDeleting
+                  ? "cursor-not-allowed bg-red-50"
+                  : "hover:bg-gray-50 cursor-pointer"
               }`}
             >
               {/* File / Folder icon */}
@@ -185,6 +220,7 @@ export default function DirectoryList({ DriveData = [] }) {
         setDirId={setDirId}
         setExt={setExt}
         setIsShare={setIsShare}
+        handleOpen={handleOpen}
         id={dirId}
         name={newName}
         ext={ext}
