@@ -54,9 +54,15 @@ export const getSharedfile = async (req, res, next) => {
     );
 
     if (file) {
+      const fileObj = file.toObject();
+      const createdDate =
+        fileObj.createdAt ||
+        new Date(parseInt(fileObj._id.toString().substring(0, 8), 16) * 1000);
       return res.status(200).json({
-        ...file.toObject(),
+        ...fileObj,
         itemType: "file",
+        createdAt: createdDate,
+        updatedAt: fileObj.updatedAt || createdDate,
       });
     }
 
@@ -69,20 +75,54 @@ export const getSharedfile = async (req, res, next) => {
       const directories = await Directory.find({ parentDirId: directory._id }).lean();
       const files = await File.find({ parentDirId: directory._id }).lean();
 
+      const directoriesWithDetails = await Promise.all(
+        directories.map(async (d) => {
+          const subDirCount = await Directory.countDocuments({ parentDirId: d._id });
+          const subFiles = await File.find({ parentDirId: d._id }).select("size").lean();
+          const subSize = subFiles.reduce((acc, f) => acc + (f.size || 0), 0);
+          const dCreated =
+            d.createdAt ||
+            new Date(parseInt(d._id.toString().substring(0, 8), 16) * 1000);
+          return {
+            ...d,
+            type: "directory",
+            id: d._id,
+            itemCount: subDirCount + subFiles.length,
+            size: subSize,
+            createdAt: dCreated,
+            updatedAt: d.updatedAt || dCreated,
+          };
+        }),
+      );
+
+      const filesWithDetails = files.map((f) => {
+        const fCreated =
+          f.createdAt ||
+          new Date(parseInt(f._id.toString().substring(0, 8), 16) * 1000);
+        return {
+          ...f,
+          type: "file",
+          id: f._id,
+          createdAt: fCreated,
+          updatedAt: f.updatedAt || fCreated,
+        };
+      });
+
+      const dirCreated =
+        directory.createdAt ||
+        new Date(parseInt(directory._id.toString().substring(0, 8), 16) * 1000);
+      const totalFolderSize = filesWithDetails.reduce((acc, f) => acc + (f.size || 0), 0);
+
       return res.status(200).json({
         ...directory,
         itemType: "directory",
         isFolder: true,
-        directories: directories.map((d) => ({
-          ...d,
-          type: "directory",
-          id: d._id,
-        })),
-        files: files.map((f) => ({
-          ...f,
-          type: "file",
-          id: f._id,
-        })),
+        createdAt: dirCreated,
+        updatedAt: directory.updatedAt || dirCreated,
+        itemCount: directoriesWithDetails.length + filesWithDetails.length,
+        size: totalFolderSize,
+        directories: directoriesWithDetails,
+        files: filesWithDetails,
       });
     }
 
@@ -104,18 +144,39 @@ export const getUserShares = async (req, res, next) => {
       shares.map(async (share) => {
         const file = await File.findById(share.fileId).lean();
         if (file) {
+          const createdDate =
+            file.createdAt ||
+            new Date(parseInt(file._id.toString().substring(0, 8), 16) * 1000);
           return {
             ...share,
-            item: file,
+            item: {
+              ...file,
+              createdAt: createdDate,
+              updatedAt: file.updatedAt || createdDate,
+            },
             itemType: "file",
           };
         }
 
         const directory = await Directory.findById(share.fileId).lean();
         if (directory) {
+          const subDirCount = await Directory.countDocuments({ parentDirId: directory._id });
+          const subFiles = await File.find({ parentDirId: directory._id }).select("size").lean();
+          const totalSize = subFiles.reduce((acc, f) => acc + (f.size || 0), 0);
+          const createdDate =
+            directory.createdAt ||
+            new Date(parseInt(directory._id.toString().substring(0, 8), 16) * 1000);
           return {
             ...share,
-            item: directory,
+            item: {
+              ...directory,
+              itemCount: subDirCount + subFiles.length,
+              subDirCount,
+              subFileCount: subFiles.length,
+              size: totalSize,
+              createdAt: createdDate,
+              updatedAt: directory.updatedAt || createdDate,
+            },
             itemType: "directory",
           };
         }

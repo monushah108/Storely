@@ -1,6 +1,14 @@
 import React from "react";
 import { Folder, MoreVertical, Loader2, Download, Share2 } from "lucide-react";
 import RenderFileIcon from "../../hook/RenderFileIcon";
+import {
+  formatBytes,
+  formatDateShort,
+  formatDateTime,
+  getItemDate,
+  getItemTypeLabel,
+  getFolderDetailsText,
+} from "./driveHelpers";
 
 export default function FileListView({
   items = [],
@@ -14,26 +22,6 @@ export default function FileListView({
 }) {
   if (!items.length) return null;
 
-  const formatBytes = (bytes) => {
-    if (!bytes || bytes === 0) return "-";
-    const units = ["Bytes", "KB", "MB", "GB", "TB"];
-    const index = Math.min(
-      Math.floor(Math.log(bytes) / Math.log(1024)),
-      units.length - 1,
-    );
-    return `${(bytes / Math.pow(1024, index)).toFixed(1)} ${units[index]}`;
-  };
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "-";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full text-left text-sm">
@@ -41,9 +29,11 @@ export default function FileListView({
         <thead>
           <tr className="border-b border-gray-200 text-xs font-semibold text-gray-500">
             <th className="py-3 pl-4 pr-3">Name</th>
+            <th className="hidden py-3 px-3 md:table-cell">Type</th>
             <th className="hidden py-3 px-3 sm:table-cell">Owner</th>
-            <th className="hidden py-3 px-3 md:table-cell">Last modified</th>
-            <th className="hidden py-3 px-3 lg:table-cell">File size</th>
+            <th className="hidden py-3 px-3 md:table-cell">Created / Uploaded</th>
+            <th className="hidden py-3 px-3 lg:table-cell">Last Modified</th>
+            <th className="hidden py-3 px-3 sm:table-cell">Size / Items</th>
             <th className="py-3 pr-4 pl-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -54,6 +44,13 @@ export default function FileListView({
             const isFolder = !item.extension;
             const isSelected = selectedId === item._id;
             const isDeleting = deletingId === item._id;
+            const createdDate = getItemDate(item);
+            const modifiedDate = item.updatedAt ? new Date(item.updatedAt) : createdDate;
+            const sizeText = isFolder
+              ? getFolderDetailsText(item)
+              : formatBytes(item.size);
+            const exactBytes = !isFolder && item.size !== undefined ? `${item.size.toLocaleString()} bytes` : "";
+            const tooltip = `${isFolder ? "Folder" : "File"}: ${item.name}\nType: ${getItemTypeLabel(item)}\nSize: ${sizeText}${exactBytes ? ` (${exactBytes})` : ""}\nCreated: ${formatDateTime(createdDate)}\nModified: ${formatDateTime(modifiedDate)}`;
 
             return (
               <tr
@@ -63,6 +60,7 @@ export default function FileListView({
                 onContextMenu={(e) => {
                   if (!isDeleting) onContextMenu(e, item);
                 }}
+                title={`${item.name} • ${getItemTypeLabel(item)} • Created: ${formatDateTime(createdDate)}`}
                 className={`group transition cursor-pointer select-none ${
                   isDeleting
                     ? "cursor-not-allowed bg-red-50 text-red-600"
@@ -86,9 +84,8 @@ export default function FileListView({
                       )}
                     </div>
 
-                    <div className="min-w-0 max-w-[200px] sm:max-w-xs md:max-w-sm lg:max-w-md">
+                    <div className="min-w-0 max-w-[180px] sm:max-w-xs md:max-w-sm lg:max-w-md">
                       <p
-                        title={item.name}
                         className={`truncate text-sm font-medium ${
                           isDeleting ? "text-red-600" : "text-gray-800"
                         }`}
@@ -97,8 +94,18 @@ export default function FileListView({
                           ? `${item.name.slice(0, 20)}... deleting`
                           : item.name}
                       </p>
+                      <span className="block sm:hidden text-[11px] text-gray-400">
+                        {sizeText} • {formatDateShort(createdDate)}
+                      </span>
                     </div>
                   </div>
+                </td>
+
+                {/* Type */}
+                <td className="hidden py-3 px-3 text-xs text-gray-500 md:table-cell">
+                  <span className="inline-block max-w-[130px] truncate rounded bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
+                    {getItemTypeLabel(item)}
+                  </span>
                 </td>
 
                 {/* Owner */}
@@ -106,14 +113,28 @@ export default function FileListView({
                   me
                 </td>
 
-                {/* Last modified */}
-                <td className="hidden py-3 px-3 text-xs text-gray-500 md:table-cell">
-                  {formatDate(item.updatedAt || item.createdAt)}
+                {/* Date Created */}
+                <td
+                  title={formatDateTime(createdDate)}
+                  className="hidden py-3 px-3 text-xs text-gray-500 md:table-cell"
+                >
+                  {formatDateShort(createdDate)}
                 </td>
 
-                {/* Size */}
-                <td className="hidden py-3 px-3 text-xs text-gray-500 lg:table-cell">
-                  {isFolder ? "-" : formatBytes(item.size)}
+                {/* Last modified */}
+                <td
+                  title={formatDateTime(modifiedDate)}
+                  className="hidden py-3 px-3 text-xs text-gray-500 lg:table-cell"
+                >
+                  {formatDateShort(modifiedDate)}
+                </td>
+
+                {/* Size / Items */}
+                <td
+                  title={exactBytes || sizeText}
+                  className="hidden py-3 px-3 text-xs font-medium text-gray-700 sm:table-cell"
+                >
+                  {sizeText}
                 </td>
 
                 {/* Actions */}

@@ -33,6 +33,12 @@ export const FileApiSlice = createApi({
             _id: response?._id,
             name: response?.name,
             parentDirId: response?.parentDirId,
+            createdAt: response?.createdAt,
+            updatedAt: response?.updatedAt,
+            size: response?.size || 0,
+            itemCount: response?.itemCount ?? (directories.length + files.length),
+            subDirCount: response?.subDirCount ?? directories.length,
+            subFileCount: response?.subFileCount ?? files.length,
           },
         };
       },

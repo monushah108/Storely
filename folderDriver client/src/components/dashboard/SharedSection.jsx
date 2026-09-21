@@ -8,7 +8,6 @@ import {
   Share2,
   Users,
   Loader2,
-  FolderPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 import RenderFileIcon from "../../hook/RenderFileIcon";
@@ -16,6 +15,13 @@ import {
   useGetUserSharesQuery,
   useRevokeShareMutation,
 } from "../../store/slices/Flieslice";
+import {
+  formatBytes,
+  formatDateShort,
+  formatDateTime,
+  getItemDate,
+  getFolderDetailsText,
+} from "./driveHelpers";
 
 export default function SharedSection({ onOpenShareFolderModal, availableFolders = [], onShareFolder }) {
   const [filter, setFilter] = useState("folders");
@@ -177,10 +183,16 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
             const name = share.item?.name || (isFolder ? "Shared Folder" : "Shared File");
             const isCopied = copiedId === share._id;
             const isRevoking = revokingId === share._id;
+            const createdDate = getItemDate(share) || (share.item ? getItemDate(share.item) : new Date());
+            const detailsText = isFolder
+              ? getFolderDetailsText(share.item)
+              : formatBytes(share.item?.size);
+            const tooltip = `Shared ${isFolder ? "Folder" : "File"}: ${name}\nDetails: ${detailsText}\nCreated/Shared: ${formatDateTime(createdDate)}`;
 
             return (
               <div
                 key={share._id}
+                title={tooltip}
                 className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-xs transition hover:border-gray-300"
               >
                 <div>
@@ -200,14 +212,24 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                         <p title={name} className="truncate text-sm font-semibold text-gray-800">
                           {name}
                         </p>
-                        <span className="inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
-                          {isFolder ? "Folder Link" : "File Link"}
-                        </span>
+                        <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-gray-400">
+                          <span className="font-semibold text-blue-600">
+                            {isFolder ? "Folder" : share.item?.extension?.toUpperCase() || "File"}
+                          </span>
+                          <span>•</span>
+                          <span className="font-medium text-gray-600">
+                            {detailsText}
+                          </span>
+                          <span>•</span>
+                          <span title={`Shared: ${formatDateTime(createdDate)}`}>
+                            {formatDateShort(createdDate)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 rounded-lg bg-[#f8fafd] p-2 text-xs font-mono text-gray-500 truncate">
+                  <div className="mt-2.5 rounded-lg bg-[#f8fafd] p-2 text-xs font-mono text-gray-500 truncate">
                     {`${window.location.origin}/guest/${share.token}`}
                   </div>
                 </div>

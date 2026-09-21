@@ -14,14 +14,57 @@ export const getDirectory = async (req, res) => {
     const directories = await Directory.find({ parentDirId: _id }).lean();
     const files = await File.find({ parentDirId: _id }).lean();
 
+    const directoriesWithDetails = await Promise.all(
+      directories.map(async (dir) => {
+        const subDirCount = await Directory.countDocuments({ parentDirId: dir._id });
+        const subFiles = await File.find({ parentDirId: dir._id }).select("size").lean();
+        const subFileCount = subFiles.length;
+        const totalSize = subFiles.reduce((acc, f) => acc + (f.size || 0), 0);
+        const createdDate =
+          dir.createdAt ||
+          new Date(parseInt(dir._id.toString().substring(0, 8), 16) * 1000);
+        return {
+          ...dir,
+          type: "directory",
+          id: dir._id,
+          itemCount: subDirCount + subFileCount,
+          subDirCount,
+          subFileCount,
+          size: totalSize,
+          createdAt: createdDate,
+          updatedAt: dir.updatedAt || createdDate,
+        };
+      }),
+    );
+
+    const filesWithDetails = files.map((f) => {
+      const createdDate =
+        f.createdAt ||
+        new Date(parseInt(f._id.toString().substring(0, 8), 16) * 1000);
+      return {
+        ...f,
+        type: "file",
+        id: f._id,
+        createdAt: createdDate,
+        updatedAt: f.updatedAt || createdDate,
+      };
+    });
+
+    const rootCreated =
+      directory.createdAt ||
+      new Date(parseInt(directory._id.toString().substring(0, 8), 16) * 1000);
+    const rootTotalSize = filesWithDetails.reduce((acc, f) => acc + (f.size || 0), 0);
+
     return res.status(200).json({
       ...directory,
-      directories: directories.map((dirId) => ({
-        ...dirId,
-        type: "directory",
-        id: dirId._id,
-      })),
-      files: files.map((dirId) => ({ ...dirId, type: "file", id: dirId._id })),
+      createdAt: rootCreated,
+      updatedAt: directory.updatedAt || rootCreated,
+      itemCount: directoriesWithDetails.length + filesWithDetails.length,
+      subDirCount: directoriesWithDetails.length,
+      subFileCount: filesWithDetails.length,
+      size: rootTotalSize,
+      directories: directoriesWithDetails,
+      files: filesWithDetails,
     });
   } catch (err) {
     console.log(err);

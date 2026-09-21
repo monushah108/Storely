@@ -1,5 +1,12 @@
 import React from "react";
 import { Folder, MoreVertical, Loader2, Share2 } from "lucide-react";
+import {
+  getItemDate,
+  formatDateShort,
+  formatDateTime,
+  formatBytes,
+  getFolderDetailsText,
+} from "./driveHelpers";
 
 export default function FolderGrid({
   folders = [],
@@ -23,6 +30,9 @@ export default function FolderGrid({
         {folders.map((folder) => {
           const isSelected = selectedId === folder._id;
           const isDeleting = deletingId === folder._id;
+          const createdDate = getItemDate(folder);
+          const detailsText = getFolderDetailsText(folder);
+          const tooltip = `Folder: ${folder.name}\nContents: ${folder.itemCount !== undefined ? folder.itemCount : 0} items\nSize: ${folder.size ? formatBytes(folder.size) : "0 Bytes"}\nCreated: ${formatDateTime(createdDate)}`;
 
           return (
             <div
@@ -32,6 +42,7 @@ export default function FolderGrid({
               onContextMenu={(e) => {
                 if (!isDeleting) onContextMenu(e, folder);
               }}
+              title={tooltip}
               className={`group relative flex items-center justify-between rounded-xl border p-3.5 transition select-none ${
                 isDeleting
                   ? "cursor-not-allowed border-red-200 bg-red-50 text-red-600"
@@ -40,9 +51,9 @@ export default function FolderGrid({
                     : "cursor-pointer border-gray-200 bg-white hover:border-gray-300 hover:bg-[#f0f4f9]"
               }`}
             >
-              {/* Folder Icon + Name */}
+              {/* Folder Icon + Details */}
               <div className="flex min-w-0 flex-1 items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100">
                   {isDeleting ? (
                     <Loader2 className="h-4 w-4 animate-spin text-red-500" />
                   ) : (
@@ -52,12 +63,15 @@ export default function FolderGrid({
 
                 <div className="min-w-0 flex-1">
                   <p
-                    title={folder.name}
                     className="truncate text-sm font-semibold text-gray-800"
                   >
                     {isDeleting ? `${folder.name.slice(0, 15)}... deleting` : folder.name}
                   </p>
-                  <p className="text-[11px] text-gray-400">Folder</p>
+                  <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-gray-400">
+                    <span className="font-medium text-gray-500">{detailsText}</span>
+                    <span>•</span>
+                    <span title={`Created: ${formatDateTime(createdDate)}`}>{formatDateShort(createdDate)}</span>
+                  </div>
                 </div>
               </div>
 

@@ -177,9 +177,10 @@ export default function DirectoryView() {
           </div>
         </main>
 
-        {showDetails && selectedItem && (
+        {showDetails && (
           <FileDetailsDrawer
-            item={selectedItem}
+            item={selectedItem || currentFolder}
+            isCurrentFolder={!selectedItem}
             onClose={() => setShowDetails(false)}
             onOpen={ops.handleOpen}
             onShare={(id, isFile = true) => ops.openShare(id, isFile)}

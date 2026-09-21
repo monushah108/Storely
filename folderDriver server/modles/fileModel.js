@@ -38,7 +38,7 @@ const fileSchema = new Schema(
     },
   },
   {
-    strict: "throw",
+    timestamps: true,
   },
 );
 

@@ -1,6 +1,13 @@
 import React from "react";
 import { MoreVertical, Loader2 } from "lucide-react";
 import RenderFileIcon from "../../hook/RenderFileIcon";
+import {
+  formatBytes,
+  formatDateShort,
+  formatDateTime,
+  getItemDate,
+  getItemTypeLabel,
+} from "./driveHelpers";
 
 export default function FileGridView({
   files = [],
@@ -12,16 +19,6 @@ export default function FileGridView({
   deletingId,
 }) {
   if (!files.length) return null;
-
-  const formatBytes = (bytes) => {
-    if (!bytes || bytes === 0) return "0 Bytes";
-    const units = ["Bytes", "KB", "MB", "GB", "TB"];
-    const index = Math.min(
-      Math.floor(Math.log(bytes) / Math.log(1024)),
-      units.length - 1,
-    );
-    return `${(bytes / Math.pow(1024, index)).toFixed(1)} ${units[index]}`;
-  };
 
   const isImage = (ext) => {
     return ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(
@@ -40,6 +37,10 @@ export default function FileGridView({
           const isSelected = selectedId === file._id;
           const isDeleting = deletingId === file._id;
           const imageFile = isImage(file.extension);
+          const createdDate = getItemDate(file);
+          const formattedSize = formatBytes(file.size);
+          const exactBytes = file.size !== undefined ? `${file.size.toLocaleString()} bytes` : "";
+          const tooltip = `File: ${file.name}\nType: ${getItemTypeLabel(file)}\nSize: ${formattedSize}${exactBytes ? ` (${exactBytes})` : ""}\nUploaded: ${formatDateTime(createdDate)}`;
 
           return (
             <div
@@ -49,6 +50,7 @@ export default function FileGridView({
               onContextMenu={(e) => {
                 if (!isDeleting) onContextMenu(e, file);
               }}
+              title={tooltip}
               className={`group relative flex flex-col overflow-hidden rounded-xl border transition select-none ${
                 isDeleting
                   ? "cursor-not-allowed border-red-200 bg-red-50"
@@ -59,6 +61,12 @@ export default function FileGridView({
             >
               {/* Preview Thumbnail Container */}
               <div className="relative flex h-32 w-full items-center justify-center overflow-hidden bg-[#f8fafd]">
+                {file.extension && (
+                  <span className="absolute top-2 right-2 z-10 rounded border border-gray-200/70 bg-white/90 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-gray-600 shadow-xs">
+                    {file.extension}
+                  </span>
+                )}
+
                 {isDeleting ? (
                   <Loader2 className="h-6 w-6 animate-spin text-red-500" />
                 ) : imageFile && file.url ? (
@@ -77,9 +85,8 @@ export default function FileGridView({
 
               {/* Card Footer: Details */}
               <div className="flex items-center justify-between p-3">
-                <div className="min-w-0 flex-1 pr-2">
+                <div className="min-w-0 flex-1 pr-1.5">
                   <p
-                    title={file.name}
                     className={`truncate text-xs font-semibold ${
                       isDeleting ? "text-red-600" : "text-gray-800"
                     }`}
@@ -87,12 +94,14 @@ export default function FileGridView({
                     {isDeleting ? "Deleting..." : file.name}
                   </p>
 
-                  <div className="mt-1 flex items-center gap-1.5 text-[11px] text-gray-400">
-                    <span className="uppercase font-medium">
-                      {file.extension || "FILE"}
+                  <div className="mt-1 flex items-center gap-1.5 text-[10px] sm:text-[11px] text-gray-400">
+                    <span className="font-semibold text-gray-600" title={exactBytes}>
+                      {formattedSize}
                     </span>
                     <span>•</span>
-                    <span>{formatBytes(file.size)}</span>
+                    <span className="truncate" title={`Uploaded: ${formatDateTime(createdDate)}`}>
+                      {formatDateShort(createdDate)}
+                    </span>
                   </div>
                 </div>
 

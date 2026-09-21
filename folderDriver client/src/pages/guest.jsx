@@ -6,12 +6,9 @@ import {
   Loader2,
   AlertCircle,
   Download,
-  Eye,
-  ExternalLink,
-  FolderOpen,
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
-import RenderFileIcon from "../hook/RenderFileIcon";
+import GuestFolderView from "./GuestFolderView";
 
 export default function Guest() {
   const { id } = useParams();
@@ -52,7 +49,10 @@ export default function Guest() {
   const formatBytes = (bytes) => {
     if (!bytes || bytes === 0) return "-";
     const units = ["Bytes", "KB", "MB", "GB"];
-    const index = Math.floor(Math.log(bytes) / Math.log(1024));
+    const index = Math.min(
+      Math.floor(Math.log(bytes) / Math.log(1024)),
+      units.length - 1,
+    );
     return `${(bytes / Math.pow(1024, index)).toFixed(1)} ${units[index]}`;
   };
 
@@ -98,9 +98,34 @@ export default function Guest() {
                 <h1 className="truncate text-lg font-bold text-gray-900 sm:text-xl">
                   {data.name}
                 </h1>
-                <p className="text-xs text-gray-500">
-                  Shared {isFolder ? "Folder" : "File"} • Anyone with this link can view
-                </p>
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                  <span className="font-semibold text-blue-600">
+                    Shared {isFolder ? "Folder" : "File"}
+                  </span>
+                  <span>•</span>
+                  {isFolder ? (
+                    <span>
+                      {((data.directories?.length || 0) + (data.files?.length || 0))} items
+                      {data.size ? ` (${formatBytes(data.size)})` : ""}
+                    </span>
+                  ) : (
+                    <span>
+                      {data.extension?.toUpperCase()} • {formatBytes(data.size)}
+                    </span>
+                  )}
+                  {data.createdAt && (
+                    <>
+                      <span>•</span>
+                      <span>
+                        Created {new Date(data.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -126,94 +151,13 @@ export default function Guest() {
           </div>
         </div>
 
-        {/* Content Viewer: Folder View */}
+        {/* Content Viewer */}
         {isFolder ? (
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
-            <h2 className="mb-4 text-sm font-bold text-gray-800">
-              Folder Contents ({((data.directories?.length || 0) + (data.files?.length || 0))} items)
-            </h2>
-
-            {/* Subfolders */}
-            {data.directories?.length > 0 && (
-              <div className="mb-6">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Folders ({data.directories.length})
-                </h3>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-                  {data.directories.map((dir) => (
-                    <div
-                      key={dir._id}
-                      className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f8fafd] p-3 text-sm font-medium text-gray-800"
-                    >
-                      <Folder className="h-5 w-5 fill-blue-600 text-blue-600" />
-                      <span className="truncate">{dir.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Files list */}
-            {data.files?.length > 0 ? (
-              <div>
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Files ({data.files.length})
-                </h3>
-                <div className="divide-y divide-gray-100 rounded-xl border border-gray-200">
-                  {data.files.map((file) => (
-                    <div
-                      key={file._id}
-                      className="flex items-center justify-between p-3.5 transition hover:bg-gray-50"
-                    >
-                      <div className="flex items-center gap-3 min-w-0 flex-1 pr-3">
-                        <div className="scale-75">
-                          {RenderFileIcon(file.extension || "")}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-gray-800">
-                            {file.name}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {formatBytes(file.size)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {file.url && (
-                          <button
-                            type="button"
-                            onClick={() => setPreviewFile(file)}
-                            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
-                          >
-                            <Eye className="h-3.5 w-3.5 text-gray-500" />
-                            <span>Preview</span>
-                          </button>
-                        )}
-                        {file.url && (
-                          <a
-                            href={file.url.replace("/upload/", "/upload/fl_attachment/")}
-                            download={file.name}
-                            className="flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 shadow-xs"
-                          >
-                            <Download className="h-3.5 w-3.5" />
-                            <span>Download</span>
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              !data.directories?.length && (
-                <div className="flex min-h-[200px] flex-col items-center justify-center text-center">
-                  <FolderOpen className="h-10 w-10 text-gray-300" />
-                  <p className="mt-2 text-xs text-gray-400">This shared folder is empty</p>
-                </div>
-              )
-            )}
-          </div>
+          <GuestFolderView
+            data={data}
+            formatBytes={formatBytes}
+            setPreviewFile={setPreviewFile}
+          />
         ) : (
           /* Single File View */
           <div className="space-y-4">
