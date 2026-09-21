@@ -14,38 +14,39 @@ export default function DriveBreadcrumbs({ currentFolder, isRoot }) {
   };
 
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm overflow-x-auto no-scrollbar py-0.5 max-w-full">
       {!isRoot && (
         <button
           type="button"
           onClick={handleBack}
           title="Go back"
-          className="mr-1 flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
+          aria-label="Go back"
+          className="mr-0.5 flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
       )}
 
       {/* Root "My Drive" */}
       <Link
         to="/dashboard"
-        className={`flex items-center gap-1.5 rounded-lg px-2 py-1 font-semibold transition ${
+        className={`flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-lg px-1.5 py-1 font-semibold transition ${
           isRoot
             ? "text-gray-900 hover:bg-gray-100"
             : "text-gray-500 hover:bg-gray-100 hover:text-gray-800"
         }`}
       >
-        <HardDrive className="h-4 w-4 text-blue-600" />
-        <span className="text-base">My Drive</span>
+        <HardDrive className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600" />
+        <span className="text-xs sm:text-sm md:text-base">My Drive</span>
       </Link>
 
       {/* Subfolder */}
       {!isRoot && currentFolder?.name && (
         <>
-          <ChevronRight className="h-4 w-4 text-gray-400" />
-          <div className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-2.5 py-1 font-medium text-gray-800">
-            <Folder className="h-4 w-4 text-blue-500" />
-            <span className="max-w-[180px] truncate sm:max-w-xs md:max-w-md">
+          <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-gray-400" />
+          <div className="flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-lg bg-gray-100 px-2 py-0.5 sm:px-2.5 sm:py-1 font-medium text-gray-800">
+            <Folder className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-blue-500" />
+            <span className="max-w-[120px] xs:max-w-[160px] truncate sm:max-w-xs md:max-w-md">
               {currentFolder.name}
             </span>
           </div>

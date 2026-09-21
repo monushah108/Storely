@@ -83,7 +83,8 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
       <div
         className="
           w-full max-w-md
-          overflow-hidden
+          max-h-[90vh]
+          overflow-y-auto
           rounded-2xl
           border border-gray-200
           bg-white
@@ -95,7 +96,7 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
         "
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-gray-100 px-6 py-5">
+        <div className="flex items-start justify-between border-b border-gray-100 px-4 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <Share2 size={20} />
@@ -128,7 +129,7 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6">
+        <div className="px-4 py-4 sm:px-6 sm:py-6">
           <label className="mb-2 block text-sm font-medium text-gray-700">
             Share link
           </label>
@@ -213,7 +214,7 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
           )}
 
           {/* Divider */}
-          <div className="my-6 flex items-center gap-3">
+          <div className="my-5 sm:my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-100" />
 
             <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
@@ -224,7 +225,7 @@ export default function ShareModal({ IsShare, setIsShare, shareId, isFile }) {
           </div>
 
           {/* Social buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2.5 sm:gap-3">
             <FacebookShareButton
               url={shareUrl}
               disabled={!shareUrl}

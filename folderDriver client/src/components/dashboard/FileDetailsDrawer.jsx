@@ -38,23 +38,31 @@ export default function FileDetailsDrawer({
   const isRootFolder = isFolder && !item.parentDirId && isCurrentFolder;
 
   return (
-    <aside className="fixed inset-y-0 right-0 z-30 flex w-80 flex-col border-l border-gray-200 bg-white shadow-xl transition-all duration-200 lg:static lg:shadow-none">
-      {/* Drawer Header */}
-      <div className="flex h-14 items-center justify-between border-b border-gray-200 px-4">
-        <div className="flex items-center gap-2">
-          <FileText className="h-4 w-4 text-blue-600" />
-          <h3 className="text-sm font-bold text-gray-800">
-            {isCurrentFolder ? "Folder Details" : "Details"}
-          </h3>
+    <>
+      {/* Mobile Backdrop */}
+      <div
+        onClick={onClose}
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
+      />
+
+      <aside className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[85vw] sm:w-80 flex-col border-l border-gray-200 bg-white shadow-2xl transition-all duration-200 lg:static lg:z-auto lg:w-80 lg:max-w-none lg:shadow-none">
+        {/* Drawer Header */}
+        <div className="flex h-14 items-center justify-between border-b border-gray-200 px-4">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-blue-600" />
+            <h3 className="text-sm font-bold text-gray-800">
+              {isCurrentFolder ? "Folder Details" : "Details"}
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close details"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
 
       {/* Drawer Content */}
       <div className="flex-1 overflow-y-auto p-4">
@@ -247,5 +255,6 @@ export default function FileDetailsDrawer({
         </div>
       </div>
     </aside>
+    </>
   );
 }

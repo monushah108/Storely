@@ -109,7 +109,7 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
       </div>
 
       {/* Filter Tabs */}
-      <div className="mb-4 flex items-center gap-1.5">
+      <div className="mb-4 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
         <button
           type="button"
           onClick={() => setFilter("folders")}

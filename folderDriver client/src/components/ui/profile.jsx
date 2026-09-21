@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   useFetchUserQuery,
   useLogoutMutation,
@@ -10,10 +10,28 @@ import { toast } from "sonner";
 
 export default function Profile() {
   const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
   const { data, error } = useFetchUserQuery();
   const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    if (open) {
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("touchstart", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [open]);
+
   const handleLogout = async () => {
     try {
       await logout().unwrap();
@@ -43,7 +61,7 @@ export default function Profile() {
 
   if (!data) return;
   return (
-    <div className="relative ml-0.5 sm:ml-0">
+    <div ref={containerRef} className="relative ml-0.5 sm:ml-0">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

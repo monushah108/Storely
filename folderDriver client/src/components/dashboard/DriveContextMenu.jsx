@@ -15,16 +15,22 @@ export default function DriveContextMenu({
 
   const isFolder = !item.extension;
 
-  // Ensure menu stays within window bounds
-  const x = Math.min(menu.x, window.innerWidth - 200);
-  const y = Math.min(menu.y, window.innerHeight - 250);
+  // Ensure menu stays within window bounds on both axes
+  const x = Math.max(10, Math.min(menu.x, window.innerWidth - 200));
+  const y = Math.max(10, Math.min(menu.y, window.innerHeight - 260));
 
   return (
-    <div
-      ref={menuRef}
-      style={{ position: "fixed", top: y, left: x }}
-      className="z-50 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl animate-in fade-in zoom-in-95"
-    >
+    <>
+      <div
+        className="fixed inset-0 z-40 bg-transparent"
+        onClick={onClose}
+        onTouchStart={onClose}
+      />
+      <div
+        ref={menuRef}
+        style={{ position: "fixed", top: y, left: x }}
+        className="z-50 w-48 overflow-hidden rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl animate-in fade-in zoom-in-95"
+      >
       {/* Open */}
       <button
         type="button"
@@ -93,5 +99,6 @@ export default function DriveContextMenu({
         <span>Delete</span>
       </button>
     </div>
+    </>
   );
 }

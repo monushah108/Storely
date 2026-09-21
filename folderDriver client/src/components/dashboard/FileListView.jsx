@@ -28,13 +28,13 @@ export default function FileListView({
         {/* Table Header */}
         <thead>
           <tr className="border-b border-gray-200 text-xs font-semibold text-gray-500">
-            <th className="py-3 pl-4 pr-3">Name</th>
+            <th className="py-2.5 sm:py-3 pl-2.5 sm:pl-4 pr-2 sm:pr-3">Name</th>
             <th className="hidden py-3 px-3 md:table-cell">Type</th>
             <th className="hidden py-3 px-3 sm:table-cell">Owner</th>
             <th className="hidden py-3 px-3 md:table-cell">Created / Uploaded</th>
             <th className="hidden py-3 px-3 lg:table-cell">Last Modified</th>
             <th className="hidden py-3 px-3 sm:table-cell">Size / Items</th>
-            <th className="py-3 pr-4 pl-3 text-right">Actions</th>
+            <th className="py-2.5 sm:py-3 pr-2.5 sm:pr-4 pl-2 sm:pl-3 text-right">Actions</th>
           </tr>
         </thead>
 
@@ -70,8 +70,8 @@ export default function FileListView({
                 }`}
               >
                 {/* Name column */}
-                <td className="py-3 pl-4 pr-3">
-                  <div className="flex items-center gap-3">
+                <td className="py-2.5 sm:py-3 pl-2.5 sm:pl-4 pr-2 sm:pr-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center">
                       {isDeleting ? (
                         <Loader2 className="h-4 w-4 animate-spin text-red-500" />
@@ -84,7 +84,7 @@ export default function FileListView({
                       )}
                     </div>
 
-                    <div className="min-w-0 max-w-[180px] sm:max-w-xs md:max-w-sm lg:max-w-md">
+                    <div className="min-w-0 max-w-[130px] xs:max-w-[180px] sm:max-w-xs md:max-w-sm lg:max-w-md">
                       <p
                         className={`truncate text-sm font-medium ${
                           isDeleting ? "text-red-600" : "text-gray-800"
@@ -94,7 +94,7 @@ export default function FileListView({
                           ? `${item.name.slice(0, 20)}... deleting`
                           : item.name}
                       </p>
-                      <span className="block sm:hidden text-[11px] text-gray-400">
+                      <span className="block sm:hidden text-[10px] sm:text-[11px] text-gray-400">
                         {sizeText} • {formatDateShort(createdDate)}
                       </span>
                     </div>
@@ -138,7 +138,7 @@ export default function FileListView({
                 </td>
 
                 {/* Actions */}
-                <td className="py-3 pr-4 pl-3 text-right">
+                <td className="py-2.5 sm:py-3 pr-2.5 sm:pr-4 pl-2 sm:pl-3 text-right">
                   {!isDeleting && (
                     <div className="flex items-center justify-end gap-1">
                       {/* Direct action buttons on hover */}

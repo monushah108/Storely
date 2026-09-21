@@ -69,7 +69,7 @@ export default function DriveSidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col justify-between border-r border-gray-200 bg-[#f8fafd] p-3 transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 sm:w-72 max-w-[85vw] flex-col justify-between overflow-y-auto border-r border-gray-200 bg-[#f8fafd] p-3 sm:p-3.5 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:w-64 lg:max-w-none lg:shadow-none lg:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

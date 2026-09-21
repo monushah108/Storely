@@ -128,15 +128,14 @@ export default function DirectoryView() {
         />
 
         {/* Main Content Card (Google Drive Material Design) */}
-        <main className="m-2 mr-3 flex flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs">
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
+        <main className="m-1 sm:m-2 sm:mr-3 flex flex-1 flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-gray-200 bg-white shadow-xs">
+          <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2.5 sm:px-6 sm:py-3">
             <DriveBreadcrumbs currentFolder={currentFolder} isRoot={isRoot} />
           </div>
 
           {activeTab !== "shared" && (
             <DriveToolbar
-              filterType={filterType}
-              setFilterType={setFilterType}
+              itemsCount={processedItems.length}
               viewMode={viewMode}
               setViewMode={setViewMode}
               sortBy={sortBy}
@@ -146,7 +145,7 @@ export default function DirectoryView() {
             />
           )}
 
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-6">
             {activeTab === "shared" ? (
               <SharedSection
                 availableFolders={folders}

@@ -23,7 +23,7 @@ export default function UploadFloatingWidget({
   const extension = file?.name ? file.name.split(".").pop() : "";
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-80 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl animate-in slide-in-from-bottom-5">
+    <div className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-4 sm:bottom-4 z-50 sm:w-80 max-w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl animate-in slide-in-from-bottom-5">
       {/* Widget Header */}
       <div className="flex items-center justify-between border-b border-gray-100 bg-[#f8fafd] px-4 py-2.5">
         <span className="text-xs font-semibold text-gray-800">
