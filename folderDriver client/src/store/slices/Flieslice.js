@@ -16,17 +16,34 @@ export const FileApiSlice = createApi({
     getFile: builder.query({
       query: (parentId) => `/directory/${parentId ?? ""}`,
 
-      transformResponse: ({ directories = [], files = [] }) => [
-        ...directories,
-        ...files,
-      ],
+      transformResponse: (response) => {
+        const directories = (response?.directories || []).map((dir) => ({
+          ...dir,
+          type: "directory",
+          isDirectory: true,
+        }));
+        const files = (response?.files || []).map((file) => ({
+          ...file,
+          type: "file",
+          isDirectory: false,
+        }));
+        return {
+          items: [...directories, ...files],
+          currentFolder: {
+            _id: response?._id,
+            name: response?.name,
+            parentDirId: response?.parentDirId,
+          },
+        };
+      },
 
-      providesTags: (result) =>
-        result
+      providesTags: (result) => {
+        const list = result?.items || (Array.isArray(result) ? result : []);
+        return list.length
           ? [
-              ...result.map(({ type, id }) => ({
-                type,
-                id,
+              ...list.map(({ type, id, _id }) => ({
+                type: type || "file",
+                id: id || _id,
               })),
               { type: "file", id: "LIST" },
               { type: "directory", id: "LIST" },
@@ -34,7 +51,8 @@ export const FileApiSlice = createApi({
           : [
               { type: "file", id: "LIST" },
               { type: "directory", id: "LIST" },
-            ],
+            ];
+      },
     }),
 
     deleteFile: builder.mutation({

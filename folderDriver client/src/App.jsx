@@ -45,12 +45,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DirectoryView />,
-    children: [
-      {
-        path: "dirItem/:id",
-        element: <DirectoryView />,
-      },
-    ],
+  },
+  {
+    path: "/dashboard/dirItem/:id",
+    element: <DirectoryView />,
   },
 
   {

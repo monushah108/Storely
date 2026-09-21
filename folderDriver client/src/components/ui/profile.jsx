@@ -130,7 +130,7 @@ export default function Profile() {
                     "
         >
           {/* Profile */}
-          <div className="bg-gradient-to-br from-blue-50 via-white to-white p-4">
+          <div className="bg-[#f8fafd] border-b border-gray-100 p-4">
             <div className="flex items-center gap-3">
               <div
                 className="

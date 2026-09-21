@@ -1,102 +1,224 @@
-import DirectoryList from "./components/DirectoryList";
-import DirectoryHeader from "./components/DirectoryHeader";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import { useGetFileQuery } from "./store/slices/Flieslice";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { AlertCircle, FolderOpen, Loader2 } from "lucide-react";
+import { useFetchUserQuery } from "./store/slices/UserSlice";
+
+import DriveHeader from "./components/dashboard/DriveHeader";
+import DriveSidebar from "./components/dashboard/DriveSidebar";
+import DriveBreadcrumbs from "./components/dashboard/DriveBreadcrumbs";
+import DriveToolbar from "./components/dashboard/DriveToolbar";
+import FileDetailsDrawer from "./components/dashboard/FileDetailsDrawer";
+import DriveDropzone from "./components/dashboard/DriveDropzone";
+import DashboardContent from "./components/dashboard/DashboardContent";
+import DriveModalsGroup from "./components/dashboard/DriveModalsGroup";
+import { filterAndSortItems } from "./components/dashboard/driveHelpers";
+import { useDriveOperations } from "./components/dashboard/useDriveOperations";
 
 export default function DirectoryView() {
   const param = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  const contextMenuRef = useRef(null);
 
-  const {
-    data: DriveData,
-    isLoading,
-    isError,
-    error,
-  } = useGetFileQuery(param.id);
+  // Queries
+  const { data: driveResult, isLoading, isError, error, refetch, isFetching } =
+    useGetFileQuery(param.id);
+  const { data: userData, error: userError } = useFetchUserQuery();
 
+  // Dashboard UI States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [viewMode, setViewMode] = useState(
+    () => localStorage.getItem("storely_view_mode") || "grid",
+  );
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [activeTab, setActiveTab] = useState("my-drive");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Operations Hook
+  const ops = useDriveOperations({
+    folderId: param.id,
+    selectedItem,
+    setSelectedItem,
+  });
+
+  // Redirect on 401
   useEffect(() => {
-    if (error?.status === 401) {
+    if (error?.status === 401 || userError?.status === 401) {
       navigate("/auth/login");
     }
-  }, [error, navigate]);
+  }, [error, userError, navigate]);
+
+  useEffect(() => {
+    localStorage.setItem("storely_view_mode", viewMode);
+  }, [viewMode]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target)) {
+        ops.setContextMenu((prev) => ({ ...prev, visible: false }));
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [ops]);
+
+  const allItems = driveResult?.items || (Array.isArray(driveResult) ? driveResult : []);
+  const currentFolder = driveResult?.currentFolder;
+  const isRoot = !param.id;
+
+  const processedItems = filterAndSortItems({
+    items: allItems,
+    searchQuery,
+    filterType,
+    activeTab,
+    sortBy,
+    sortOrder,
+  });
+
+  const folders = processedItems.filter((i) => !i.extension);
+  const files = processedItems.filter((i) => !!i.extension);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <DirectoryHeader />
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }}
+      onDragLeave={(e) => {
+        if (e.currentTarget.contains(e.relatedTarget)) return;
+        setIsDragging(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        if (e.dataTransfer.files?.length) {
+          ops.handleUploadFiles(e.dataTransfer.files);
+        }
+      }}
+      className="flex h-screen w-screen flex-col overflow-hidden bg-[#f8fafd]"
+    >
+      <DriveDropzone isDragging={isDragging} />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          {/* Page heading */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">My Files</h1>
+      <DriveHeader
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onToggleSidebar={() => setMobileOpen((prev) => !prev)}
+        onRefresh={() => refetch()}
+        isRefreshing={isFetching}
+        showDetails={showDetails}
+        onToggleDetails={() => setShowDetails((prev) => !prev)}
+      />
 
-            <p className="mt-1 text-sm text-gray-500">
-              Manage your files and folders
-            </p>
+      <div className="flex flex-1 overflow-hidden">
+        <DriveSidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenCreateFolder={() => ops.setCreateFolderOpen(true)}
+          onTriggerFileUpload={() => fileInputRef.current?.click()}
+          userData={userData}
+          mobileOpen={mobileOpen}
+          onCloseMobile={() => setMobileOpen(false)}
+        />
+
+        {/* Main Content Card (Google Drive Material Design) */}
+        <main className="m-2 mr-3 flex flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs">
+          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
+            <DriveBreadcrumbs currentFolder={currentFolder} isRoot={isRoot} />
           </div>
 
-          {/* Loading */}
-          {isLoading && (
-            <div className="flex min-h-[300px] items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <DriveToolbar
+            filterType={filterType}
+            setFilterType={setFilterType}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
 
-                <p className="text-sm font-medium text-gray-500">
-                  Fetching your files...
-                </p>
-              </div>
-            </div>
-          )}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <DashboardContent
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              refetch={refetch}
+              processedItems={processedItems}
+              folders={folders}
+              files={files}
+              searchQuery={searchQuery}
+              onClearSearch={() => setSearchQuery("")}
+              onUploadClick={() => fileInputRef.current?.click()}
+              viewMode={viewMode}
+              selectedId={selectedItem?._id}
+              onSelect={setSelectedItem}
+              onOpenItem={ops.handleOpen}
+              onContextMenu={ops.openContextMenu}
+              onMenuClick={(e, item) => ops.openContextMenu(e, item)}
+              onShare={ops.openShare}
+              deletingId={ops.deletingId}
+            />
+          </div>
+        </main>
 
-          {/* Error */}
-          {!isLoading && isError && error?.status !== 401 && (
-            <div className="flex min-h-[300px] items-center justify-center rounded-xl border border-red-200 bg-white shadow-sm">
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-3 rounded-full bg-red-100 p-3">
-                  <AlertCircle className="h-7 w-7 text-red-500" />
-                </div>
+        {showDetails && selectedItem && (
+          <FileDetailsDrawer
+            item={selectedItem}
+            onClose={() => setShowDetails(false)}
+            onOpen={ops.handleOpen}
+            onShare={ops.openShare}
+            onRename={(id, name, ext) => ops.prepareRename(id, name, ext)}
+            onDelete={ops.handleDelete}
+          />
+        )}
+      </div>
 
-                <h2 className="font-semibold text-gray-800">
-                  Something went wrong
-                </h2>
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        onChange={(e) => {
+          ops.handleUploadFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
 
-                <p className="mt-1 text-sm text-gray-500">
-                  We couldn't load your files. Please try again.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!isLoading && !isError && !DriveData?.length && (
-            <div className="flex min-h-[350px] items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white shadow-sm">
-              <div className="flex max-w-sm flex-col items-center text-center">
-                <div className="mb-4 rounded-full bg-blue-50 p-4">
-                  <FolderOpen className="h-10 w-10 text-blue-500" />
-                </div>
-
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Your folder is empty
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-gray-500">
-                  Upload a file or create a folder to start organizing your
-                  files in Storely.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Files */}
-          {!isLoading && !isError && DriveData?.length > 0 && (
-            <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-              <DirectoryList DriveData={DriveData} />
-            </div>
-          )}
-        </div>
-      </main>
+      <DriveModalsGroup
+        contextMenu={ops.contextMenu}
+        contextMenuRef={contextMenuRef}
+        onCloseContextMenu={() => ops.setContextMenu((prev) => ({ ...prev, visible: false }))}
+        handleOpen={ops.handleOpen}
+        onPrepareRename={ops.prepareRename}
+        handleShare={ops.openShare}
+        handleDelete={ops.handleDelete}
+        createFolderOpen={ops.createFolderOpen}
+        onCloseCreateFolder={() => ops.setCreateFolderOpen(false)}
+        folderName={ops.folderName}
+        setFolderName={ops.setFolderName}
+        onCreateFolder={ops.handleCreateFolderSubmit}
+        renameOpen={ops.renameOpen}
+        onCloseRename={() => ops.setRenameOpen(false)}
+        newName={ops.newName}
+        setNewName={ops.setNewName}
+        onRename={ops.handleRenameSubmit}
+        shareOpen={ops.shareOpen}
+        onCloseShare={ops.setShareOpen}
+        shareId={ops.shareId}
+        uploadingFile={ops.uploadingFile}
+        isUploading={ops.isUploading}
+        isUploadErr={ops.isUploadErr}
+        uploadErr={ops.uploadErr}
+        onCloseUploadWidget={() => {
+          ops.resetUpload();
+          ops.setUploadingFile(null);
+        }}
+      />
     </div>
   );
 }
