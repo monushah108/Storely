@@ -8,7 +8,6 @@ const shareSchema = new Schema({
   },
   fileId: {
     type: Schema.Types.ObjectId,
-    ref: "File",
     required: true,
   },
   token: {

@@ -126,8 +126,11 @@ export function useDriveOperations({
     setRenameOpen(true);
   };
 
-  const openShare = (id) => {
+  const [isFileShare, setIsFileShare] = useState(true);
+
+  const openShare = (id, isFile = true) => {
     setShareId(id);
+    setIsFileShare(isFile);
     setShareOpen(true);
   };
 
@@ -149,6 +152,7 @@ export function useDriveOperations({
     shareOpen,
     setShareOpen,
     shareId,
+    isFileShare,
     deletingId,
     contextMenu,
     setContextMenu,

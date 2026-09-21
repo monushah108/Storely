@@ -11,6 +11,7 @@ import DriveToolbar from "./components/dashboard/DriveToolbar";
 import FileDetailsDrawer from "./components/dashboard/FileDetailsDrawer";
 import DriveDropzone from "./components/dashboard/DriveDropzone";
 import DashboardContent from "./components/dashboard/DashboardContent";
+import SharedSection from "./components/dashboard/SharedSection";
 import DriveModalsGroup from "./components/dashboard/DriveModalsGroup";
 import { filterAndSortItems } from "./components/dashboard/driveHelpers";
 import { useDriveOperations } from "./components/dashboard/useDriveOperations";
@@ -132,38 +133,47 @@ export default function DirectoryView() {
             <DriveBreadcrumbs currentFolder={currentFolder} isRoot={isRoot} />
           </div>
 
-          <DriveToolbar
-            filterType={filterType}
-            setFilterType={setFilterType}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-          />
+          {activeTab !== "shared" && (
+            <DriveToolbar
+              filterType={filterType}
+              setFilterType={setFilterType}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+            />
+          )}
 
           <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-            <DashboardContent
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              refetch={refetch}
-              processedItems={processedItems}
-              folders={folders}
-              files={files}
-              searchQuery={searchQuery}
-              onClearSearch={() => setSearchQuery("")}
-              onUploadClick={() => fileInputRef.current?.click()}
-              viewMode={viewMode}
-              selectedId={selectedItem?._id}
-              onSelect={setSelectedItem}
-              onOpenItem={ops.handleOpen}
-              onContextMenu={ops.openContextMenu}
-              onMenuClick={(e, item) => ops.openContextMenu(e, item)}
-              onShare={ops.openShare}
-              deletingId={ops.deletingId}
-            />
+            {activeTab === "shared" ? (
+              <SharedSection
+                availableFolders={folders}
+                onShareFolder={(folderId) => ops.openShare(folderId, false)}
+              />
+            ) : (
+              <DashboardContent
+                isLoading={isLoading}
+                isError={isError}
+                error={error}
+                refetch={refetch}
+                processedItems={processedItems}
+                folders={folders}
+                files={files}
+                searchQuery={searchQuery}
+                onClearSearch={() => setSearchQuery("")}
+                onUploadClick={() => fileInputRef.current?.click()}
+                viewMode={viewMode}
+                selectedId={selectedItem?._id}
+                onSelect={setSelectedItem}
+                onOpenItem={ops.handleOpen}
+                onContextMenu={ops.openContextMenu}
+                onMenuClick={(e, item) => ops.openContextMenu(e, item)}
+                onShare={(id, isFile = true) => ops.openShare(id, isFile)}
+                deletingId={ops.deletingId}
+              />
+            )}
           </div>
         </main>
 
@@ -172,7 +182,7 @@ export default function DirectoryView() {
             item={selectedItem}
             onClose={() => setShowDetails(false)}
             onOpen={ops.handleOpen}
-            onShare={ops.openShare}
+            onShare={(id, isFile = true) => ops.openShare(id, isFile)}
             onRename={(id, name, ext) => ops.prepareRename(id, name, ext)}
             onDelete={ops.handleDelete}
           />
@@ -210,6 +220,7 @@ export default function DirectoryView() {
         shareOpen={ops.shareOpen}
         onCloseShare={ops.setShareOpen}
         shareId={ops.shareId}
+        isFileShare={ops.isFileShare}
         uploadingFile={ops.uploadingFile}
         isUploading={ops.isUploading}
         isUploadErr={ops.isUploadErr}

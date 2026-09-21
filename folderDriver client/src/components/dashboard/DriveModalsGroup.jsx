@@ -25,6 +25,7 @@ export default function DriveModalsGroup({
   shareOpen,
   onCloseShare,
   shareId,
+  isFileShare,
   uploadingFile,
   isUploading,
   isUploadErr,
@@ -64,7 +65,7 @@ export default function DriveModalsGroup({
         IsShare={shareOpen}
         setIsShare={onCloseShare}
         shareId={shareId}
-        isFile={true}
+        isFile={isFileShare}
       />
 
       <UploadFloatingWidget

@@ -133,19 +133,17 @@ export default function FileListView({
                         </a>
                       )}
 
-                      {!isFolder && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onShare(item._id);
-                          }}
-                          title="Share"
-                          className="hidden h-7 w-7 items-center justify-center rounded-full text-gray-400 opacity-0 transition hover:bg-gray-200 hover:text-gray-700 group-hover:opacity-100 sm:flex"
-                        >
-                          <Share2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onShare(item._id, !isFolder);
+                        }}
+                        title={isFolder ? "Share folder" : "Share file"}
+                        className="hidden h-7 w-7 items-center justify-center rounded-full text-gray-400 opacity-0 transition hover:bg-gray-200 hover:text-blue-600 group-hover:opacity-100 sm:flex"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                      </button>
 
                       <button
                         type="button"

@@ -10,7 +10,7 @@ export const FileApiSlice = createApi({
     credentials: "include",
   }),
 
-  tagTypes: ["file", "directory"],
+  tagTypes: ["file", "directory", "share"],
 
   endpoints: (builder) => ({
     getFile: builder.query({
@@ -100,6 +100,19 @@ export const FileApiSlice = createApi({
 
       invalidatesTags: [{ type: "file", id: "LIST" }],
     }),
+
+    getUserShares: builder.query({
+      query: () => "/share/user/all",
+      providesTags: ["share"],
+    }),
+
+    revokeShare: builder.mutation({
+      query: (id) => ({
+        url: `/share/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["share"],
+    }),
   }),
 });
 
@@ -110,6 +123,8 @@ export const {
   useCreateDirectoryMutation,
   useUploadFileMutation,
   useOpenFileMutation,
+  useGetUserSharesQuery,
+  useRevokeShareMutation,
 } = FileApiSlice;
 
 // async queryFn({ paramId, file }) {

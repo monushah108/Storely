@@ -103,16 +103,14 @@ export default function FileDetailsDrawer({
             </a>
           )}
 
-          {!isFolder && (
-            <button
-              type="button"
-              onClick={() => onShare(item._id)}
-              className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
-            >
-              <Share2 className="h-3.5 w-3.5 text-blue-600" />
-              <span>Share</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => onShare(item._id, !isFolder)}
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            <Share2 className="h-3.5 w-3.5 text-blue-600" />
+            <span>Share</span>
+          </button>
 
           <button
             type="button"

@@ -52,19 +52,17 @@ export default function DriveContextMenu({
       )}
 
       {/* Share */}
-      {!isFolder && (
-        <button
-          type="button"
-          onClick={() => {
-            onClose();
-            handleShare(item._id);
-          }}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:bg-gray-100"
-        >
-          <Share2 className="h-4 w-4 text-gray-500" />
-          <span>Share</span>
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+          onClose();
+          handleShare(item._id, !isFolder);
+        }}
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:bg-gray-100"
+      >
+        <Share2 className="h-4 w-4 text-gray-500" />
+        <span>Share {isFolder ? "folder" : "file"}</span>
+      </button>
 
       {/* Rename */}
       <button

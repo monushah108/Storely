@@ -1,5 +1,5 @@
 import React from "react";
-import { Folder, MoreVertical, Loader2 } from "lucide-react";
+import { Folder, MoreVertical, Loader2, Share2 } from "lucide-react";
 
 export default function FolderGrid({
   folders = [],
@@ -8,6 +8,7 @@ export default function FolderGrid({
   onOpenFolder,
   onContextMenu,
   onMenuClick,
+  onShare,
   deletingId,
 }) {
   if (!folders.length) return null;
@@ -60,19 +61,35 @@ export default function FolderGrid({
                 </div>
               </div>
 
-              {/* 3-dots Menu Button */}
+              {/* Actions */}
               {!isDeleting && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onMenuClick(e, folder);
-                  }}
-                  title="More actions"
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 opacity-80 transition hover:bg-gray-200 hover:text-gray-700 group-hover:opacity-100 focus:opacity-100"
-                >
-                  <MoreVertical className="h-4 w-4" />
-                </button>
+                <div className="flex items-center gap-0.5">
+                  {onShare && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onShare(folder._id, false);
+                      }}
+                      title="Share folder"
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 opacity-0 transition hover:bg-gray-200 hover:text-blue-600 group-hover:opacity-100"
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onMenuClick(e, folder);
+                    }}
+                    title="More actions"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 opacity-80 transition hover:bg-gray-200 hover:text-gray-700 group-hover:opacity-100 focus:opacity-100"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </button>
+                </div>
               )}
             </div>
           );

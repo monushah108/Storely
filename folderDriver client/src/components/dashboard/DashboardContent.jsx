@@ -80,6 +80,7 @@ export default function DashboardContent({
           onOpenFolder={(id) => onOpenItem(id, null)}
           onContextMenu={onContextMenu}
           onMenuClick={onMenuClick}
+          onShare={onShare}
           deletingId={deletingId}
         />
         <FileGridView
