@@ -17,7 +17,7 @@ import checkRole from "../rbac/RoleMiddleware.js";
 const route = express.Router();
 
 // ========================================
-// OWNER
+// STATIC ROUTES: CREDENTIALS (OWNER ONLY)
 // ========================================
 
 route.get(
@@ -27,7 +27,7 @@ route.get(
   getAdminCredentials,
 );
 
-// Create admin access for a user
+// Create admin credentials
 route.post(
   "/credentials",
   checkAuth,
@@ -35,7 +35,14 @@ route.post(
   createAdminAccess,
 );
 
-// Update admin credential
+// Update admin credentials (support both with and without :userId)
+route.patch(
+  "/credentials",
+  checkAuth,
+  checkRole("roles:assign_admin"),
+  updateAdminCredentials,
+);
+
 route.patch(
   "/credentials/:userId",
   checkAuth,
@@ -43,25 +50,39 @@ route.patch(
   updateAdminCredentials,
 );
 
-// genrate access token
-
-route.post("/token", checkAuth, generateAccessToken);
-
-route.delete("/token", checkAuth, clearAdminAccessToken);
-
 // ========================================
-// PUBLIC
+// STATIC ROUTES: ACCESS TOKEN (OWNER ONLY)
 // ========================================
 
-// Redeem one-time admin access link
-route.get("/:token", checkAuth, verifyAdminToken);
-route.post("/:token/redeem", checkAuth, registerAdmin);
+route.post(
+  "/token",
+  checkAuth,
+  checkRole("roles:assign_admin"),
+  generateAccessToken,
+);
+
+route.delete(
+  "/token",
+  checkAuth,
+  checkRole("roles:assign_admin"),
+  clearAdminAccessToken,
+);
 
 // ========================================
-// ADMIN
+// STATIC ROUTES: ADMIN SESSION
 // ========================================
 
 // Logout admin session
 route.post("/logout", logoutAdmin);
+
+// ========================================
+// PARAMETERIZED ROUTES: TOKEN REDEMPTION
+// ========================================
+
+// Verify token validity
+route.get("/:token", checkAuth, verifyAdminToken);
+
+// Redeem one-time admin access link
+route.post("/:token/redeem", checkAuth, registerAdmin);
 
 export default route;

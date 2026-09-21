@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Share from "../modles/shareModel.js";
 import crypto from "crypto";
 import File from "../modles/fileModel.js";
@@ -8,6 +9,23 @@ export const getToken = async (req, res, next) => {
   const userId = req.user._id;
 
   try {
+    if (!fileId || !mongoose.Types.ObjectId.isValid(fileId)) {
+      return res.status(400).json({ success: false, message: "Invalid item ID" });
+    }
+
+    // Verify ownership: user must own the file or directory being shared
+    const [fileOwner, dirOwner] = await Promise.all([
+      File.findOne({ _id: fileId, userId }).select("_id").lean(),
+      Directory.findOne({ _id: fileId, userId }).select("_id").lean(),
+    ]);
+
+    if (!fileOwner && !dirOwner) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only generate share links for files or folders you own.",
+      });
+    }
+
     const isTokenAlreadyExist = await Share.findOne({ userId, fileId });
 
     if (isTokenAlreadyExist) {

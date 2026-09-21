@@ -1,18 +1,32 @@
+import mongoose from "mongoose";
 import File from "../modles/fileModel.js";
 import mime from "mime-types";
 import cloudinary from "../config/cloudinary.js";
 import Quota from "../modles/quotaModel.js";
+import Directory from "../modles/directoryModel.js";
+import { ROLES } from "../rbac/permission.js";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
+/**
+ * Get file metadata and download link.
+ */
 export const getFile = async (req, res, next) => {
   try {
-    const file = await File.findById(req.params.id);
+    const { id } = req.params;
 
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid file ID" });
+    }
+
+    const file = await File.findById(id);
     if (!file) {
-      return res.status(404).json({
-        message: "File not found",
-      });
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
+
+    const isPrivileged = req.user.role === ROLES.ADMIN || req.user.role === ROLES.OWNER;
+    if (!isPrivileged && file.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Access denied to this file" });
     }
 
     return res.status(200).json(file);
@@ -21,36 +35,58 @@ export const getFile = async (req, res, next) => {
   }
 };
 
+/**
+ * Upload a file to Cloudinary and create file record.
+ */
 export const uploadFile = async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({
+        success: false,
         message: "No file provided",
       });
     }
 
     const fileSize = req.file.size;
 
-    if (req.file.size > MAX_FILE_SIZE) {
+    if (fileSize > MAX_FILE_SIZE) {
       return res.status(413).json({
+        success: false,
         message: "File size cannot exceed 10 MB",
       });
     }
 
-    const quota = await Quota.findOne({
-      userId: req.user._id,
-    });
+    const parentDirId = req.params.id || req.user.rootDirId;
 
+    // Validate parent directory
+    if (parentDirId) {
+      if (!mongoose.Types.ObjectId.isValid(parentDirId)) {
+        return res.status(400).json({ success: false, message: "Invalid parent directory ID" });
+      }
+
+      const parentDir = await Directory.findById(parentDirId).lean();
+      if (!parentDir) {
+        return res.status(404).json({ success: false, message: "Target directory not found" });
+      }
+
+      const isPrivileged = req.user.role === ROLES.ADMIN || req.user.role === ROLES.OWNER;
+      if (!isPrivileged && parentDir.userId.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ success: false, message: "Access denied to target directory" });
+      }
+    }
+
+    const quota = await Quota.findOne({ userId: req.user._id });
     if (!quota) {
       return res.status(404).json({
+        success: false,
         message: "Storage quota not found",
       });
     }
 
     const remainingStorage = quota.storageLimit - quota.storageUsed;
-
     if (fileSize > remainingStorage) {
       return res.status(413).json({
+        success: false,
         message: "Storage limit exceeded",
         storageLimit: quota.storageLimit,
         storageUsed: quota.storageUsed,
@@ -74,34 +110,26 @@ export const uploadFile = async (req, res, next) => {
         .end(req.file.buffer);
     });
 
-    // Create file record
     const file = await File.create({
       name: req.file.originalname,
-      extension: mime.extension(req.file.mimetype),
+      extension: mime.extension(req.file.mimetype) || req.file.originalname.split(".").pop(),
       userId: req.user._id,
-      parentDirId: req.params.id || req.user.rootDirId,
+      parentDirId,
       url: result.secure_url,
       publicId: result.public_id,
       resourceType: result.resource_type,
       size: fileSize,
     });
 
-    // Update user's storage usage
+    // Update quota
     await Quota.findOneAndUpdate(
-      {
-        userId: req.user._id,
-      },
-      {
-        $inc: {
-          storageUsed: fileSize,
-        },
-      },
-      {
-        new: true,
-      },
+      { userId: req.user._id },
+      { $inc: { storageUsed: fileSize } },
+      { new: true },
     );
 
     return res.status(201).json({
+      success: true,
       message: "File uploaded successfully",
       file,
     });
@@ -110,62 +138,90 @@ export const uploadFile = async (req, res, next) => {
   }
 };
 
+/**
+ * Rename an existing file.
+ */
 export const renameFile = async (req, res, next) => {
   try {
+    const { id } = req.params;
     const { newName } = req.body;
 
-    const file = await File.findById(req.params.id);
-
-    if (!file) {
-      return res.status(404).json({
-        message: "File not found",
-      });
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid file ID" });
     }
 
-    file.name = newName;
+    if (!newName || !newName.trim()) {
+      return res.status(400).json({ success: false, message: "New file name is required" });
+    }
 
+    const file = await File.findById(id);
+    if (!file) {
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
+
+    const isPrivileged = req.user.role === ROLES.ADMIN || req.user.role === ROLES.OWNER;
+    if (!isPrivileged && file.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Access denied" });
+    }
+
+    file.name = newName.trim();
     await file.save();
 
     return res.status(200).json({
+      success: true,
       message: "File renamed successfully",
-      // file,
+      file: {
+        id: file._id,
+        name: file.name,
+      },
     });
   } catch (err) {
     next(err);
   }
 };
 
+/**
+ * Delete a file, remove Cloudinary asset, and decrement owner's quota.
+ */
 export const DeleteFile = async (req, res, next) => {
   try {
-    const file = await File.findById(req.params.id);
+    const { id } = req.params;
 
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid file ID" });
+    }
+
+    const file = await File.findById(id);
     if (!file) {
-      return res.status(404).json({
-        message: "File not found",
-      });
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
+
+    const isPrivileged = req.user.role === ROLES.ADMIN || req.user.role === ROLES.OWNER;
+    if (!isPrivileged && file.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Access denied" });
     }
 
     // Delete from Cloudinary
-    await cloudinary.uploader.destroy(file.publicId, {
-      resource_type: file.resourceType,
-    });
+    if (file.publicId) {
+      try {
+        await cloudinary.uploader.destroy(file.publicId, {
+          resource_type: file.resourceType || "image",
+        });
+      } catch (e) {
+        console.error(`Failed to delete Cloudinary file ${file.publicId}:`, e);
+      }
+    }
 
-    // Decrease user's storage usage
+    // Decrement the FILE OWNER's storage usage (not necessarily caller's)
     await Quota.findOneAndUpdate(
-      {
-        userId: req.user._id,
-      },
-      {
-        $inc: {
-          storageUsed: -file.size,
-        },
-      },
+      { userId: file.userId },
+      { $inc: { storageUsed: -file.size } },
     );
 
-    // Delete database record
     await file.deleteOne();
 
     return res.status(200).json({
+      success: true,
       message: "File deleted successfully",
     });
   } catch (err) {

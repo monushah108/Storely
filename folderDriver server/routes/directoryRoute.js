@@ -5,14 +5,13 @@ import {
   getDirectory,
   renameDirectory,
 } from "../controllers/directoryController.js";
+import checkRole from "../rbac/RoleMiddleware.js";
 
 const router = express.Router();
 
-router.get("/:id?", getDirectory);
-
-router.post("/:id?", createDirectory);
-
-router.patch("/:id?", renameDirectory);
-router.delete("/:id?", deleteDirectory);
+router.get("/:id?", checkRole("file:read"), getDirectory);
+router.post("/:id?", checkRole("file:write"), createDirectory);
+router.patch("/:id?", checkRole("file:write"), renameDirectory);
+router.delete("/:id?", checkRole("file:delete"), deleteDirectory);
 
 export default router;
