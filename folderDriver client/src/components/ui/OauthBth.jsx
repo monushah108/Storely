@@ -1,10 +1,11 @@
+import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { loginWithGoogle } from "../../Api/loginWithGoogle.js";
 
-function GoogleBtn() {
+export default function GoogleBtn({ text = "continue_with" }) {
   const navigate = useNavigate();
 
   const handleSuccess = async ({ credential }) => {
@@ -25,13 +26,16 @@ function GoogleBtn() {
   };
 
   return (
-    <GoogleLogin
-      onSuccess={handleSuccess}
-      onError={() => toast.error("Login Failed")}
-      theme="filled_blue"
-      text="continue_with"
-    />
+    <div className="flex w-full justify-center overflow-hidden">
+      <GoogleLogin
+        onSuccess={handleSuccess}
+        onError={() => toast.error("Google login failed")}
+        theme="outline"
+        size="large"
+        shape="rectangular"
+        text={text}
+        width="380"
+      />
+    </div>
   );
 }
-
-export default GoogleBtn;

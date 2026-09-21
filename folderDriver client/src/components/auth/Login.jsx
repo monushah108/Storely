@@ -1,131 +1,142 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
 import { FaGithub } from "react-icons/fa";
-import { Loader } from "lucide-react";
-import GoogleBth from "../ui/OauthBth";
+import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
+
+import GoogleBtn from "../ui/OauthBth";
+import AuthCard from "./AuthCard";
 import { useLoginMutation } from "../../store/slices/UserSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [login, { isLoading }] = useLoginMutation();
-
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
     try {
-      await login({ email, password }).unwrap();
-      toast.success("loged in successfuly");
+      await login({ email: email.trim(), password }).unwrap();
+      toast.success("Welcome back! Signed in successfully");
       navigate("/dashboard");
     } catch (err) {
-      console.log(err);
-      const error = err.data.error || err.data.message || "login failed";
+      const error = err?.data?.error || err?.data?.message || "Login failed. Please check your credentials.";
       toast.error(error);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin();
-  };
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      {/* <Toaster richColors position="top-center" /> */}
-      <form
-        className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl space-y-6"
-        onSubmit={handleSubmit}
-      >
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          Login to Your Account
-        </h2>
-
-        {/* Email */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Email
+    <AuthCard
+      title="Sign in to your account"
+      subtitle="to continue to Storely Drive"
+      footerText="Don’t have an account?"
+      footerLinkText="Create account"
+      footerLinkTo="/auth/register"
+    >
+      <form onSubmit={handleLogin} className="space-y-4">
+        {/* Email Field */}
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            Email address
           </label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+              <Mail className="h-4 w-4" />
+            </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+            />
+          </div>
         </div>
 
-        {/* Password */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        {/* Password Field */}
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="text-xs font-semibold text-gray-700">
+              Password
+            </label>
+          </div>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+              <Lock className="h-4 w-4" />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
 
-        {/* Login button */}
+        {/* Submit Button */}
         <button
-          disabled={isLoading}
           type="submit"
-          className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow-md transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          disabled={isLoading}
+          className="w-full rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isLoading ? (
-            <div className="flex items-center justify-center gap-2">
-              <Loader className="animate-spin h-4 w-4" />
-              <span>Logging in...</span>
-            </div>
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Signing in...</span>
+            </span>
           ) : (
-            "Login"
+            "Sign In"
           )}
         </button>
 
-        {/* OR divider */}
-        <div className="flex items-center justify-center gap-3">
-          <div className="h-px flex-1 bg-gray-300"></div>
-          <span className="text-sm text-gray-500">OR</span>
-          <div className="h-px flex-1 bg-gray-300"></div>
+        {/* Divider */}
+        <div className="flex items-center gap-3 py-1">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
+            or continue with
+          </span>
+          <div className="h-px flex-1 bg-gray-200" />
         </div>
 
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          {/* Google login */}
-          <GoogleBth />
-          {/* github login  */}
+        {/* Social Logins */}
+        <div className="flex flex-col gap-2.5">
+          <GoogleBtn text="signin_with" />
+
           <button
+            type="button"
             onClick={() => {
               window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
             }}
-            className="flex items-center justify-center gap-2 
-                 bg-gray-900 text-white rounded-md hover:bg-gray-800 
-                 transition-colors  text-sm px-2 py-2.5 cursor-pointer"
+            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white py-2.5 text-xs font-semibold text-gray-700 shadow-xs transition hover:bg-gray-50 active:scale-[0.99]"
           >
-            <FaGithub />
-            <span>Login with GitHub</span>
+            <FaGithub className="h-4 w-4 text-gray-900" />
+            <span>Sign in with GitHub</span>
           </button>
         </div>
-
-        {/* Signup link */}
-        <p className="text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <Link
-            to="/auth/register"
-            className="font-semibold text-blue-600 hover:underline"
-          >
-            Register
-          </Link>
-        </p>
       </form>
-    </div>
+    </AuthCard>
   );
 }

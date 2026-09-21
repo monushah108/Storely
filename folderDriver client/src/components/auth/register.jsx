@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast, Toaster } from "sonner";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { FaGithub } from "react-icons/fa";
+import { Loader2, Mail, Lock, User, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+
+import GoogleBtn from "../ui/OauthBth";
+import AuthCard from "./AuthCard";
 import { useRegisterMutation } from "../../store/slices/UserSlice";
 
 export default function Register() {
@@ -10,128 +15,198 @@ export default function Register() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState({});
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
-
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRegister = async (userContent) => {
-    const data = await register(userContent);
-    if (data?.error) {
-      toast.error("invalid credentials");
-      setError(data?.error?.data);
-    } else if (data?.data) {
-      toast.success("Registration successful!");
-      setIsSuccess(true);
-      setTimeout(() => {
-        navigate("/auth/login");
-      }, 2000);
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: null });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    handleRegister(formData);
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      setErrors({ password: "Password must be at least 6 characters" });
+      return;
+    }
+
+    try {
+      const response = await register(formData);
+
+      if (response?.error) {
+        const errorData = response?.error?.data;
+        const msg = errorData?.error || errorData?.message || "Registration failed";
+        toast.error(msg);
+        if (typeof errorData === "object") {
+          setErrors(errorData);
+        }
+      } else if (response?.data) {
+        toast.success("Account created successfully! Redirecting...");
+        setIsSuccess(true);
+        setTimeout(() => {
+          navigate("/auth/login");
+        }, 1500);
+      }
+    } catch {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <Toaster position="top-center" richColors />
-      <form
-        className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl space-y-6"
-        onSubmit={handleSubmit}
-      >
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          Create an Account
-        </h2>
-        <p className="text-center text-sm text-gray-500">
-          Sign up to get started 🚀
-        </p>
-
-        {/* Username */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Username
+    <AuthCard
+      title="Create your account"
+      subtitle="Free cloud storage for all your files"
+      footerText="Already have an account?"
+      footerLinkText="Sign in"
+      footerLinkTo="/auth/login"
+    >
+      <form onSubmit={handleRegister} className="space-y-4">
+        {/* Full Name */}
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            Full name or username
           </label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Choose a username"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {error?.name && <p className="text-red-500 text-sm">{error.name}</p>}
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+              <User className="h-4 w-4" />
+            </div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              autoComplete="name"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+            />
+          </div>
+          {errors?.name && (
+            <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+          )}
         </div>
 
         {/* Email */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Email
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            Email address
           </label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {error?.email && (
-            <p className="text-red-500 text-sm">{error.email}</p>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+              <Mail className="h-4 w-4" />
+            </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="name@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+            />
+          </div>
+          {errors?.email && (
+            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
           )}
         </div>
 
         {/* Password */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
             Password
           </label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {error?.password && (
-            <p className="text-red-500 text-sm">{error.password}</p>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+              <Lock className="h-4 w-4" />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="At least 6 characters"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {errors?.password && (
+            <p className="mt-1 text-xs text-red-500">{errors.password}</p>
           )}
         </div>
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           type="submit"
-          className={`w-full rounded-lg px-4 py-2 font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
+          disabled={isLoading || isSuccess}
+          className={`w-full rounded-xl py-2.5 text-sm font-semibold text-white shadow-xs transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 ${
             isSuccess
-              ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-              : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+              ? "bg-emerald-600 hover:bg-emerald-700"
+              : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
-          {isSuccess ? "Registration Successful 🎉" : "Register"}
+          {isSuccess ? (
+            <span className="flex items-center justify-center gap-2">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Account Created!</span>
+            </span>
+          ) : isLoading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Creating account...</span>
+            </span>
+          ) : (
+            "Create Account"
+          )}
         </button>
 
-        {/* Login link */}
-        <p className="text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link
-            to="/auth/login"
-            className="font-semibold text-blue-600 hover:underline"
+        {/* Divider */}
+        <div className="flex items-center gap-3 py-1">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
+            or sign up with
+          </span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        {/* Social Logins */}
+        <div className="flex flex-col gap-2.5">
+          <GoogleBtn text="signup_with" />
+
+          <button
+            type="button"
+            onClick={() => {
+              window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
+            }}
+            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white py-2.5 text-xs font-semibold text-gray-700 shadow-xs transition hover:bg-gray-50 active:scale-[0.99]"
           >
-            Login
-          </Link>
-        </p>
+            <FaGithub className="h-4 w-4 text-gray-900" />
+            <span>Sign up with GitHub</span>
+          </button>
+        </div>
       </form>
-    </div>
+    </AuthCard>
   );
 }
