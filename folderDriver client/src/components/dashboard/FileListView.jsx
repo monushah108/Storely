@@ -144,7 +144,7 @@ export default function FileListView({
                       {/* Direct action buttons on hover */}
                       {!isFolder && item.url && (
                         <a
-                          href={item.url.replace("/upload/", "/upload/fl_attachment/")}
+                          href={item.downloadUrl || item.url.replace("/upload/", "/upload/fl_attachment/")}
                           download={item.name}
                           onClick={(e) => e.stopPropagation()}
                           title="Download"

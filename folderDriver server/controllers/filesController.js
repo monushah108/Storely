@@ -5,8 +5,9 @@ import cloudinary from "../config/cloudinary.js";
 import Quota from "../modles/quotaModel.js";
 import Directory from "../modles/directoryModel.js";
 import { ROLES } from "../rbac/permission.js";
+import { attachFileUrls } from "../lib/cloudinaryUrlHelper.js";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILE_SIZE = 15 * 1024 * 1024;
 
 /**
  * Get file metadata and download link.
@@ -29,7 +30,7 @@ export const getFile = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "Access denied to this file" });
     }
 
-    return res.status(200).json(file);
+    return res.status(200).json(attachFileUrls(file));
   } catch (err) {
     next(err);
   }
@@ -52,7 +53,7 @@ export const uploadFile = async (req, res, next) => {
     if (fileSize > MAX_FILE_SIZE) {
       return res.status(413).json({
         success: false,
-        message: "File size cannot exceed 10 MB",
+        message: "File size cannot exceed 15 MB",
       });
     }
 
@@ -131,7 +132,7 @@ export const uploadFile = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       message: "File uploaded successfully",
-      file,
+      file: attachFileUrls(file),
     });
   } catch (err) {
     next(err);

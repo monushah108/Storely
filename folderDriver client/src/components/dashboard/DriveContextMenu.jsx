@@ -47,7 +47,7 @@ export default function DriveContextMenu({
       {/* Download */}
       {!isFolder && item.url && (
         <a
-          href={item.url.replace("/upload/", "/upload/fl_attachment/")}
+          href={item.downloadUrl || item.url.replace("/upload/", "/upload/fl_attachment/")}
           download={item.name}
           onClick={onClose}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:bg-gray-100"

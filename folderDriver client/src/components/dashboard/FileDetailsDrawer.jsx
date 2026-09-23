@@ -100,7 +100,7 @@ export default function FileDetailsDrawer({
 
             {!isFolder && item.url && (
               <a
-                href={item.url.replace("/upload/", "/upload/fl_attachment/")}
+                href={item.downloadUrl || item.url.replace("/upload/", "/upload/fl_attachment/")}
                 download={item.name}
                 className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50"
               >

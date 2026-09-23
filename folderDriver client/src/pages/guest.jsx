@@ -6,6 +6,7 @@ import {
   Loader2,
   AlertCircle,
   Download,
+  ExternalLink,
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import GuestFolderView from "./GuestFolderView";
@@ -161,14 +162,25 @@ export default function Guest() {
         ) : (
           /* Single File View */
           <div className="space-y-4">
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               {data.url && (
                 <a
-                  href={data.url.replace("/upload/", "/upload/fl_attachment/")}
-                  download={data.name}
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700"
+                  href={data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-xs hover:bg-gray-50 transition"
                 >
-                  <Download className="h-4 w-4" />
+                  <ExternalLink className="h-3.5 w-3.5 text-gray-500" />
+                  <span>Open in new tab</span>
+                </a>
+              )}
+              {data.url && (
+                <a
+                  href={data.downloadUrl || data.url.replace("/upload/", "/upload/fl_attachment/")}
+                  download={data.name}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 transition"
+                >
+                  <Download className="h-3.5 w-3.5" />
                   <span>Download file</span>
                 </a>
               )}
@@ -201,16 +213,35 @@ export default function Guest() {
               className="relative flex h-[85vh] w-full max-w-5xl flex-col rounded-2xl bg-white overflow-hidden shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-                <span className="font-semibold text-sm text-gray-800 truncate">
+                <span className="font-semibold text-sm text-gray-800 truncate mr-3">
                   {previewFile.name}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setPreviewFile(null)}
-                  className="rounded-lg px-3 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100"
-                >
-                  Close
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={previewFile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 transition"
+                  >
+                    <ExternalLink className="h-3 w-3 text-gray-500" />
+                    <span>Open</span>
+                  </a>
+                  <a
+                    href={previewFile.downloadUrl || previewFile.url.replace("/upload/", "/upload/fl_attachment/")}
+                    download={previewFile.name}
+                    className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-blue-700 transition"
+                  >
+                    <Download className="h-3 w-3" />
+                    <span>Download</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewFile(null)}
+                    className="rounded-lg px-2.5 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100 transition cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
               <div className="flex-1 overflow-hidden bg-black/5">
                 <iframe

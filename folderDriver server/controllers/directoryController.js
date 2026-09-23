@@ -3,6 +3,7 @@ import cloudinary from "../config/cloudinary.js";
 import Directory from "../modles/directoryModel.js";
 import File from "../modles/fileModel.js";
 import { ROLES } from "../rbac/permission.js";
+import { attachFileUrls } from "../lib/cloudinaryUrlHelper.js";
 
 /**
  * Get directory contents (subdirectories and files) with metadata.
@@ -57,13 +58,13 @@ export const getDirectory = async (req, res, next) => {
       const createdDate =
         f.createdAt ||
         new Date(parseInt(f._id.toString().substring(0, 8), 16) * 1000);
-      return {
+      return attachFileUrls({
         ...f,
         type: "file",
         id: f._id,
         createdAt: createdDate,
         updatedAt: f.updatedAt || createdDate,
-      };
+      });
     });
 
     const rootCreated =

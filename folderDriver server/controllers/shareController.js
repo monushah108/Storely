@@ -3,6 +3,7 @@ import Share from "../modles/shareModel.js";
 import crypto from "crypto";
 import File from "../modles/fileModel.js";
 import Directory from "../modles/directoryModel.js";
+import { attachFileUrls } from "../lib/cloudinaryUrlHelper.js";
 
 export const getToken = async (req, res, next) => {
   const fileId = req.params.id;
@@ -76,12 +77,14 @@ export const getSharedfile = async (req, res, next) => {
       const createdDate =
         fileObj.createdAt ||
         new Date(parseInt(fileObj._id.toString().substring(0, 8), 16) * 1000);
-      return res.status(200).json({
-        ...fileObj,
-        itemType: "file",
-        createdAt: createdDate,
-        updatedAt: fileObj.updatedAt || createdDate,
-      });
+      return res.status(200).json(
+        attachFileUrls({
+          ...fileObj,
+          itemType: "file",
+          createdAt: createdDate,
+          updatedAt: fileObj.updatedAt || createdDate,
+        })
+      );
     }
 
     // 2. Try finding as Directory
@@ -117,13 +120,13 @@ export const getSharedfile = async (req, res, next) => {
         const fCreated =
           f.createdAt ||
           new Date(parseInt(f._id.toString().substring(0, 8), 16) * 1000);
-        return {
+        return attachFileUrls({
           ...f,
           type: "file",
           id: f._id,
           createdAt: fCreated,
           updatedAt: f.updatedAt || fCreated,
-        };
+        });
       });
 
       const dirCreated =
