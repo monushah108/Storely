@@ -2,18 +2,240 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Map blue utilities to dynamic theme CSS variables for customizable theme colors */
+@theme {
+  --color-blue-50: var(--theme-50);
+  --color-blue-100: var(--theme-100);
+  --color-blue-200: var(--theme-200);
+  --color-blue-300: var(--theme-300);
+  --color-blue-400: var(--theme-400);
+  --color-blue-500: var(--theme-500);
+  --color-blue-600: var(--theme-600);
+  --color-blue-700: var(--theme-700);
+  --color-blue-800: var(--theme-800);
+  --color-blue-900: var(--theme-900);
+  --color-blue-950: var(--theme-950);
+}
+
 /* Global smooth transition for background and border colors on theme switch */
 html {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* =========================================================
+   THEME ACCENT COLOR PRESETS (LIGHT MODE)
+   ========================================================= */
+
+/* 1. Neutral / Classic (Monochrome - Zero Blue) - DEFAULT */
+:root,
+html[data-theme-color="neutral"] {
+  --theme-50: #f4f4f5;
+  --theme-100: #e4e4e7;
+  --theme-200: #d4d4d8;
+  --theme-300: #a1a1aa;
+  --theme-400: #71717a;
+  --theme-500: #27272a;
+  --theme-600: #18181b;
+  --theme-700: #09090b;
+  --theme-800: #000000;
+  --theme-900: #000000;
+  --theme-950: #000000;
+}
+
+/* 2. Emerald Green */
+html[data-theme-color="emerald"] {
+  --theme-50: #ecfdf5;
+  --theme-100: #d1fae5;
+  --theme-200: #a7f3d0;
+  --theme-300: #6ee7b7;
+  --theme-400: #34d399;
+  --theme-500: #10b981;
+  --theme-600: #059669;
+  --theme-700: #047857;
+  --theme-800: #065f46;
+  --theme-900: #064e3b;
+  --theme-950: #022c22;
+}
+
+/* 3. Violet / Purple */
+html[data-theme-color="violet"] {
+  --theme-50: #f5f3ff;
+  --theme-100: #ede9fe;
+  --theme-200: #ddd6fe;
+  --theme-300: #c4b5fd;
+  --theme-400: #a78bfa;
+  --theme-500: #8b5cf6;
+  --theme-600: #7c3aed;
+  --theme-700: #6d28d9;
+  --theme-800: #5b21b6;
+  --theme-900: #4c1d95;
+  --theme-950: #2e1065;
+}
+
+/* 4. Amber / Warm Gold */
+html[data-theme-color="amber"] {
+  --theme-50: #fffbeb;
+  --theme-100: #fef3c7;
+  --theme-200: #fde68a;
+  --theme-300: #fcd34d;
+  --theme-400: #fbbf24;
+  --theme-500: #f59e0b;
+  --theme-600: #d97706;
+  --theme-700: #b45309;
+  --theme-800: #92400e;
+  --theme-900: #78350f;
+  --theme-950: #451a03;
+}
+
+/* 5. Rose / Crimson */
+html[data-theme-color="rose"] {
+  --theme-50: #fff1f2;
+  --theme-100: #ffe4e6;
+  --theme-200: #fecdd3;
+  --theme-300: #fda4af;
+  --theme-400: #fb7185;
+  --theme-500: #f43f5e;
+  --theme-600: #e11d48;
+  --theme-700: #be123c;
+  --theme-800: #9f1239;
+  --theme-900: #881337;
+  --theme-950: #4c0519;
+}
+
+/* 6. Ocean Blue */
+html[data-theme-color="blue"] {
+  --theme-50: #eff6ff;
+  --theme-100: #dbeafe;
+  --theme-200: #bfdbfe;
+  --theme-300: #93c5fd;
+  --theme-400: #60a5fa;
+  --theme-500: #3b82f6;
+  --theme-600: #2563eb;
+  --theme-700: #1d4ed8;
+  --theme-800: #1e40af;
+  --theme-900: #1e3a8a;
+  --theme-950: #172554;
+}
+
+/* =========================================================
+   CLASSIC DARK (TRUE NEUTRAL / CHARCOAL / ZINC - ZERO BLUE)
+   ========================================================= */
 html.dark {
   color-scheme: dark;
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: #09090b;
+  color: #f4f4f5;
+
+  /* Classic Dark neutral surfaces (replaces blue-tinted slate) */
+  --color-slate-950: #09090b;
+  --color-slate-900: #121214;
+  --color-slate-850: #18181b;
+  --color-slate-800: #222225;
+  --color-slate-700: #2f2f35;
+  --color-slate-600: #52525b;
+  --color-slate-500: #71717a;
+  --color-slate-400: #a1a1aa;
+  --color-slate-300: #d4d4d8;
+  --color-slate-200: #e4e4e7;
+  --color-slate-100: #f4f4f5;
+  --color-slate-50: #fafafa;
 }
 
 html.dark body {
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: #09090b;
+  color: #f4f4f5;
+}
+
+/* =========================================================
+   THEME ACCENT COLOR PRESETS (DARK MODE)
+   ========================================================= */
+
+/* Neutral in Classic Dark */
+html.dark:not([data-theme-color]),
+html.dark[data-theme-color="neutral"] {
+  --theme-50: #18181b;
+  --theme-100: #222225;
+  --theme-200: #2f2f35;
+  --theme-300: #52525b;
+  --theme-400: #a1a1aa;
+  --theme-500: #d4d4d8;
+  --theme-600: #27272a;
+  --theme-700: #3f3f46;
+  --theme-800: #52525b;
+  --theme-900: #e4e4e7;
+  --theme-950: #f4f4f5;
+}
+
+/* Emerald in Classic Dark */
+html.dark[data-theme-color="emerald"] {
+  --theme-50: #064e3b33;
+  --theme-100: #064e3b4d;
+  --theme-200: #04785766;
+  --theme-300: #059669;
+  --theme-400: #34d399;
+  --theme-500: #10b981;
+  --theme-600: #059669;
+  --theme-700: #047857;
+  --theme-800: #065f46;
+  --theme-900: #064e3b;
+  --theme-950: #022c22;
+}
+
+/* Violet in Classic Dark */
+html.dark[data-theme-color="violet"] {
+  --theme-50: #4c1d9533;
+  --theme-100: #4c1d954d;
+  --theme-200: #6d28d966;
+  --theme-300: #7c3aed;
+  --theme-400: #a78bfa;
+  --theme-500: #8b5cf6;
+  --theme-600: #7c3aed;
+  --theme-700: #6d28d9;
+  --theme-800: #5b21b6;
+  --theme-900: #4c1d95;
+  --theme-950: #2e1065;
+}
+
+/* Amber in Classic Dark */
+html.dark[data-theme-color="amber"] {
+  --theme-50: #78350f33;
+  --theme-100: #78350f4d;
+  --theme-200: #b4530966;
+  --theme-300: #d97706;
+  --theme-400: #fbbf24;
+  --theme-500: #f59e0b;
+  --theme-600: #d97706;
+  --theme-700: #b45309;
+  --theme-800: #92400e;
+  --theme-900: #78350f;
+  --theme-950: #451a03;
+}
+
+/* Rose in Classic Dark */
+html.dark[data-theme-color="rose"] {
+  --theme-50: #88133733;
+  --theme-100: #8813374d;
+  --theme-200: #be123c66;
+  --theme-300: #e11d48;
+  --theme-400: #fb7185;
+  --theme-500: #f43f5e;
+  --theme-600: #e11d48;
+  --theme-700: #be123c;
+  --theme-800: #9f1239;
+  --theme-900: #881337;
+  --theme-950: #4c0519;
+}
+
+/* Ocean Blue in Classic Dark */
+html.dark[data-theme-color="blue"] {
+  --theme-50: #1e3a8a33;
+  --theme-100: #1e3a8a4d;
+  --theme-200: #1d4ed866;
+  --theme-300: #2563eb;
+  --theme-400: #60a5fa;
+  --theme-500: #3b82f6;
+  --theme-600: #2563eb;
+  --theme-700: #1d4ed8;
+  --theme-800: #1e40af;
+  --theme-900: #1e3a8a;
+  --theme-950: #172554;
 }
