@@ -43,6 +43,18 @@ export default function AdminAccessVerify() {
   const [redeemAdminAccess] = useRedeemAdminAccessMutation();
 
   // ========================================
+  // REDIRECT IF ALREADY PRIVILEGED
+  // ========================================
+
+  useEffect(() => {
+    if (tokenData?.valid && user?.role && ["owner", "admin"].includes(user.role)) {
+      navigate("/admin", {
+        replace: true,
+      });
+    }
+  }, [tokenData, user, navigate]);
+
+  // ========================================
   // PASSWORD SUBMIT
   // ========================================
 
@@ -144,18 +156,6 @@ export default function AdminAccessVerify() {
       </div>
     );
   }
-
-  // ========================================
-  // REDIRECT IF ALREADY PRIVILEGED
-  // ========================================
-
-  useEffect(() => {
-    if (tokenData?.valid && user?.role && ["owner", "admin"].includes(user.role)) {
-      navigate("/admin", {
-        replace: true,
-      });
-    }
-  }, [tokenData, user, navigate]);
 
   // ========================================
   // AUTHENTICATION REQUIRED (401)

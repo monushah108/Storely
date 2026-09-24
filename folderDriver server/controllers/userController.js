@@ -20,9 +20,10 @@ export const register = async (req, res, next) => {
   }
 
   const { name, email, password } = data;
+  const normalizedEmail = email.toLowerCase().trim();
 
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(409).json({
         success: false,
@@ -36,7 +37,6 @@ export const register = async (req, res, next) => {
     try {
       const rootDirId = new Types.ObjectId();
       const userId = new Types.ObjectId();
-      const hashedPassword = await bcrypt.hash(password, 12);
 
       session.startTransaction();
 
@@ -44,7 +44,7 @@ export const register = async (req, res, next) => {
         [
           {
             _id: rootDirId,
-            name: `root-${email}`,
+            name: `root-${normalizedEmail}`,
             parentDirId: null,
             userId,
           },
@@ -57,8 +57,8 @@ export const register = async (req, res, next) => {
           {
             _id: userId,
             name,
-            email,
-            password: hashedPassword,
+            email: normalizedEmail,
+            password,
             rootDirId,
             role: "user",
           },
@@ -113,8 +113,9 @@ export const login = async (req, res, next) => {
     }
 
     const { email, password } = data;
+    const normalizedEmail = email.toLowerCase().trim();
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -151,8 +152,8 @@ export const login = async (req, res, next) => {
     res.cookie("sid", session._id, {
       httpOnly: true,
       signed: true,
-      sameSite: "none",
       secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 

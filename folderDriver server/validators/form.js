@@ -10,17 +10,20 @@ const clean = (value) =>
 const form = z.object({
   name: z
     .string()
-    .min(5, "Min characters should be 5")
-    .max(25, "Max characters should be 25")
+    .min(2, "Min characters should be 2")
+    .max(50, "Max characters should be 50")
     .optional()
     .transform(clean),
 
-  email: z.string().email("Valid email is required").transform(clean),
+  email: z
+    .string()
+    .email("Valid email is required")
+    .transform((val) => clean(val).toLowerCase().trim()),
 
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(10, "Password must be at most 10 characters"),
+    .min(6, "Password must be at least 6 characters")
+    .max(100, "Password must be at most 100 characters"),
 });
 
 export default form;
