@@ -47,58 +47,85 @@ It allows users to securely upload, organize, manage, and share files through a 
 
 ## ✨ Features
 
-### 👤 Authentication
+### 🌓 Theme Switcher Engine (Dark / Light / System)
+
+- **Tri-State Theme System**: Seamlessly switch between **Dark**, **Light**, and **System** (OS preference) modes.
+- **Zero-Flicker Persistence**: Instant theme application using `localStorage` (`storely_theme`) before DOM paint.
+- **Dynamic OS Listener**: Automatically adapts to operating system color changes via `window.matchMedia('(prefers-color-scheme: dark)')`.
+- **Tailwind CSS v4 Integration**: Configured with `@custom-variant dark (&:where(.dark, .dark *));` for class-level styling.
+- **Universal Availability**: Easily accessible theme switcher across the Landing page, User Dashboard, File Previewer, Guest Portal, and Admin Console.
+
+### 🔍 Advanced File Previewer (`/file/:id`)
+
+- **Interactive Canvas**: Floating frosted-glass toolbar with file metadata badges (file size, format tag, upload date).
+- **Image Inspection Tools**:
+  - Zoom In, Zoom Out, and Reset to 100% scale.
+  - 90-degree clockwise image rotation.
+  - Panning support when zoomed.
+- **Theater & Fullscreen Mode**: Distraction-free full-canvas viewing.
+- **Multi-Format Native Viewers**:
+  - High-res images (PNG, JPG, WebP, SVG, GIF) with responsive fit.
+  - HTML5 video player (MP4, WebM, MOV) with full controls.
+  - Audio waveform player (MP3, WAV, AAC, M4A).
+  - Embedded PDF viewer with one-click **Google Docs viewer fallback**.
+  - Direct download links for unsupported binary or archive files.
+- **Quick Share & Copy**: One-click preview link copier with toast feedback.
+
+### 🌐 Public Guest Sharing Experience (`/guest/:id`)
+
+- **Rich Hero Banner**: Displays shared folder/file identity, total size, item count, and owner avatar.
+- **Folder Content Explorer**:
+  - **Category Filter Pills**: Filter items by *Documents*, *Images*, *Media*, or *Archives* with live item counters.
+  - **Real-Time Search**: Instant filtering across all files and folders.
+  - **Dynamic Sorting**: Sort by newest, oldest, name (A-Z / Z-A), and size (largest / smallest).
+  - **Dual Layout Modes**: Switch between Grid Preview Tiles and Compact List Rows.
+- **Interactive File Preview Modal**: Full in-browser file preview for guests with Esc-key dismissal without requiring an account.
+
+### 🚀 Search Engine Optimization (SEO) & Metadata
+
+- **Dynamic Head Management**: Declarative `<SEO />` component powered by `@unhead/react`.
+- **Social Sharing Previews**: Auto-generates OpenGraph (`og:title`, `og:image`, etc.) and Twitter Cards.
+- **Google Structured Data**: Injects Schema.org JSON-LD (`WebApplication` / `BreadcrumbList`).
+- **Crawler Optimization**: Pre-configured `sitemap.xml` and `robots.txt` ensuring public discovery while strictly enforcing `noIndex` on `/admin/*` and private dashboard routes.
+
+### 👤 Authentication & Protected Routes
 
 - Email/password authentication
-- Google OAuth login
+- Google OAuth 2.0 login
 - GitHub OAuth login
-- JWT/session-based authentication
-- Protected routes
+- JWT / session-based authentication
+- Independent route security guards (`UserProtectedRoute` and `ProtectedRoutes`)
 - Secure password hashing
 
 ### 📁 File Management
 
-- Upload files
-- View uploaded files
-- Update file information
-- Delete files
-- File metadata management
-- Cloudinary-based file storage
+- Drag-and-drop & file picker uploads
+- Background upload monitoring widget
+- File renaming, downloading, and soft/hard deletion
+- File metadata inspection drawer
+- Cloudinary-based cloud storage
 
 ### 📂 Directory Management
 
-- Create directories
-- Organize files into folders
-- Navigate directory contents
-- Nested directory support
+- Create nested directories and subfolders
+- Interactive breadcrumb navigation with one-click ancestor jumping
+- Move, inspect, and organize files into folders
 
-### 🔗 File Sharing
+### 🛡️ Admin Dashboard & Governance
 
-- Share files with other users
-- Guest/shared file access
-- Public file viewing through share links
-
-### 🛡️ Admin Dashboard
-
-Administrators can:
-
-- Manage users
-- View users
-- Manage files
-- Delete files
-- Assign user roles
+- Executive KPI analytics (total users, files, storage consumed)
+- Live searchable and filterable user directory
+- Soft-deleted account recovery portal (Trash bin)
+- Role promotion and access delegation (Owner to Admin)
+- Admin file explorer with user system inspection
 
 ### 🔐 Security
 
-- Authentication middleware
-- Authorization middleware
-- Protected API endpoints
-- JWT/session validation
-- OAuth authentication
-- Environment-based secrets
-- Input validation
+- Authentication & authorization middleware
+- Protected API endpoints and role-based permissions
 - Owner-level file authorization
-- Role-based permission checks
+- Environment-based secrets management
+- Strict input validation and sanitization
 
 ---
 
@@ -530,21 +557,24 @@ VITE_API_URL=https://your-production-api-url.com
 
 ---
 
-## 📌 Future Improvements
+## 📌 Roadmap & Features Status
 
-Potential improvements for future versions include:
+### ✅ Recently Delivered
+- [x] **Universal Theme Toggle**: Dark, Light, and System modes with dynamic OS auto-detection.
+- [x] **Advanced File Previewer**: Multi-media native viewer with zoom, rotation, fullscreen, and Google Docs fallback.
+- [x] **Guest Share Portal**: Folder item browsing, category filtering, search, sort, and modal previews.
+- [x] **Search Engine Optimization (SEO)**: Full OpenGraph, JSON-LD structured data, XML Sitemap, and robots.txt.
+- [x] **Drag-and-Drop Uploads**: Floating widget with progress monitoring and error handling.
+- [x] **Real-Time Search & Sorting**: Dynamic filtering in Drive and Guest portals.
+- [x] **Trash & Recycle Bin**: Soft-deleted user recovery in Admin portal.
+- [x] **Responsive Mobile Experience**: Expandable search drawer and touch-friendly layouts.
 
-- File preview support
-- Drag-and-drop uploads
-- File search and filtering
-- Storage usage analytics
-- File versioning
-- Trash/recycle bin
-- Advanced sharing permissions
-- Email notifications
-- Activity history
-- Improved admin analytics
-- Responsive mobile experience
+### 🔮 Future Enhancements
+- [ ] File versioning & historical revisions
+- [ ] End-to-end client-side encryption for sensitive files
+- [ ] Real-time multi-user document collaboration
+- [ ] Automated email notifications for shared items
+- [ ] Activity audit history logs with exportable CSV/PDF reports
 
 ---
 

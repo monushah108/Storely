@@ -26,6 +26,43 @@ The **Storely Client** is the frontend single-page application (SPA) for the Sto
 
 ## ✨ Key Features
 
+### 🌓 Theme Switcher Engine (Dark / Light / System)
+- **Tri-State Theme System**: Seamless toggle between **Light**, **Dark**, and **System** (OS preference) modes.
+- **Instant Zero-Flicker Persistence**: Preserves user choice in `localStorage` (`storely_theme`) and applies classes synchronously before render.
+- **Dynamic OS Listener**: Automatically reacts to system theme changes via `window.matchMedia('(prefers-color-scheme: dark)')` when System mode is active.
+- **Tailwind CSS v4 Compatibility**: Native dark mode support using `@custom-variant dark (&:where(.dark, .dark *));` in `App.css`.
+- **Reusable `ThemeToggle`**: Flexible component supporting compact toggle pills, dropdown menus, and accessibility labels.
+
+### 🔍 Advanced File Previewer (`/file/:id`)
+- **Frosted Glass Floating Header**: Modern canvas with quick-access metadata pills (file size, format tag, upload date).
+- **Interactive Image Inspection**:
+  - Zoom in (`+`), Zoom out (`-`), and Reset to 100% scale.
+  - 90-degree clockwise image rotation button.
+  - Interactive panning in zoom mode.
+- **Theater & Fullscreen Mode**: Toggle fullscreen for distraction-free media inspection.
+- **Multi-Format Native Viewers**:
+  - High-resolution images (PNG, JPG, SVG, WebP, GIF) with responsive scaling.
+  - HTML5 video player (MP4, WebM, MOV) with full player controls.
+  - Audio waveform player (MP3, WAV, AAC, M4A) with centered track graphics.
+  - Native embedded PDF viewer with one-click **Google Docs viewer fallback**.
+  - Direct download links for unsupported binary or archive files.
+- **Share & Copy**: One-click preview link copier with instant toast notification.
+
+### 🌐 Public Guest Sharing Experience (`/guest/:id`)
+- **Hero Sharing Banner**: Displays shared file/folder identity, total size, item count, and owner profile avatar.
+- **Comprehensive Folder Explorer (`GuestFolderView`)**:
+  - **Category Filter Pills**: Quickly isolate *Documents*, *Images*, *Media*, or *Archives* with live item counters.
+  - **Live Search**: Instant real-time filter by file or directory name.
+  - **Flexible Sorting**: Sort by newest, oldest, name (A-Z / Z-A), and size (largest / smallest).
+  - **Grid & List Views**: Switch between image preview tiles and structured metadata rows.
+- **Interactive File Preview Modal**: Guest users can preview images, videos, audio, and documents inline with Esc-key closing without downloading or logging in.
+
+### 🚀 Enterprise SEO Architecture
+- **Dynamic `<SEO />` Component**: Declarative head tags managed via `@unhead/react`.
+- **Social Sharing Previews**: Auto-generates OpenGraph (`og:title`, `og:description`, `og:image`, `og:url`) and Twitter Cards.
+- **Structured Data**: Auto-injects Google-compliant Schema.org JSON-LD (`WebApplication` / `BreadcrumbList`).
+- **Crawler Optimization**: Pre-configured `sitemap.xml` and `robots.txt` ensuring public discovery while strictly enforcing `noIndex` on `/admin/*` and private pages.
+
 ### 📂 Drive Dashboard
 - **Google Drive Design**: Material design aesthetics with quick-access action drawer, sidebar navigation, and crisp typography.
 - **Dual View Modes**: Switch seamlessly between **Grid View** (with image previews and file-type badges) and **List View** (compact tabular data with metadata).
@@ -40,12 +77,6 @@ The **Storely Client** is the frontend single-page application (SPA) for the Sto
 - **Touch-Friendly Navigation**: Collapsible navigation sidebar drawer, accessible tap targets for options and actions, and backdrop dismissal.
 - **Adaptive Layouts**: Responsive grid systems and table columns that dynamically adjust without horizontal page overflow.
 
-### 🔗 Sharing & Public Guest Access
-- **Instant Secure Share Links**: Generate unique guest access links for any file or directory.
-- **Dedicated Guest View**: Clean public interface allowing recipients to preview and download shared items without requiring an account.
-- **Social Sharing**: One-click sharing directly to WhatsApp, Facebook, or clipboard copy.
-- **Revocation Control**: View all active shared links and revoke public access at any time.
-
 ### 🛡️ Admin Portal (RBAC)
 - **Role-Based Access Control**: Dedicated portal for administrators and owners.
 - **User Directory Management**: Inspect active and registered users, view login status, and search users.
@@ -53,9 +84,9 @@ The **Storely Client** is the frontend single-page application (SPA) for the Sto
 - **Role Delegation**: Owner-level interface for promoting users to administrators and updating administrative credentials.
 - **Admin File Explorer**: Administrative view to inspect user directories and file systems.
 
-### 🔐 Authentication & Session
+### 🔐 Authentication & Protected Routes
 - **Multi-Method Login**: Supports Email/Password credentials, Google OAuth, and GitHub OAuth.
-- **Protected Routing**: Guarded dashboard and admin routes with automatic session redirection on unauthorized access.
+- **Separate Route Guards**: Dedicated `UserProtectedRoute` and `ProtectedRoutes` for admin security and unauthorized redirects.
 - **User Profile Management**: Dropdown menu displaying cloud storage quotas, usage progress percentages, and account details.
 
 ---

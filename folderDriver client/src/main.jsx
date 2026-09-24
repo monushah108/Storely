@@ -5,16 +5,19 @@ import { Provider } from "react-redux";
 import { Store } from "./store/index.js";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
 
 createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={client_id}>
     <Provider store={Store}>
-      <ErrorBoundary>
-        <App />
-        <Toaster position="top-center" richColors />
-      </ErrorBoundary>
+      <ThemeProvider>
+        <ErrorBoundary>
+          <App />
+          <Toaster position="top-center" richColors />
+        </ErrorBoundary>
+      </ThemeProvider>
     </Provider>
   </GoogleOAuthProvider>,
 );

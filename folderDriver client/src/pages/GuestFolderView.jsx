@@ -108,23 +108,23 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
   return (
     <div className="space-y-5">
       {/* Control Bar: Search, Filters, Sort & View Switcher */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs transition">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs transition dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Search Box */}
           <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search files and folders..."
-              className="w-full rounded-xl border border-gray-200 bg-slate-50 py-2.5 pl-10 pr-9 text-sm text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-3 focus:ring-blue-100 transition"
+              className="w-full rounded-xl border border-gray-200 bg-slate-50 py-2.5 pl-10 pr-9 text-sm text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-3 focus:ring-blue-100 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900/40"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -135,31 +135,31 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
           <div className="flex items-center gap-3 self-end lg:self-auto">
             {/* Sort Dropdown */}
             <div className="relative flex items-center">
-              <ArrowUpDown className="absolute left-3 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
+              <ArrowUpDown className="absolute left-3 h-3.5 w-3.5 text-gray-400 pointer-events-none dark:text-slate-500" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="rounded-xl border border-gray-200 bg-white py-2 pl-8 pr-7 text-xs font-medium text-gray-700 hover:border-gray-300 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-100 transition appearance-none cursor-pointer"
+                className="rounded-xl border border-gray-200 bg-white py-2 pl-8 pr-7 text-xs font-medium text-gray-700 hover:border-gray-300 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-100 transition appearance-none cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600"
               >
-                <option value="date-desc">Newest First</option>
-                <option value="date-asc">Oldest First</option>
-                <option value="name-asc">Name (A to Z)</option>
-                <option value="name-desc">Name (Z to A)</option>
-                <option value="size-desc">Size (Largest)</option>
-                <option value="size-asc">Size (Smallest)</option>
+                <option value="date-desc" className="dark:bg-slate-900">Newest First</option>
+                <option value="date-asc" className="dark:bg-slate-900">Oldest First</option>
+                <option value="name-asc" className="dark:bg-slate-900">Name (A to Z)</option>
+                <option value="name-desc" className="dark:bg-slate-900">Name (Z to A)</option>
+                <option value="size-desc" className="dark:bg-slate-900">Size (Largest)</option>
+                <option value="size-asc" className="dark:bg-slate-900">Size (Smallest)</option>
               </select>
             </div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center rounded-xl border border-gray-200 bg-slate-50 p-1">
+            <div className="flex items-center rounded-xl border border-gray-200 bg-slate-50 p-1 dark:border-slate-800 dark:bg-slate-800/80">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
                 title="Grid View"
                 className={`flex h-8 w-8 items-center justify-center rounded-lg transition cursor-pointer ${
                   viewMode === "grid"
-                    ? "bg-white text-blue-600 shadow-xs font-semibold"
-                    : "text-gray-400 hover:text-gray-700"
+                    ? "bg-white text-blue-600 shadow-xs font-semibold dark:bg-slate-700 dark:text-blue-400"
+                    : "text-gray-400 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
                 }`}
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -170,8 +170,8 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                 title="List View"
                 className={`flex h-8 w-8 items-center justify-center rounded-lg transition cursor-pointer ${
                   viewMode === "list"
-                    ? "bg-white text-blue-600 shadow-xs font-semibold"
-                    : "text-gray-400 hover:text-gray-700"
+                    ? "bg-white text-blue-600 shadow-xs font-semibold dark:bg-slate-700 dark:text-blue-400"
+                    : "text-gray-400 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200"
                 }`}
               >
                 <ListIcon className="h-4 w-4" />
@@ -181,8 +181,8 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
         </div>
 
         {/* Filter Pills */}
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-gray-100 pt-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mr-1 flex items-center gap-1">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-gray-100 pt-3 dark:border-slate-800">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mr-1 flex items-center gap-1 dark:text-slate-400">
             <Layers className="h-3 w-3" /> Filter:
           </span>
 
@@ -200,7 +200,7 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
               className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition cursor-pointer ${
                 activeCategory === cat.id
                   ? "bg-blue-600 text-white shadow-xs font-semibold"
-                  : "bg-slate-100 text-gray-600 hover:bg-slate-200"
+                  : "bg-slate-100 text-gray-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
               }`}
             >
               <span>{cat.label}</span>
@@ -208,7 +208,7 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                 className={`rounded-full px-1.5 py-0.2 text-[10px] ${
                   activeCategory === cat.id
                     ? "bg-blue-700 text-white"
-                    : "bg-white text-gray-500 border border-gray-200"
+                    : "bg-white text-gray-500 border border-gray-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700"
                 }`}
               >
                 {cat.count}
@@ -219,20 +219,20 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
       </div>
 
       {/* Main Content Area */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
         {/* Section Header */}
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
-          <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 dark:border-slate-800">
+          <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2 dark:text-slate-100">
             <span>Folder Items</span>
-            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-600">
+            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 dark:border dark:border-blue-800/40">
               {totalShown} {totalShown === 1 ? "item" : "items"}
             </span>
           </h2>
 
           {data.size !== undefined && data.size > 0 && (
-            <span className="text-xs font-medium text-gray-500">
+            <span className="text-xs font-medium text-gray-500 dark:text-slate-400">
               Total folder size:{" "}
-              <strong className="text-gray-700">{formatBytes(data.size)}</strong>
+              <strong className="text-gray-700 dark:text-slate-200">{formatBytes(data.size)}</strong>
             </span>
           )}
         </div>
@@ -240,27 +240,27 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
         {/* 1. Subfolders Section */}
         {filteredDirectories.length > 0 && (
           <div className="mb-7">
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <Folder className="h-3.5 w-3.5 text-blue-600" />
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5 dark:text-slate-400">
+              <Folder className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               Folders ({filteredDirectories.length})
             </h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {filteredDirectories.map((dir) => (
                 <div
                   key={dir._id || dir.id}
-                  className="group relative flex items-center gap-3.5 rounded-xl border border-gray-200 bg-slate-50/70 p-3.5 transition-all hover:bg-white hover:border-blue-300 hover:shadow-sm"
+                  className="group relative flex items-center gap-3.5 rounded-xl border border-gray-200 bg-slate-50/70 p-3.5 transition-all hover:bg-white hover:border-blue-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-800/50 dark:hover:bg-slate-800 dark:hover:border-blue-500/40"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 text-blue-600 group-hover:scale-105 transition-transform">
-                    <Folder className="h-6 w-6 fill-blue-600 text-blue-600" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 text-blue-600 group-hover:scale-105 transition-transform dark:from-blue-500/20 dark:to-indigo-500/20 dark:text-blue-400">
+                    <Folder className="h-6 w-6 fill-blue-600 text-blue-600 dark:fill-blue-400 dark:text-blue-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <span
-                      className="block truncate font-semibold text-sm text-gray-800 group-hover:text-blue-600 transition-colors"
+                      className="block truncate font-semibold text-sm text-gray-800 group-hover:text-blue-600 transition-colors dark:text-slate-200 dark:group-hover:text-blue-400"
                       title={dir.name}
                     >
                       {dir.name}
                     </span>
-                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-gray-400">
+                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-slate-400">
                       <span>{dir.itemCount !== undefined ? `${dir.itemCount} items` : "Folder"}</span>
                       {dir.size ? (
                         <>
@@ -279,8 +279,8 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
         {/* 2. Files Section */}
         {filteredFiles.length > 0 ? (
           <div>
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-              <FileText className="h-3.5 w-3.5 text-gray-500" />
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5 dark:text-slate-400">
+              <FileText className="h-3.5 w-3.5 text-gray-500 dark:text-slate-400" />
               Files ({filteredFiles.length})
             </h3>
 
@@ -300,12 +300,12 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                   return (
                     <div
                       key={file._id || file.id}
-                      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:border-blue-400 hover:shadow-md"
+                      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:border-blue-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/90 dark:hover:border-blue-500/50"
                     >
                       {/* Top Preview Tile */}
                       <div
                         onClick={() => file.url && setPreviewFile(file)}
-                        className="relative flex h-36 w-full items-center justify-center overflow-hidden bg-slate-50/80 cursor-pointer border-b border-gray-100 group-hover:bg-slate-100/60 transition-colors"
+                        className="relative flex h-36 w-full items-center justify-center overflow-hidden bg-slate-50/80 cursor-pointer border-b border-gray-100 group-hover:bg-slate-100/60 transition-colors dark:bg-slate-950/50 dark:border-slate-800 dark:group-hover:bg-slate-800/50"
                       >
                         {isImage && file.url ? (
                           <img
@@ -316,10 +316,10 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                           />
                         ) : isPdf ? (
                           <div className="flex flex-col items-center justify-center gap-1.5 p-4 text-center">
-                            <div className="rounded-xl bg-red-50 p-2.5 text-red-500 shadow-2xs group-hover:scale-110 transition-transform">
-                              <FileText className="h-8 w-8 text-red-500" />
+                            <div className="rounded-xl bg-red-50 p-2.5 text-red-500 shadow-2xs group-hover:scale-110 transition-transform dark:bg-red-950/40 dark:text-red-400">
+                              <FileText className="h-8 w-8 text-red-500 dark:text-red-400" />
                             </div>
-                            <span className="rounded-md bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 tracking-wider">
+                            <span className="rounded-md bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 tracking-wider dark:bg-red-950/60 dark:text-red-300">
                               PDF DOCUMENT
                             </span>
                           </div>
@@ -328,7 +328,7 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                             <div className="scale-90 transition-transform group-hover:scale-100">
                               {RenderFileIcon(ext)}
                             </div>
-                            <span className="mt-1 font-mono text-[10px] font-bold uppercase text-gray-400">
+                            <span className="mt-1 font-mono text-[10px] font-bold uppercase text-gray-400 dark:text-slate-500">
                               .{ext}
                             </span>
                           </div>
@@ -336,8 +336,8 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
 
                         {/* Hover Overlay with Preview Badge */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 backdrop-blur-[2px] transition-opacity group-hover:opacity-100">
-                          <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm">
-                            <Eye className="h-3.5 w-3.5 text-blue-600" />
+                          <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm dark:bg-slate-800 dark:text-slate-100">
+                            <Eye className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                             Quick Preview
                           </span>
                         </div>
@@ -347,13 +347,13 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                       <div className="p-3.5 flex flex-col justify-between flex-1">
                         <div>
                           <p
-                            className="truncate text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors"
+                            className="truncate text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors dark:text-slate-200 dark:group-hover:text-blue-400"
                             title={file.name}
                           >
                             {file.name}
                           </p>
-                          <div className="mt-1 flex items-center gap-2 text-[11px] text-gray-400">
-                            <span className="font-semibold text-gray-500 uppercase">{ext}</span>
+                          <div className="mt-1 flex items-center gap-2 text-[11px] text-gray-400 dark:text-slate-400">
+                            <span className="font-semibold text-gray-500 uppercase dark:text-slate-400">{ext}</span>
                             <span>•</span>
                             <span>{formatBytes(file.size)}</span>
                             {file.createdAt && (
@@ -366,14 +366,14 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                         </div>
 
                         {/* Card Actions */}
-                        <div className="mt-3.5 flex items-center gap-2 pt-2 border-t border-gray-100">
+                        <div className="mt-3.5 flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-slate-800">
                           {file.url && (
                             <button
                               type="button"
                               onClick={() => setPreviewFile(file)}
-                              className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white py-1.5 text-xs font-medium text-gray-700 hover:bg-slate-50 transition cursor-pointer"
+                              className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg border border-gray-200 bg-white py-1.5 text-xs font-medium text-gray-700 hover:bg-slate-50 transition cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750"
                             >
-                              <Eye className="h-3.5 w-3.5 text-gray-500" />
+                              <Eye className="h-3.5 w-3.5 text-gray-500 dark:text-slate-400" />
                               <span>Preview</span>
                             </button>
                           )}
@@ -396,7 +396,7 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
               </div>
             ) : (
               /* LIST VIEW */
-              <div className="overflow-hidden rounded-xl border border-gray-200 divide-y divide-gray-100">
+              <div className="overflow-hidden rounded-xl border border-gray-200 divide-y divide-gray-100 dark:border-slate-800 dark:divide-slate-800">
                 {filteredFiles.map((file) => {
                   const ext = (file.extension || file.name.split(".").pop() || "").toLowerCase();
                   const resolvedDownload =
@@ -408,24 +408,24 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                   return (
                     <div
                       key={file._id || file.id}
-                      className="group flex flex-wrap items-center justify-between p-3 sm:px-4 sm:py-3 transition hover:bg-blue-50/30 gap-3"
+                      className="group flex flex-wrap items-center justify-between p-3 sm:px-4 sm:py-3 transition hover:bg-blue-50/30 gap-3 dark:hover:bg-slate-800/50"
                     >
                       <div
                         onClick={() => file.url && setPreviewFile(file)}
                         className="flex items-center gap-3.5 min-w-0 flex-1 cursor-pointer"
                       >
-                        <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg bg-slate-50 border border-gray-100 scale-90">
+                        <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg bg-slate-50 border border-gray-100 scale-90 dark:bg-slate-800 dark:border-slate-700">
                           {RenderFileIcon(ext)}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p
-                            className="truncate text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors"
+                            className="truncate text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors dark:text-slate-200 dark:group-hover:text-blue-400"
                             title={file.name}
                           >
                             {file.name}
                           </p>
-                          <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
-                            <span className="font-mono text-[10px] font-bold uppercase text-gray-500">
+                          <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5 dark:text-slate-400">
+                            <span className="font-mono text-[10px] font-bold uppercase text-gray-500 dark:text-slate-400">
                               .{ext}
                             </span>
                             <span>•</span>
@@ -446,9 +446,9 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
                           <button
                             type="button"
                             onClick={() => setPreviewFile(file)}
-                            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+                            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100 transition cursor-pointer dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                           >
-                            <Eye className="h-3.5 w-3.5 text-gray-500" />
+                            <Eye className="h-3.5 w-3.5 text-gray-500 dark:text-slate-400" />
                             <span>Preview</span>
                           </button>
                         )}
@@ -472,13 +472,13 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
         ) : (
           /* Empty / Search Filter Not Found */
           <div className="flex min-h-[240px] flex-col items-center justify-center p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 mb-3">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 mb-3 dark:bg-blue-950/60 dark:text-blue-400">
               <FolderOpen className="h-8 w-8" />
             </div>
-            <h3 className="font-bold text-gray-800 text-base">
+            <h3 className="font-bold text-gray-800 text-base dark:text-slate-100">
               {searchQuery ? "No matching files found" : "This shared folder is empty"}
             </h3>
-            <p className="mt-1 max-w-sm text-xs text-gray-400">
+            <p className="mt-1 max-w-sm text-xs text-gray-400 dark:text-slate-400">
               {searchQuery
                 ? `No items in this folder match your search term "${searchQuery}".`
                 : "No files or subfolders have been added to this shared folder yet."}
@@ -487,7 +487,7 @@ export default function GuestFolderView({ data, formatBytes, setPreviewFile }) {
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="mt-4 rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-slate-200 transition cursor-pointer"
+                className="mt-4 rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-slate-200 transition cursor-pointer dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
                 Clear Search
               </button>

@@ -23,6 +23,7 @@ import {
 } from "../../store/slices/AdminSlice";
 import CanAccess from "../components/CanAccess";
 import SEO from "../../components/common/SEO";
+import ThemeToggle from "../../components/common/ThemeToggle";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
@@ -364,47 +365,49 @@ export default function Layout() {
       {/* ================= RIGHT SIDE VIEW ================= */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Glassmorphic Top Header */}
-        <header className="sticky top-0 z-30 flex h-[70px] shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-30 flex h-[70px] shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur-md transition-colors dark:border-slate-800 dark:bg-slate-900/95 sm:px-6 lg:px-8">
           {/* Left Title / Breadcrumbs */}
           <div className="flex items-center gap-3.5">
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-100 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 lg:hidden"
             >
               <Menu size={19} />
             </button>
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-white sm:text-lg">
                   {title}
                 </h1>
-                <span className="hidden sm:inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                <span className="hidden sm:inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                   Console
                 </span>
               </div>
-              <p className="hidden text-xs text-slate-500 sm:block">
+              <p className="hidden text-xs text-slate-500 dark:text-slate-400 sm:block">
                 {subtitle}
               </p>
             </div>
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <ThemeToggle />
+
             <Link
               to="/dashboard"
-              className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50"
+              className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
-              <Cloud size={15} className="text-blue-600" />
+              <Cloud size={15} className="text-blue-600 dark:text-blue-400" />
               <span>Personal Drive</span>
             </Link>
 
-            <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-slate-50/80 py-1 pl-1 pr-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-white text-[11px] font-bold">
+            <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-slate-50/80 py-1 pl-1 pr-3 dark:border-slate-800 dark:bg-slate-800/80">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-white text-[11px] font-bold dark:bg-blue-600">
                 {user?.name?.charAt(0) || "A"}
               </div>
-              <span className="text-xs font-medium text-slate-700 max-w-[120px] truncate">
+              <span className="text-xs font-medium text-slate-700 dark:text-slate-200 max-w-[120px] truncate">
                 {user?.name || "Admin"}
               </span>
             </div>
@@ -412,7 +415,7 @@ export default function Layout() {
         </header>
 
         {/* ================= MAIN CONTENT ================= */}
-        <main className="min-h-0 flex-1 overflow-y-auto bg-slate-50/70 p-4 sm:p-6 lg:p-8">
+        <main className="min-h-0 flex-1 overflow-y-auto bg-slate-50/70 p-4 transition-colors dark:bg-slate-950 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
