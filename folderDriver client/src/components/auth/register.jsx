@@ -85,11 +85,11 @@ export default function Register() {
       <form onSubmit={handleRegister} className="space-y-4">
         {/* Full Name */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-slate-300">
             Full name or username
           </label>
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 dark:text-slate-500">
               <User className="h-4 w-4" />
             </div>
             <input
@@ -100,21 +100,21 @@ export default function Register() {
               onChange={handleChange}
               required
               autoComplete="name"
-              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900/40"
             />
           </div>
           {errors?.name && (
-            <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+            <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.name}</p>
           )}
         </div>
 
         {/* Email */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-slate-300">
             Email address
           </label>
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 dark:text-slate-500">
               <Mail className="h-4 w-4" />
             </div>
             <input
@@ -125,21 +125,21 @@ export default function Register() {
               onChange={handleChange}
               required
               autoComplete="email"
-              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-3.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900/40"
             />
           </div>
           {errors?.email && (
-            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+            <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.email}</p>
           )}
         </div>
 
         {/* Password */}
         <div>
-          <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+          <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-slate-300">
             Password
           </label>
           <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 dark:text-slate-500">
               <Lock className="h-4 w-4" />
             </div>
             <input
@@ -150,19 +150,19 @@ export default function Register() {
               onChange={handleChange}
               required
               autoComplete="new-password"
-              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition"
+              className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900/40"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           {errors?.password && (
-            <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+            <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.password}</p>
           )}
         </div>
 
@@ -193,11 +193,11 @@ export default function Register() {
 
         {/* Divider */}
         <div className="flex items-center gap-3 py-1">
-          <div className="h-px flex-1 bg-gray-200" />
-          <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
+          <div className="h-px flex-1 bg-gray-200 dark:bg-slate-800" />
+          <span className="text-xs text-gray-400 uppercase tracking-wider font-medium dark:text-slate-500">
             or sign up with
           </span>
-          <div className="h-px flex-1 bg-gray-200" />
+          <div className="h-px flex-1 bg-gray-200 dark:bg-slate-800" />
         </div>
 
         {/* Social Logins */}
@@ -209,9 +209,9 @@ export default function Register() {
             onClick={() => {
               window.location.href = `${import.meta.env.VITE_API_URL}/auth/github`;
             }}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white py-2.5 text-xs font-semibold text-gray-700 shadow-xs transition hover:bg-gray-50 active:scale-[0.99]"
+            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white py-2.5 text-xs font-semibold text-gray-700 shadow-xs transition hover:bg-gray-50 active:scale-[0.99] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750"
           >
-            <FaGithub className="h-4 w-4 text-gray-900" />
+            <FaGithub className="h-4 w-4 text-gray-900 dark:text-white" />
             <span>Sign up with GitHub</span>
           </button>
         </div>

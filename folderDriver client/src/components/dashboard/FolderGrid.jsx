@@ -22,7 +22,7 @@ export default function FolderGrid({
 
   return (
     <div className="mb-4 sm:mb-6">
-      <h2 className="mb-2 sm:mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+      <h2 className="mb-2 sm:mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">
         Folders ({folders.length})
       </h2>
 
@@ -45,30 +45,30 @@ export default function FolderGrid({
               title={tooltip}
               className={`group relative flex items-center justify-between rounded-xl border p-3 sm:p-3.5 transition select-none ${
                 isDeleting
-                  ? "cursor-not-allowed border-red-200 bg-red-50 text-red-600"
+                  ? "cursor-not-allowed border-red-200 bg-red-50 text-red-600 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-400"
                   : isSelected
-                    ? "border-blue-300 bg-blue-50/60 shadow-xs"
-                    : "cursor-pointer border-gray-200 bg-white hover:border-gray-300 hover:bg-[#f0f4f9]"
+                    ? "border-blue-300 bg-blue-50/60 shadow-xs dark:border-blue-500/60 dark:bg-blue-950/40"
+                    : "cursor-pointer border-gray-200 bg-white hover:border-gray-300 hover:bg-[#f0f4f9] dark:border-slate-800 dark:bg-slate-850/60 dark:hover:border-slate-700 dark:hover:bg-slate-800"
               }`}
             >
               {/* Folder Icon + Details */}
               <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
-                <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100">
+                <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-400 dark:group-hover:bg-blue-900/60">
                   {isDeleting ? (
                     <Loader2 className="h-4 w-4 animate-spin text-red-500" />
                   ) : (
-                    <Folder className="h-4 w-4 sm:h-5 sm:w-5 fill-blue-600 text-blue-600" />
+                    <Folder className="h-4 w-4 sm:h-5 sm:w-5 fill-blue-600 text-blue-600 dark:fill-blue-400 dark:text-blue-400" />
                   )}
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <p
-                    className="truncate text-sm font-semibold text-gray-800"
+                    className="truncate text-sm font-semibold text-gray-800 dark:text-slate-200"
                   >
                     {isDeleting ? `${folder.name.slice(0, 15)}... deleting` : folder.name}
                   </p>
-                  <div className="mt-0.5 flex items-center gap-1.5 text-[10px] sm:text-[11px] text-gray-400">
-                    <span className="font-medium text-gray-500">{detailsText}</span>
+                  <div className="mt-0.5 flex items-center gap-1.5 text-[10px] sm:text-[11px] text-gray-400 dark:text-slate-400">
+                    <span className="font-medium text-gray-500 dark:text-slate-400">{detailsText}</span>
                     <span>•</span>
                     <span title={`Created: ${formatDateTime(createdDate)}`}>{formatDateShort(createdDate)}</span>
                   </div>
@@ -87,7 +87,7 @@ export default function FolderGrid({
                       }}
                       title="Share folder"
                       aria-label="Share folder"
-                      className="hidden sm:flex h-7 w-7 items-center justify-center rounded-full text-gray-400 opacity-0 transition hover:bg-gray-200 hover:text-blue-600 group-hover:opacity-100"
+                      className="hidden sm:flex h-7 w-7 items-center justify-center rounded-full text-gray-400 opacity-0 transition hover:bg-gray-200 hover:text-blue-600 group-hover:opacity-100 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-blue-400 cursor-pointer"
                     >
                       <Share2 className="h-3.5 w-3.5" />
                     </button>
@@ -101,7 +101,7 @@ export default function FolderGrid({
                     }}
                     title="More actions"
                     aria-label="More actions"
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-200 hover:text-gray-700 opacity-90 sm:opacity-75 sm:group-hover:opacity-100 focus:opacity-100"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-200 hover:text-gray-700 opacity-90 sm:opacity-75 sm:group-hover:opacity-100 focus:opacity-100 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200 cursor-pointer"
                   >
                     <MoreVertical className="h-4 w-4" />
                   </button>

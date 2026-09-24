@@ -69,18 +69,18 @@ export default function DriveSidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 sm:w-72 max-w-[85vw] flex-col justify-between overflow-y-auto border-r border-gray-200 bg-[#f8fafd] p-3 sm:p-3.5 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:w-64 lg:max-w-none lg:shadow-none lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 sm:w-72 max-w-[85vw] flex-col justify-between overflow-y-auto border-r border-gray-200 bg-[#f8fafd] p-3 sm:p-3.5 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:w-64 lg:max-w-none lg:shadow-none lg:translate-x-0 dark:border-slate-800 dark:bg-slate-950 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex flex-col gap-4">
           {/* Mobile Header with Close */}
           <div className="flex items-center justify-between px-2 pt-1 lg:hidden">
-            <span className="text-base font-bold text-gray-800">Navigation</span>
+            <span className="text-base font-bold text-gray-800 dark:text-white">Navigation</span>
             <button
               type="button"
               onClick={onCloseMobile}
-              className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-200"
+              className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-200 dark:text-slate-400 dark:hover:bg-slate-800"
             >
               <X className="h-5 w-5" />
             </button>
@@ -91,28 +91,28 @@ export default function DriveSidebar({
             <button
               type="button"
               onClick={() => setNewMenuOpen((prev) => !prev)}
-              className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 hover:shadow-md active:scale-98"
+              className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 hover:shadow-md active:scale-98 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-700 dark:hover:bg-slate-850 cursor-pointer"
             >
-              <Plus className="h-5 w-5 text-blue-600" />
+              <Plus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <span>New</span>
             </button>
 
             {/* "+ New" Dropdown */}
             {newMenuOpen && (
-              <div className="absolute left-1 top-full z-50 mt-2 w-52 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg animate-in fade-in zoom-in-95">
+              <div className="absolute left-1 top-full z-50 mt-2 w-52 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg animate-in fade-in zoom-in-95 dark:border-slate-800 dark:bg-slate-900">
                 <button
                   type="button"
                   onClick={() => {
                     setNewMenuOpen(false);
                     onOpenCreateFolder();
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-blue-400 cursor-pointer"
                 >
-                  <FolderPlus className="h-4 w-4 text-blue-600" />
+                  <FolderPlus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>New folder</span>
                 </button>
 
-                <div className="my-1 border-t border-gray-100" />
+                <div className="my-1 border-t border-gray-100 dark:border-slate-800" />
 
                 <button
                   type="button"
@@ -120,9 +120,9 @@ export default function DriveSidebar({
                     setNewMenuOpen(false);
                     onTriggerFileUpload();
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-700"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-blue-400 cursor-pointer"
                 >
-                  <Upload className="h-4 w-4 text-blue-600" />
+                  <Upload className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>File upload</span>
                 </button>
               </div>
@@ -142,15 +142,15 @@ export default function DriveSidebar({
                     setActiveTab(item.id);
                     if (onCloseMobile) onCloseMobile();
                   }}
-                  className={`flex w-full items-center gap-3.5 rounded-full px-4 py-2.5 text-left text-sm font-medium transition ${
+                  className={`flex w-full items-center gap-3.5 rounded-full px-4 py-2.5 text-left text-sm font-medium transition cursor-pointer ${
                     isActive
-                      ? "bg-[#c2e7ff] text-[#001d35] font-semibold"
-                      : "text-gray-700 hover:bg-gray-200/70"
+                      ? "bg-[#c2e7ff] text-[#001d35] font-semibold dark:bg-blue-600/20 dark:text-blue-400"
+                      : "text-gray-700 hover:bg-gray-200/70 dark:text-slate-300 dark:hover:bg-slate-800/70"
                   }`}
                 >
                   <Icon
                     className={`h-4 w-4 ${
-                      isActive ? "text-blue-800" : "text-gray-500"
+                      isActive ? "text-blue-800 dark:text-blue-400" : "text-gray-500 dark:text-slate-400"
                     }`}
                   />
                   <span>{item.label}</span>
@@ -161,18 +161,18 @@ export default function DriveSidebar({
         </div>
 
         {/* Bottom Storage Widget */}
-        <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-xs">
-          <div className="mb-2 flex items-center justify-between text-xs text-gray-600">
+        <div className="rounded-xl border border-gray-200 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900 transition-colors">
+          <div className="mb-2 flex items-center justify-between text-xs text-gray-600 dark:text-slate-400">
             <div className="flex items-center gap-2">
-              <Cloud className="h-4 w-4 text-blue-600" />
-              <span className="font-semibold text-gray-800">Storage</span>
+              <Cloud className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <span className="font-semibold text-gray-800 dark:text-slate-200">Storage</span>
             </div>
-            <span className="font-semibold text-gray-700">
+            <span className="font-semibold text-gray-700 dark:text-slate-300">
               {storagePercentage.toFixed(0)}%
             </span>
           </div>
 
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-800">
             <div
               className={`h-full rounded-full transition-all duration-300 ${
                 storagePercentage >= 90
@@ -185,7 +185,7 @@ export default function DriveSidebar({
             />
           </div>
 
-          <div className="mt-2 text-[11px] text-gray-500">
+          <div className="mt-2 text-[11px] text-gray-500 dark:text-slate-400">
             {userData?.storage
               ? `${formatBytes(userData.storage.used)} of ${formatBytes(
                   userData.storage.limit,

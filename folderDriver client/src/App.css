@@ -9,4 +9,11 @@ html {
 
 html.dark {
   color-scheme: dark;
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+html.dark body {
+  background-color: #020617;
+  color: #f8fafc;
 }

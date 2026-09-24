@@ -23,7 +23,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
+    <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-slate-950 dark:text-slate-100 transition-colors">
       <SEO
         title="Storely - Secure Cloud Storage & File Sharing"
         description="Storely gives you a simple, secure place to upload, organize, preview, and share your files and folders with ease. Access your cloud drive anywhere."

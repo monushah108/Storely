@@ -31,7 +31,7 @@ export default function DirItem({
         flex items-center justify-between
         rounded-xl px-3 py-3 sm:px-4
         transition
-        ${isDeleting ? "opacity-50" : "hover:bg-slate-100"}
+        ${isDeleting ? "opacity-50" : "hover:bg-slate-100 dark:hover:bg-slate-800/60"}
       `}
           >
             {/* LEFT */}
@@ -45,11 +45,11 @@ export default function DirItem({
               </div>
 
               <div className="min-w-0">
-                <p className="max-w-[140px] truncate font-medium text-slate-700 sm:max-w-[250px] md:max-w-md">
+                <p className="max-w-[140px] truncate font-medium text-slate-700 dark:text-slate-200 sm:max-w-[250px] md:max-w-md">
                   {name}
                 </p>
 
-                <p className="text-xs uppercase text-gray-400 sm:text-sm">
+                <p className="text-xs uppercase text-gray-400 dark:text-slate-400 sm:text-sm">
                   {extension || "Folder"}
                 </p>
               </div>
@@ -62,9 +62,9 @@ export default function DirItem({
                 disabled={isDeleting}
                 onClick={() => handlerOpen(_id, extension)}
                 className="
-            rounded-lg p-2 text-slate-600
+            rounded-lg p-2 text-slate-600 dark:text-slate-400
             transition
-            hover:bg-blue-100 hover:text-blue-600
+            hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-950/50 dark:hover:text-blue-400
             disabled:cursor-not-allowed
             disabled:opacity-40
           "
@@ -82,9 +82,9 @@ export default function DirItem({
                   setNewName(name);
                 }}
                 className="
-            rounded-lg p-2 text-slate-600
+            rounded-lg p-2 text-slate-600 dark:text-slate-400
             transition
-            hover:bg-amber-100 hover:text-amber-600
+            hover:bg-amber-100 hover:text-amber-600 dark:hover:bg-amber-950/50 dark:hover:text-amber-400
             disabled:cursor-not-allowed
             disabled:opacity-40
           "
@@ -97,9 +97,9 @@ export default function DirItem({
                 disabled={isDeleting}
                 onClick={() => deleteData(_id, extension)}
                 className="
-            rounded-lg p-2 text-slate-600
+            rounded-lg p-2 text-slate-600 dark:text-slate-400
             transition
-            hover:bg-red-100 hover:text-red-600
+            hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-950/50 dark:hover:text-red-400
             disabled:cursor-not-allowed
             disabled:opacity-40
           "

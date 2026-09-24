@@ -106,17 +106,17 @@ export default function ChangeCredentials() {
     <div className="max-w-xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-bold text-slate-900">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
             {hasPassword ? "Change Master Admin Password" : "Set Initial Master Admin Password"}
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             This password protects temporary admin tokens and privileged operations.
           </p>
         </div>
 
         <Link
           to="/admin/settings"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
         >
           <ArrowLeft size={13} />
           <span>Back</span>
@@ -127,7 +127,7 @@ export default function ChangeCredentials() {
         {/* Current Password (if configured) */}
         {hasPassword && (
           <div>
-            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
               Current Admin Password
             </label>
             <div className="relative">
@@ -138,12 +138,12 @@ export default function ChangeCredentials() {
                 onChange={handleChange}
                 required
                 placeholder="Enter current password"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900/40"
               />
               <button
                 type="button"
                 onClick={() => toggleShow("current")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
               >
                 {showPassword.current ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
@@ -153,7 +153,7 @@ export default function ChangeCredentials() {
 
         {/* New Password */}
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             New Admin Password
           </label>
           <div className="relative">
@@ -165,12 +165,12 @@ export default function ChangeCredentials() {
               required
               minLength={6}
               placeholder="Minimum 6 characters"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900/40"
             />
             <button
               type="button"
               onClick={() => toggleShow("new")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
             >
               {showPassword.new ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
@@ -179,7 +179,7 @@ export default function ChangeCredentials() {
 
         {/* Confirm Password */}
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Confirm New Password
           </label>
           <div className="relative">
@@ -191,12 +191,12 @@ export default function ChangeCredentials() {
               required
               minLength={6}
               placeholder="Re-enter new password"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900/40"
             />
             <button
               type="button"
               onClick={() => toggleShow("confirm")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
             >
               {showPassword.confirm ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
@@ -207,7 +207,7 @@ export default function ChangeCredentials() {
         <div className="flex justify-end gap-3 pt-3">
           <Link
             to="/admin/settings"
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             Cancel
           </Link>

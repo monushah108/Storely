@@ -28,7 +28,7 @@ export default function FileGridView({
 
   return (
     <div>
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400">
         Files ({files.length})
       </h2>
 
@@ -53,16 +53,16 @@ export default function FileGridView({
               title={tooltip}
               className={`group relative flex flex-col overflow-hidden rounded-xl border transition select-none ${
                 isDeleting
-                  ? "cursor-not-allowed border-red-200 bg-red-50"
+                  ? "cursor-not-allowed border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/40"
                   : isSelected
-                    ? "border-blue-400 bg-blue-50/40 shadow-xs ring-1 ring-blue-400"
-                    : "cursor-pointer border-gray-200 bg-white hover:border-gray-300 hover:shadow-xs"
+                    ? "border-blue-400 bg-blue-50/40 shadow-xs ring-1 ring-blue-400 dark:border-blue-500 dark:bg-blue-950/40 dark:ring-blue-500/60"
+                    : "cursor-pointer border-gray-200 bg-white hover:border-gray-300 hover:shadow-xs dark:border-slate-800 dark:bg-slate-850/60 dark:hover:border-slate-700 dark:hover:bg-slate-800"
               }`}
             >
               {/* Preview Thumbnail Container */}
-              <div className="relative flex h-28 sm:h-32 w-full items-center justify-center overflow-hidden bg-[#f8fafd]">
+              <div className="relative flex h-28 sm:h-32 w-full items-center justify-center overflow-hidden bg-[#f8fafd] dark:bg-slate-900">
                 {file.extension && (
-                  <span className="absolute top-2 right-2 z-10 rounded border border-gray-200/70 bg-white/90 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-gray-600 shadow-xs">
+                  <span className="absolute top-2 right-2 z-10 rounded border border-gray-200/70 bg-white/90 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-gray-600 shadow-xs dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300">
                     {file.extension}
                   </span>
                 )}
@@ -77,7 +77,7 @@ export default function FileGridView({
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-white shadow-xs">
+                  <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-white shadow-xs dark:bg-slate-800">
                     {RenderFileIcon(file.extension || "")}
                   </div>
                 )}
@@ -88,14 +88,14 @@ export default function FileGridView({
                 <div className="min-w-0 flex-1 pr-1 sm:pr-1.5">
                   <p
                     className={`truncate text-xs font-semibold ${
-                      isDeleting ? "text-red-600" : "text-gray-800"
+                      isDeleting ? "text-red-600 dark:text-red-400" : "text-gray-800 dark:text-slate-200"
                     }`}
                   >
                     {isDeleting ? "Deleting..." : file.name}
                   </p>
 
-                  <div className="mt-0.5 sm:mt-1 flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-gray-400">
-                    <span className="font-semibold text-gray-600" title={exactBytes}>
+                  <div className="mt-0.5 sm:mt-1 flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-gray-400 dark:text-slate-400">
+                    <span className="font-semibold text-gray-600 dark:text-slate-400" title={exactBytes}>
                       {formattedSize}
                     </span>
                     <span>•</span>
@@ -114,7 +114,7 @@ export default function FileGridView({
                     }}
                     title="Options"
                     aria-label="File options"
-                    className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 opacity-90 sm:opacity-80 sm:group-hover:opacity-100"
+                    className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 opacity-90 sm:opacity-80 sm:group-hover:opacity-100 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200 cursor-pointer"
                   >
                     <MoreVertical className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </button>

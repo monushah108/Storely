@@ -70,7 +70,7 @@ export default function Layout() {
   const { title, subtitle } = getHeaderInfo();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-100 font-sans">
+    <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-950 font-sans">
       <SEO
         title={`${title} - Storely Admin`}
         description="Storely Administration Portal"

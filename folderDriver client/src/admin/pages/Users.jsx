@@ -164,34 +164,34 @@ export default function Users() {
       {/* ================= KPI STATS CARDS ================= */}
       <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {/* Total Users */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Total Users</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Users</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
               <UsersIcon size={18} />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
+            <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {stats.total}
             </span>
-            <span className="ml-2 text-[11px] text-slate-400">registered</span>
+            <span className="ml-2 text-[11px] text-slate-400 dark:text-slate-500">registered</span>
           </div>
         </div>
 
         {/* Active Sessions */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Active Online</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Active Online</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
               <Activity size={18} />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold tracking-tight text-emerald-600">
+            <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
               {stats.active}
             </span>
-            <span className="flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
+            <span className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Live sessions
             </span>
@@ -199,54 +199,54 @@ export default function Users() {
         </div>
 
         {/* Staff & Admins */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Admin Staff</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Admin Staff</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
               <ShieldCheck size={18} />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
+            <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {stats.staff}
             </span>
-            <span className="ml-2 text-[11px] text-indigo-600 font-medium">owners & admins</span>
+            <span className="ml-2 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">owners & admins</span>
           </div>
         </div>
 
         {/* In Trash */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs transition hover:shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Trash / Deleted</span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Trash / Deleted</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
               <Trash2 size={18} />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
+            <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {stats.deleted}
             </span>
-            <span className="ml-2 text-[11px] text-amber-600 font-medium">pending recover</span>
+            <span className="ml-2 text-[11px] text-amber-600 dark:text-amber-400 font-medium">pending recover</span>
           </div>
         </div>
       </div>
 
       {/* ================= SEARCH & CONTROLS TOOLBAR ================= */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between sm:gap-4 dark:border-slate-800 dark:bg-slate-900">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Search by name, email, or user ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-9 text-xs text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-3 focus:ring-blue-100"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-9 text-xs text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-3 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-800 dark:focus:ring-blue-900/40"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200"
             >
               <X size={14} />
             </button>
@@ -259,7 +259,7 @@ export default function Users() {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600"
           >
             <option value="all">All Roles</option>
             <option value="staff">Staff (Owner + Admin)</option>
@@ -272,7 +272,7 @@ export default function Users() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600"
           >
             <option value="all">All Sessions</option>
             <option value="online">Online Only</option>
@@ -284,7 +284,7 @@ export default function Users() {
             onClick={() => refetch()}
             disabled={isFetching}
             title="Refresh directory"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-100"
           >
             <RefreshCw size={15} className={isFetching ? "animate-spin text-blue-600" : ""} />
           </button>
@@ -292,16 +292,16 @@ export default function Users() {
       </div>
 
       {/* Showing count indicator */}
-      <div className="flex items-center justify-between px-1 text-xs text-slate-500">
+      <div className="flex items-center justify-between px-1 text-xs text-slate-500 dark:text-slate-400">
         <p>
-          Showing <span className="font-semibold text-slate-800">{filteredUsers.length}</span> of{" "}
-          <span className="font-semibold text-slate-800">{users.length}</span> accounts
+          Showing <span className="font-semibold text-slate-800 dark:text-slate-200">{filteredUsers.length}</span> of{" "}
+          <span className="font-semibold text-slate-800 dark:text-slate-200">{users.length}</span> accounts
         </p>
 
         {(searchQuery || roleFilter !== "all" || statusFilter !== "all") && (
           <button
             onClick={clearFilters}
-            className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+            className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400"
           >
             Reset Filters
           </button>

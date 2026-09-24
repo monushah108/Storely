@@ -71,15 +71,15 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
   return (
     <div className="flex flex-col h-full">
       {/* Section Header */}
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
               <Share2 className="h-4 w-4" />
             </div>
-            <h2 className="text-lg font-bold text-gray-900">Folder & File Sharing</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100">Folder & File Sharing</h2>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
             View, share, and manage public access links for your folders and files
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                 }
               }}
               defaultValue=""
-              className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-700 shadow-xs outline-none hover:border-gray-300 focus:border-blue-600"
+              className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-700 shadow-xs outline-none hover:border-gray-300 focus:border-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-600"
             >
               <option value="" disabled>+ Share a folder...</option>
               {availableFolders.map((f) => (
@@ -115,8 +115,8 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
           onClick={() => setFilter("folders")}
           className={`rounded-full px-3.5 py-1 text-xs font-semibold transition ${
             filter === "folders"
-              ? "bg-blue-100 text-blue-800"
-              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300"
+              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-750"
           }`}
         >
           Shared Folders ({folderCount})
@@ -127,8 +127,8 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
           onClick={() => setFilter("files")}
           className={`rounded-full px-3.5 py-1 text-xs font-semibold transition ${
             filter === "files"
-              ? "bg-blue-100 text-blue-800"
-              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300"
+              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-750"
           }`}
         >
           Shared Files ({fileCount})
@@ -139,8 +139,8 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
           onClick={() => setFilter("all")}
           className={`rounded-full px-3.5 py-1 text-xs font-semibold transition ${
             filter === "all"
-              ? "bg-blue-100 text-blue-800"
-              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300"
+              : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-750"
           }`}
         >
           All Shared ({sharedItems.length})
@@ -151,7 +151,7 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
       {isLoading ? (
         <div className="flex min-h-[260px] flex-col items-center justify-center gap-2">
           <Loader2 className="h-7 w-7 animate-spin text-blue-600" />
-          <span className="text-xs text-gray-500">Loading shared links...</span>
+          <span className="text-xs text-gray-500 dark:text-slate-400">Loading shared links...</span>
         </div>
       ) : isError ? (
         <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
@@ -159,20 +159,20 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
           <button
             type="button"
             onClick={refetch}
-            className="mt-2 rounded-full bg-gray-100 px-3.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+            className="mt-2 rounded-full bg-gray-100 px-3.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Retry
           </button>
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-[#f8fafd] p-8 text-center">
-          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-xs text-blue-600">
+        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-[#f8fafd] p-8 text-center dark:border-slate-800 dark:bg-slate-900/50">
+          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-xs text-blue-600 dark:bg-slate-800 dark:text-blue-400">
             <Users className="h-7 w-7" />
           </div>
-          <h3 className="text-sm font-bold text-gray-800">
+          <h3 className="text-sm font-bold text-gray-800 dark:text-slate-100">
             No {filter === "folders" ? "shared folders" : filter === "files" ? "shared files" : "shared items"} yet
           </h3>
-          <p className="mt-1 max-w-sm text-xs text-gray-500">
+          <p className="mt-1 max-w-sm text-xs text-gray-500 dark:text-slate-400">
             Right-click any folder or click the Share icon to generate a secure guest link that anyone can access.
           </p>
         </div>
@@ -193,14 +193,14 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
               <div
                 key={share._id}
                 title={tooltip}
-                className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-xs transition hover:border-gray-300"
+                className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-xs transition hover:border-gray-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-slate-800">
                         {isFolder ? (
-                          <Folder className="h-5 w-5 fill-blue-600 text-blue-600" />
+                          <Folder className="h-5 w-5 fill-blue-600 text-blue-600 dark:fill-blue-500 dark:text-blue-500" />
                         ) : (
                           <div className="scale-75">
                             {RenderFileIcon(share.item?.extension || "")}
@@ -209,15 +209,15 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p title={name} className="truncate text-sm font-semibold text-gray-800">
+                        <p title={name} className="truncate text-sm font-semibold text-gray-800 dark:text-slate-100">
                           {name}
                         </p>
-                        <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-gray-400">
-                          <span className="font-semibold text-blue-600">
+                        <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-gray-400 dark:text-slate-400">
+                          <span className="font-semibold text-blue-600 dark:text-blue-400">
                             {isFolder ? "Folder" : share.item?.extension?.toUpperCase() || "File"}
                           </span>
                           <span>•</span>
-                          <span className="font-medium text-gray-600">
+                          <span className="font-medium text-gray-600 dark:text-slate-300">
                             {detailsText}
                           </span>
                           <span>•</span>
@@ -229,20 +229,20 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                     </div>
                   </div>
 
-                  <div className="mt-2.5 rounded-lg bg-[#f8fafd] p-2 text-xs font-mono text-gray-500 truncate">
+                  <div className="mt-2.5 rounded-lg bg-[#f8fafd] p-2 text-xs font-mono text-gray-500 truncate dark:bg-slate-950/60 dark:text-slate-400">
                     {`${window.location.origin}/guest/${share.token}`}
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-slate-800">
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => handleCopyLink(share.token, share._id)}
                       className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition ${
                         isCopied
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                       }`}
                     >
                       {isCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
@@ -253,7 +253,7 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                       href={`/guest/${share.token}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       <span>View</span>
@@ -265,7 +265,7 @@ export default function SharedSection({ onOpenShareFolderModal, availableFolders
                     onClick={() => handleRevoke(share._id)}
                     disabled={isRevoking}
                     title="Stop sharing this link"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:hover:bg-red-950/40 dark:hover:text-red-400"
                   >
                     {isRevoking ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin text-red-500" />

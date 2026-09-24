@@ -6,7 +6,7 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-50 px-4">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-50 px-4 dark:bg-slate-950">
       <SEO
         title="Page Not Found (404) - Storely"
         description="The page you are looking for could not be found on Storely."
@@ -14,7 +14,7 @@ export default function NotFound() {
       />
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/40 blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/40 blur-3xl dark:bg-blue-900/10" />
       </div>
 
       <div className="relative w-full max-w-lg text-center">
@@ -24,26 +24,26 @@ export default function NotFound() {
             <Cloud size={21} className="text-white" strokeWidth={2.2} />
           </div>
 
-          <span className="text-xl font-bold tracking-tight text-gray-900">
+          <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
             Storely
           </span>
         </Link>
 
         {/* 404 Illustration */}
         <div className="mt-12">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50">
-            <SearchX size={38} strokeWidth={1.8} className="text-blue-600" />
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/40">
+            <SearchX size={38} strokeWidth={1.8} className="text-blue-600 dark:text-blue-400" />
           </div>
 
-          <p className="mt-7 text-8xl font-black tracking-tighter text-gray-900 sm:text-9xl">
+          <p className="mt-7 text-8xl font-black tracking-tighter text-gray-900 sm:text-9xl dark:text-slate-100">
             404
           </p>
 
-          <h1 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl dark:text-slate-100">
             Page not found
           </h1>
 
-          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500 sm:text-base">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500 sm:text-base dark:text-slate-400">
             Sorry, we couldn't find the page you're looking for. It may have
             been moved, deleted, or the URL might be incorrect.
           </p>
@@ -72,6 +72,10 @@ export default function NotFound() {
               hover:border-gray-300
               hover:bg-gray-50
               active:scale-[0.98]
+              dark:border-slate-800
+              dark:bg-slate-800
+              dark:text-slate-200
+              dark:hover:bg-slate-700
               sm:w-auto
             "
           >
@@ -107,7 +111,7 @@ export default function NotFound() {
         </div>
 
         {/* Footer */}
-        <p className="mt-10 text-xs text-gray-400">
+        <p className="mt-10 text-xs text-gray-400 dark:text-slate-500">
           If you think this is a mistake, check the URL and try again.
         </p>
       </div>

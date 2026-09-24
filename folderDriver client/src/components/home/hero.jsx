@@ -11,23 +11,23 @@ export default function Hero({ data }) {
           <div className="grid items-center gap-14 lg:grid-cols-2">
             {/* Hero text */}
             <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-400">
                 <Cloud className="h-3.5 w-3.5" />
                 Simple cloud storage
               </div>
 
-              <h1 className="max-w-xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              <h1 className="max-w-xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
                 Keep your files organized and easy to access.
               </h1>
 
-              <p className="mt-5 max-w-lg text-base leading-7 text-gray-500 sm:text-lg">
+              <p className="mt-5 max-w-lg text-base leading-7 text-gray-500 sm:text-lg dark:text-slate-400">
                 Storely gives you a simple place to upload, organize, and manage
                 your files without the clutter.
               </p>
               {data ? (
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className=" mt-8  inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                  className="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 shadow-xs cursor-pointer"
                 >
                   Dashboard
                   <ArrowRight className="h-4 w-4" />
@@ -36,7 +36,7 @@ export default function Hero({ data }) {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <button
                     onClick={() => navigate("/auth/register")}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 shadow-xs cursor-pointer"
                   >
                     Get started
                     <ArrowRight className="h-4 w-4" />
@@ -44,7 +44,7 @@ export default function Hero({ data }) {
 
                   <button
                     onClick={() => navigate("/auth/login")}
-                    className="rounded-lg border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                    className="rounded-lg border border-gray-200 bg-white px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 cursor-pointer dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
                     Sign in
                   </button>
@@ -52,17 +52,17 @@ export default function Hero({ data }) {
               )}
 
               <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2">
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
                   <Check className="h-3.5 w-3.5 text-green-500" />
                   Easy to use
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
                   <Check className="h-3.5 w-3.5 text-green-500" />
                   Secure storage
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-400">
                   <Check className="h-3.5 w-3.5 text-green-500" />
                   Simple sharing
                 </div>
@@ -71,17 +71,17 @@ export default function Hero({ data }) {
 
             {/* Product preview */}
             <div className="relative">
-              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 {/* Fake header */}
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4 dark:border-slate-800">
                   <div>
-                    <p className="text-xs text-gray-400">Storely</p>
-                    <h3 className="mt-1 text-lg font-semibold text-gray-800">
+                    <p className="text-xs text-gray-400 dark:text-slate-500">Storely</p>
+                    <h3 className="mt-1 text-lg font-semibold text-gray-800 dark:text-slate-100">
                       My Files
                     </h3>
                   </div>
 
-                  <button className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white">
+                  <button className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white shadow-xs">
                     <Upload className="h-3.5 w-3.5" />
                     Upload
                   </button>
@@ -93,15 +93,15 @@ export default function Hero({ data }) {
                     (folder) => (
                       <div
                         key={folder}
-                        className="rounded-lg border border-gray-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/30"
+                        className="rounded-lg border border-gray-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/30 dark:border-slate-800 dark:bg-slate-850 dark:hover:border-blue-500/40 dark:hover:bg-slate-800/40"
                       >
                         <Folder className="h-6 w-6 text-blue-500" />
 
-                        <p className="mt-3 text-sm font-medium text-gray-700">
+                        <p className="mt-3 text-sm font-medium text-gray-700 dark:text-slate-200">
                           {folder}
                         </p>
 
-                        <p className="mt-1 text-xs text-gray-400">12 files</p>
+                        <p className="mt-1 text-xs text-gray-400 dark:text-slate-500">12 files</p>
                       </div>
                     ),
                   )}
@@ -109,7 +109,7 @@ export default function Hero({ data }) {
 
                 {/* Files */}
                 <div className="mt-5">
-                  <p className="mb-3 text-xs font-medium text-gray-500">
+                  <p className="mb-3 text-xs font-medium text-gray-500 dark:text-slate-400">
                     Recent files
                   </p>
 
@@ -117,17 +117,17 @@ export default function Hero({ data }) {
                     {["Project.pdf", "Resume.pdf", "design.png"].map((file) => (
                       <div
                         key={file}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2.5"
+                        className="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2.5 dark:border-slate-800 dark:bg-slate-850/50"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-lg bg-blue-50" />
+                          <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400" />
 
-                          <span className="text-xs font-medium text-gray-600">
+                          <span className="text-xs font-medium text-gray-600 dark:text-slate-300">
                             {file}
                           </span>
                         </div>
 
-                        <span className="text-[10px] text-gray-400">
+                        <span className="text-[10px] text-gray-400 dark:text-slate-500">
                           2.4 MB
                         </span>
                       </div>
@@ -137,16 +137,16 @@ export default function Hero({ data }) {
               </div>
 
               {/* Small floating security card */}
-              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm sm:flex">
-                <div className="rounded-lg bg-green-50 p-2">
-                  <Lock className="h-4 w-4 text-green-600" />
+              <div className="absolute -bottom-5 -left-5 hidden items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm sm:flex dark:border-slate-800 dark:bg-slate-850">
+                <div className="rounded-lg bg-green-50 p-2 dark:bg-green-950/40">
+                  <Lock className="h-4 w-4 text-green-600 dark:text-green-400" />
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-gray-700">
+                  <p className="text-xs font-medium text-gray-700 dark:text-slate-200">
                     Your files are protected
                   </p>
-                  <p className="mt-0.5 text-[10px] text-gray-400">
+                  <p className="mt-0.5 text-[10px] text-gray-400 dark:text-slate-500">
                     Secure access
                   </p>
                 </div>
@@ -157,18 +157,18 @@ export default function Hero({ data }) {
       </section>
 
       {/* Features */}
-      <section className="border-y border-gray-200 bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-y border-gray-200 bg-white px-4 py-20 sm:px-6 lg:px-8 dark:border-slate-800 dark:bg-slate-900/50 transition-colors">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-xl">
-            <p className="text-sm font-medium text-blue-600">
+            <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
               EVERYTHING YOU NEED
             </p>
 
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
               A simple way to manage your files.
             </h2>
 
-            <p className="mt-3 text-sm leading-6 text-gray-500">
+            <p className="mt-3 text-sm leading-6 text-gray-500 dark:text-slate-400">
               Storely keeps your files organized so you can spend less time
               managing them and more time using them.
             </p>
@@ -197,42 +197,27 @@ export default function Hero({ data }) {
       </section>
 
       {/* Simple CTA */}
-
       <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-colors">
           {data ? (
             /* Logged in CTA */
             <div className="px-6 py-12 text-center sm:px-12">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
-                <Cloud className="h-6 w-6 text-blue-600" />
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60">
+                <Cloud className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
 
-              <h2 className="mt-5 text-3xl font-bold text-gray-900">
+              <h2 className="mt-5 text-3xl font-bold text-gray-900 dark:text-white">
                 Your files are waiting.
               </h2>
 
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500">
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500 dark:text-slate-400">
                 Continue managing your files, create folders, upload new files,
                 and keep everything organized in your Storely dashboard.
               </p>
 
               <button
                 onClick={() => navigate("/dashboard")}
-                className="
-            mt-6
-            inline-flex
-            items-center
-            gap-2
-            rounded-lg
-            bg-blue-600
-            px-5
-            py-3
-            text-sm
-            font-medium
-            text-white
-            transition
-            hover:bg-blue-700
-          "
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 shadow-xs cursor-pointer"
               >
                 Go to dashboard
                 <ArrowRight className="h-4 w-4" />
@@ -241,32 +226,18 @@ export default function Hero({ data }) {
           ) : (
             /* Logged out CTA */
             <div className="px-6 py-12 text-center sm:px-12">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Ready to organize your files?
               </h2>
 
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500">
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-gray-500 dark:text-slate-400">
                 Create your Storely account and start keeping everything in one
                 simple place.
               </p>
 
               <button
                 onClick={() => navigate("/auth/register")}
-                className="
-            mt-6
-            inline-flex
-            items-center
-            gap-2
-            rounded-lg
-            bg-blue-600
-            px-5
-            py-3
-            text-sm
-            font-medium
-            text-white
-            transition
-            hover:bg-blue-700
-          "
+                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 shadow-xs cursor-pointer"
               >
                 Create your account
                 <ArrowRight className="h-4 w-4" />
@@ -281,14 +252,14 @@ export default function Hero({ data }) {
 
 function Feature({ icon: Icon, title, description }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-        <Icon className="h-5 w-5 text-blue-600" />
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 dark:border-slate-800 dark:bg-slate-850/60">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60">
+        <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
       </div>
 
-      <h3 className="mt-5 text-base font-semibold text-gray-800">{title}</h3>
+      <h3 className="mt-5 text-base font-semibold text-gray-800 dark:text-slate-100">{title}</h3>
 
-      <p className="mt-2 text-sm leading-6 text-gray-500">{description}</p>
+      <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-slate-400">{description}</p>
     </div>
   );
 }

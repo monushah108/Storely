@@ -103,7 +103,7 @@ export default function DirectoryView() {
           ops.handleUploadFiles(e.dataTransfer.files);
         }
       }}
-      className="flex h-screen w-screen flex-col overflow-hidden bg-[#f8fafd]"
+      className="flex h-screen w-screen flex-col overflow-hidden bg-[#f8fafd] dark:bg-slate-950 transition-colors"
     >
       <SEO
         title={
@@ -139,8 +139,8 @@ export default function DirectoryView() {
         />
 
         {/* Main Content Card (Google Drive Material Design) */}
-        <main className="m-1 sm:m-2 sm:mr-3 flex flex-1 flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-gray-200 bg-white shadow-xs">
-          <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2.5 sm:px-6 sm:py-3">
+        <main className="m-1 sm:m-2 sm:mr-3 flex flex-1 flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-gray-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 transition-colors">
+          <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2.5 sm:px-6 sm:py-3 dark:border-slate-800">
             <DriveBreadcrumbs currentFolder={currentFolder} isRoot={isRoot} />
           </div>
 
