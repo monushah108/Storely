@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import { ArrowRight, Cloud, Loader2 } from "lucide-react";
 import { useFetchUserQuery } from "../store/slices/UserSlice";
+import SEO from "../components/common/SEO";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -21,6 +22,11 @@ export default function Auth() {
   if (data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f8fafd] px-4 py-8">
+        <SEO
+          title="Account - Storely"
+          description="Your active Storely session."
+          noIndex={true}
+        />
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-xs">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
             <Cloud className="h-7 w-7" />

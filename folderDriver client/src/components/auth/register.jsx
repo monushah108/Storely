@@ -6,6 +6,7 @@ import { Loader2, Mail, Lock, User, Eye, EyeOff, CheckCircle2 } from "lucide-rea
 
 import GoogleBtn from "../ui/OauthBth";
 import AuthCard from "./AuthCard";
+import SEO from "../common/SEO";
 import { useRegisterMutation } from "../../store/slices/UserSlice";
 
 export default function Register() {
@@ -66,13 +67,21 @@ export default function Register() {
   };
 
   return (
-    <AuthCard
-      title="Create your account"
-      subtitle="Free cloud storage for all your files"
-      footerText="Already have an account?"
-      footerLinkText="Sign in"
-      footerLinkTo="/auth/login"
-    >
+    <>
+      <SEO
+        title="Create an Account - Storely Cloud Storage"
+        description="Join Storely today for free cloud storage. Upload, store, organize, and share your documents and media with ease."
+        keywords="storely register, create account, free cloud storage, sign up drive, storely cloud"
+        canonical="/auth/register"
+        ogImage="/login.png"
+      />
+      <AuthCard
+        title="Create your account"
+        subtitle="Free cloud storage for all your files"
+        footerText="Already have an account?"
+        footerLinkText="Sign in"
+        footerLinkTo="/auth/login"
+      >
       <form onSubmit={handleRegister} className="space-y-4">
         {/* Full Name */}
         <div>
@@ -208,5 +217,6 @@ export default function Register() {
         </div>
       </form>
     </AuthCard>
+    </>
   );
 }

@@ -1,11 +1,17 @@
 import { ArrowLeft, Cloud, Home, SearchX } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import SEO from "../components/common/SEO";
 
 export default function NotFound() {
   const navigate = useNavigate();
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gray-50 px-4">
+      <SEO
+        title="Page Not Found (404) - Storely"
+        description="The page you are looking for could not be found on Storely."
+        noIndex={true}
+      />
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/40 blur-3xl" />

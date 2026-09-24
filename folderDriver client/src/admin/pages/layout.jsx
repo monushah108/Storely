@@ -12,6 +12,7 @@ import {
   useLogoutAdminMutation,
 } from "../../store/slices/AdminSlice";
 import CanAccess from "../components/CanAccess";
+import SEO from "../../components/common/SEO";
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,11 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100">
+      <SEO
+        title="Admin Portal - Storely"
+        description="Storely Administration Portal"
+        noIndex={true}
+      />
       {/* ================= MOBILE OVERLAY ================= */}
       {open && (
         <div

@@ -1,11 +1,17 @@
 import { AlertCircle, ArrowLeft, Home, RefreshCw } from "lucide-react";
 import { Link, useRouteError } from "react-router-dom";
+import SEO from "../components/common/SEO";
 
 export default function ErrorPage() {
   const error = useRouteError();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <SEO
+        title="Error - Storely"
+        description="An unexpected error occurred on Storely."
+        noIndex={true}
+      />
       <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
         {/* Icon */}
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50">

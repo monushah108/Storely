@@ -9,6 +9,7 @@ import {
   useRedeemAdminAccessMutation,
   useVerfiyAccessTokenQuery,
 } from "../../store/slices/AdminSlice.js";
+import SEO from "../../components/common/SEO";
 
 export default function AdminAccessVerify() {
   const { token } = useParams();
@@ -163,6 +164,11 @@ export default function AdminAccessVerify() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <SEO
+        title="Admin Verification - Storely"
+        description="Verify admin access token"
+        noIndex={true}
+      />
       <div className="w-full max-w-md">
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
           {/* Header */}

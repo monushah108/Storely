@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import AuthCard from "./AuthCard";
+import SEO from "../common/SEO";
 
 export default function PasswordForm() {
   const [password, setPassword] = useState("");
@@ -49,13 +50,19 @@ export default function PasswordForm() {
   };
 
   return (
-    <AuthCard
-      title="Set account password"
-      subtitle="Enter a secure password for your Storely account"
-      footerText="Return to"
-      footerLinkText="Dashboard"
-      footerLinkTo="/dashboard"
-    >
+    <>
+      <SEO
+        title="Set Account Password - Storely"
+        description="Enter a secure password for your Storely account."
+        noIndex={true}
+      />
+      <AuthCard
+        title="Set account password"
+        subtitle="Enter a secure password for your Storely account"
+        footerText="Return to"
+        footerLinkText="Dashboard"
+        footerLinkTo="/dashboard"
+      >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-1.5 block text-xs font-semibold text-gray-700">
@@ -101,5 +108,6 @@ export default function PasswordForm() {
         </button>
       </form>
     </AuthCard>
+    </>
   );
 }

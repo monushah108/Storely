@@ -15,6 +15,7 @@ import SharedSection from "./components/dashboard/SharedSection";
 import DriveModalsGroup from "./components/dashboard/DriveModalsGroup";
 import { filterAndSortItems } from "./components/dashboard/driveHelpers";
 import { useDriveOperations } from "./components/dashboard/useDriveOperations";
+import SEO from "./components/common/SEO";
 
 export default function DirectoryView() {
   const param = useParams();
@@ -104,6 +105,16 @@ export default function DirectoryView() {
       }}
       className="flex h-screen w-screen flex-col overflow-hidden bg-[#f8fafd]"
     >
+      <SEO
+        title={
+          currentFolder?.name
+            ? `${currentFolder.name} - Storely Drive`
+            : "My Drive - Storely Cloud Storage"
+        }
+        description="Manage, view, and organize your cloud files and folders in Storely Drive."
+        noIndex={true}
+      />
+
       <DriveDropzone isDragging={isDragging} />
 
       <DriveHeader

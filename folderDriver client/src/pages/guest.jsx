@@ -17,6 +17,7 @@ import {
 import { toast, Toaster } from "sonner";
 import GuestFolderView from "./GuestFolderView";
 import RenderFileIcon from "../hook/RenderFileIcon";
+import SEO from "../components/common/SEO";
 
 export default function Guest() {
   const { id } = useParams();
@@ -141,6 +142,19 @@ export default function Guest() {
 
   return (
     <div className="min-h-screen bg-[#f8fafd] p-4 sm:p-6 md:p-8">
+      <SEO
+        title={
+          data?.name
+            ? `${data.name} - Shared on Storely`
+            : "Shared Content - Storely"
+        }
+        description={
+          data?.name
+            ? `View and download ${data.name} shared with you securely on Storely.`
+            : "View and download shared files securely on Storely."
+        }
+        noIndex={true}
+      />
       <Toaster richColors position="top-center" />
       <div className="mx-auto max-w-6xl space-y-5">
         {/* Main Shared Header */}

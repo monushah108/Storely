@@ -13,6 +13,7 @@ import {
   Video as VideoIcon,
   Image as ImageIcon,
 } from "lucide-react";
+import SEO from "../components/common/SEO";
 import { useOpenFileMutation } from "../store/slices/Flieslice";
 
 export default function FileView() {
@@ -94,6 +95,19 @@ export default function FileView() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-3 sm:p-6">
+      <SEO
+        title={
+          fileData?.name
+            ? `${fileData.name} - Storely File Preview`
+            : "File Preview - Storely"
+        }
+        description={
+          fileData?.name
+            ? `Preview and download ${fileData.name} securely on Storely.`
+            : "Preview and download files securely on Storely."
+        }
+        noIndex={true}
+      />
       <div className="mx-auto max-w-7xl space-y-4">
         {/* Navigation & Actions Header */}
         <div className="flex items-center justify-between">

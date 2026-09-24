@@ -6,6 +6,7 @@ import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 import GoogleBtn from "../ui/OauthBth";
 import AuthCard from "./AuthCard";
+import SEO from "../common/SEO";
 import { useLoginMutation } from "../../store/slices/UserSlice";
 
 export default function Login() {
@@ -34,14 +35,22 @@ export default function Login() {
   };
 
   return (
-    <AuthCard
-      title="Sign in to your account"
-      subtitle="to continue to Storely Drive"
-      footerText="Don’t have an account?"
-      footerLinkText="Create account"
-      footerLinkTo="/auth/register"
-    >
-      <form onSubmit={handleLogin} className="space-y-4">
+    <>
+      <SEO
+        title="Sign In - Storely Cloud Storage"
+        description="Sign in to your Storely account to access your cloud files, personal folders, and shared media securely."
+        keywords="storely login, sign in cloud storage, access drive, secure login"
+        canonical="/auth/login"
+        ogImage="/login.png"
+      />
+      <AuthCard
+        title="Sign in to your account"
+        subtitle="to continue to Storely Drive"
+        footerText="Don’t have an account?"
+        footerLinkText="Create account"
+        footerLinkTo="/auth/register"
+      >
+        <form onSubmit={handleLogin} className="space-y-4">
         {/* Email Field */}
         <div>
           <label className="mb-1.5 block text-xs font-semibold text-gray-700">
@@ -138,5 +147,6 @@ export default function Login() {
         </div>
       </form>
     </AuthCard>
+    </>
   );
 }

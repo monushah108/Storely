@@ -1,0 +1,19 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+# Disallow admin portal completely from crawling and indexing
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
+
+# Disallow private user authenticated workspaces
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /dashboard/*
+
+# Allow public landing and authentication pages
+Allow: /
+Allow: /auth/login
+Allow: /auth/register
+
+# Sitemap location
+Sitemap: https://storely.app/sitemap.xml
