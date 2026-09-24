@@ -95,30 +95,30 @@ export default function AdminAccessVerify() {
 
   if (checkingToken) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-sm text-gray-500">Verifying access link...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="text-sm text-gray-500 dark:text-slate-400">Verifying access link...</div>
       </div>
     );
   }
 
   if (access) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-slate-950">
         <div className="w-full max-w-md">
-          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
             {/* Header */}
-            <div className="border-b border-gray-200 px-6 py-5">
+            <div className="border-b border-gray-200 px-6 py-5 dark:border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                  <FaClock size={15} className="text-gray-500" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-slate-800">
+                  <FaClock size={15} className="text-gray-500 dark:text-slate-400" />
                 </div>
 
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-800">
+                  <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
                     Access Pending
                   </h1>
 
-                  <p className="mt-0.5 text-xs text-gray-400">
+                  <p className="mt-0.5 text-xs text-gray-400 dark:text-slate-400">
                     Your admin access is being processed.
                   </p>
                 </div>
@@ -127,12 +127,12 @@ export default function AdminAccessVerify() {
 
             {/* Body */}
             <div className="p-6">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                <p className="text-xs font-medium text-slate-700">
+              <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-850">
+                <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
                   Access request pending
                 </p>
 
-                <p className="mt-1 text-[11px] leading-5 text-gray-400">
+                <p className="mt-1 text-[11px] leading-5 text-gray-400 dark:text-slate-400">
                   Your password was verified successfully. Please wait for admin
                   access to be activated.
                 </p>
@@ -163,27 +163,27 @@ export default function AdminAccessVerify() {
   // ========================================
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-slate-950">
       <SEO
         title="Admin Verification - Storely"
         description="Verify admin access token"
         noIndex={true}
       />
       <div className="w-full max-w-md">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
           {/* Header */}
-          <div className="border-b border-gray-200 px-6 py-5">
+          <div className="border-b border-gray-200 px-6 py-5 dark:border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                <FaKey size={15} className="text-gray-500" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-slate-800">
+                <FaKey size={15} className="text-gray-500 dark:text-slate-400" />
               </div>
 
               <div>
-                <h1 className="text-lg font-semibold text-slate-800">
+                <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
                   Admin Access
                 </h1>
 
-                <p className="mt-0.5 text-xs text-gray-400">
+                <p className="mt-0.5 text-xs text-gray-400 dark:text-slate-400">
                   Verify your password to continue.
                 </p>
               </div>
@@ -193,7 +193,7 @@ export default function AdminAccessVerify() {
           {/* Body */}
           <form onSubmit={handleSubmit} className="p-6">
             <div>
-              <label className="mb-2 block text-xs font-medium text-gray-500">
+              <label className="mb-2 block text-xs font-medium text-gray-500 dark:text-slate-400">
                 Admin password
               </label>
 
@@ -204,14 +204,14 @@ export default function AdminAccessVerify() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter admin password"
                   disabled={verifying}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-700 outline-none transition placeholder:text-gray-300 focus:border-gray-400 disabled:cursor-not-allowed disabled:bg-gray-50"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-700 outline-none transition placeholder:text-gray-300 focus:border-gray-400 disabled:cursor-not-allowed disabled:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:disabled:bg-slate-850"
                 />
 
                 <button
                   type="button"
                   disabled={verifying}
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed dark:text-slate-400 dark:hover:text-slate-200"
                 >
                   {showPassword ? (
                     <FaEyeSlash size={14} />
@@ -225,14 +225,14 @@ export default function AdminAccessVerify() {
             <button
               type="submit"
               disabled={verifying}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2.5 text-xs font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2.5 text-xs font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               <FaLock size={11} />
 
               {verifying ? "Verifying..." : "Verify & Continue"}
             </button>
 
-            <p className="mt-4 text-center text-[11px] leading-5 text-gray-400">
+            <p className="mt-4 text-center text-[11px] leading-5 text-gray-400 dark:text-slate-500">
               Your password is verified securely and is never stored in your
               browser.
             </p>

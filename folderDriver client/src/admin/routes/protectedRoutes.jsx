@@ -45,18 +45,18 @@ export default function ProtectedRoutes({ children }) {
   // User is authenticated, but doesn't have owner or admin privileges (403 Forbidden)
   if (!["owner", "admin"].includes(user.role)) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-12 text-slate-800">
-        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg shadow-slate-100">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-8 ring-amber-500/10">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 text-slate-800 dark:text-slate-200">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg shadow-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 ring-8 ring-amber-500/10 dark:bg-amber-950/40 dark:text-amber-400">
             <ShieldAlert size={28} />
           </div>
 
-          <h1 className="mt-5 text-xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-5 text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Admin Access Required
           </h1>
 
-          <p className="mt-2 text-xs leading-relaxed text-slate-500">
-            You are signed in as <span className="font-semibold text-slate-700">{user.email}</span>, but your account does not have administrative privileges for the Storely Admin Suite.
+          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+            You are signed in as <span className="font-semibold text-slate-700 dark:text-slate-300">{user.email}</span>, but your account does not have administrative privileges for the Storely Admin Suite.
           </p>
 
           <div className="mt-6 flex flex-col gap-2.5">
@@ -70,7 +70,7 @@ export default function ProtectedRoutes({ children }) {
 
             <Link
               to="/"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               <ArrowLeft size={14} />
               <span>Back to Home</span>

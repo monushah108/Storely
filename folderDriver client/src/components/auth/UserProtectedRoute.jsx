@@ -13,21 +13,21 @@ export default function UserProtectedRoute() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8fafd] px-4">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#f8fafd] dark:bg-slate-950 px-4">
         <div className="flex flex-col items-center gap-4">
           <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-500/20">
             <Cloud className="h-7 w-7 text-white" />
-            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white">
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-slate-900">
               <span className="h-2.5 w-2.5 animate-ping rounded-full bg-blue-600" />
             </span>
           </div>
 
           <div className="text-center">
-            <h3 className="text-sm font-semibold text-slate-800">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
               Opening Storely Drive
             </h3>
-            <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-slate-400">
-              <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
+            <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
+              <Loader2 className="h-3 w-3 animate-spin text-blue-600 dark:text-blue-400" />
               Securing session...
             </p>
           </div>
