@@ -2,6 +2,7 @@ import Users from "../pages/Users.jsx";
 import Recover from "../pages/recover.jsx";
 import Layout from "../pages/layout.jsx";
 import FileExplorer from "../pages/fileExplorer.jsx";
+import Staff from "../pages/staff.jsx";
 
 import ProtectedRoutes from "./protectedRoutes.jsx";
 import GrantAdminAccess from "../pages/grantAcess.jsx";
@@ -27,26 +28,29 @@ export default function privateRoutes() {
           index: true,
           element: <Users />,
         },
-
+        {
+          path: "users",
+          element: <Users />,
+        },
         {
           path: "recover",
           element: <Recover />,
         },
-
         {
           path: "access",
           element: <GrantAdminAccess />,
         },
-
+        {
+          path: "staff",
+          element: <Staff />,
+        },
         {
           path: "data/:userId",
           element: <FileExplorer />,
-          children: [
-            {
-              path: ":dirId",
-              element: <FileExplorer />,
-            },
-          ],
+        },
+        {
+          path: "data/:userId/:dirId",
+          element: <FileExplorer />,
         },
 
         // =========================

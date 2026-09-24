@@ -1,13 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  FiArrowLeft,
-  FiSearch,
-  FiShield,
-  FiUser,
-  FiCheck,
-} from "react-icons/fi";
+  ArrowLeft,
+  Search,
+  ShieldCheck,
+  User,
+  Check,
+  Shield,
+  Sparkles,
+  UserCheck,
+  X,
+  AlertCircle,
+} from "lucide-react";
 
 import {
   useGetUsersQuery,
@@ -23,7 +28,6 @@ export default function GrantAdminAccess() {
   const [role, setRole] = useState("admin");
 
   const { data: profile } = useGetProfileQuery();
-
   const {
     data: users = [],
     isLoading,
@@ -36,10 +40,10 @@ export default function GrantAdminAccess() {
 
   const filteredUsers = users.filter((user) => {
     const value = search.toLowerCase();
-
     return (
       user.name?.toLowerCase().includes(value) ||
-      user.email?.toLowerCase().includes(value)
+      user.email?.toLowerCase().includes(value) ||
+      user.id?.toLowerCase().includes(value)
     );
   });
 
@@ -52,7 +56,7 @@ export default function GrantAdminAccess() {
     e.preventDefault();
 
     if (!selectedUser) {
-      toast.error("Please select a user");
+      toast.error("Please select a user to update permissions");
       return;
     }
 
@@ -64,8 +68,8 @@ export default function GrantAdminAccess() {
 
       toast.success(
         role === "admin"
-          ? `${selectedUser.name} is now an admin`
-          : "Admin access removed",
+          ? `Administrative privileges granted to ${selectedUser.name || selectedUser.email}`
+          : `Admin access removed for ${selectedUser.name || selectedUser.email}`
       );
 
       setSelectedUser(null);
@@ -76,244 +80,200 @@ export default function GrantAdminAccess() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
-      {/* Header */}
-      <div>
+    <div className="mx-auto w-full max-w-4xl space-y-6">
+      {/* Top Header */}
+      <div className="flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-gray-700"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:bg-slate-50"
         >
-          <FiArrowLeft size={16} />
-          Back
+          <ArrowLeft size={14} />
+          <span>Back</span>
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50">
-            <FiShield className="text-blue-600" size={21} />
-          </div>
+        <span className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
+          <Sparkles size={12} /> Owner Governance Action
+        </span>
+      </div>
 
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">Admin Access</h1>
-
-            <p className="mt-1 text-sm text-gray-500">
-              Grant or remove admin access for users.
-            </p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+          <UserCheck size={22} />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">
+            Grant & Revoke Admin Access
+          </h1>
+          <p className="text-xs text-slate-500">
+            Delegate administrative capabilities or demote accounts back to standard user roles.
+          </p>
         </div>
       </div>
 
-      {/* Form */}
-      <form
-        onSubmit={handleGrantAccess}
-        className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6"
-      >
-        {/* Search */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">
-            Select user
-          </label>
-
-          <div className="relative">
-            <FiSearch
-              size={17}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setSelectedUser(null);
-              }}
-              placeholder="Search by name or email..."
-              className="
-                w-full rounded-xl border border-gray-200
-                bg-white py-2.5 pl-10 pr-4
-                text-sm text-gray-700
-                outline-none transition
-                placeholder:text-gray-400
-                focus:border-blue-400
-                focus:ring-2 focus:ring-blue-100
-              "
-            />
-          </div>
-        </div>
-
-        {/* User results */}
-        {search && !selectedUser && (
-          <div className="mt-2 max-h-60 overflow-y-auto rounded-xl border border-gray-200 bg-white">
-            {isLoading ? (
-              <div className="px-4 py-6 text-center text-sm text-gray-400">
-                Loading users...
-              </div>
-            ) : isError ? (
-              <div className="px-4 py-6 text-center text-sm text-red-500">
-                Failed to load users.
-              </div>
-            ) : filteredUsers.length === 0 ? (
-              <div className="px-4 py-6 text-center text-sm text-gray-400">
-                No users found.
-              </div>
-            ) : (
-              filteredUsers.map((user) => (
-                <button
-                  type="button"
-                  key={user.id}
-                  onClick={() => handleSelectUser(user)}
-                  className="
-                    flex w-full items-center gap-3
-                    border-b border-gray-100
-                    px-4 py-3 text-left
-                    transition last:border-0
-                    hover:bg-gray-50
-                  "
-                >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                    {user.picture ? (
-                      <img
-                        src={user.picture}
-                        alt={user.name || "User"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <FiUser className="text-gray-400" />
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-700">
-                      {user.name || "Unknown user"}
-                    </p>
-
-                    <p className="truncate text-xs text-gray-400">
-                      {user.email}
-                    </p>
-                  </div>
-
-                  <span
-                    className={`rounded-full px-2 py-1 text-[11px] font-medium ${
-                      user.role === "admin"
-                        ? "bg-purple-50 text-purple-600"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    {user.role}
-                  </span>
-                </button>
-              ))
-            )}
-          </div>
-        )}
-
-        {/* Selected user */}
-        {selectedUser && (
-          <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
-                {selectedUser.picture ? (
-                  <img
-                    src={selectedUser.picture}
-                    alt={selectedUser.name || "User"}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <FiUser className="text-gray-400" size={20} />
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-800">
-                  {selectedUser.name || "Unknown user"}
-                </p>
-
-                <p className="truncate text-xs text-gray-500">
-                  {selectedUser.email}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedUser(null)}
-                className="text-xs font-medium text-blue-600 hover:text-blue-700"
-              >
-                Change
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Access level */}
-        {selectedUser && (
-          <div className="mt-5">
-            <label className="mb-2 block text-sm font-medium text-slate-700">
-              Access level
+      {/* Main 2-Column Form Card */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs">
+        <form onSubmit={handleGrantAccess} className="space-y-6">
+          {/* Step 1: User Picker */}
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600">
+              1. Select User
             </label>
 
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="
-                w-full rounded-xl border border-gray-200
-                bg-white px-3 py-2.5
-                text-sm text-gray-700
-                outline-none
-                focus:border-blue-400
-                focus:ring-2 focus:ring-blue-100
-              "
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-        )}
+            <div className="relative">
+              <Search
+                size={16}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search user by name or email..."
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-9 text-xs text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-3 focus:ring-blue-100"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
 
-        {/* Warning */}
-        {selectedUser && role === "admin" && (
-          <div className="mt-5 rounded-xl border border-amber-100 bg-amber-50 p-4">
-            <div className="flex gap-3">
-              <FiShield className="mt-0.5 shrink-0 text-amber-600" size={18} />
-
-              <div>
-                <p className="text-sm font-medium text-amber-800">
-                  Admin access
+            {/* User Selection List */}
+            <div className="mt-3 max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/30 divide-y divide-slate-100">
+              {filteredUsers.length === 0 ? (
+                <p className="p-4 text-center text-xs text-slate-400">
+                  No accounts found matching "{search}"
                 </p>
+              ) : (
+                filteredUsers.map((user) => {
+                  const isSelected = selectedUser?.id === user.id;
 
-                <p className="mt-1 text-xs leading-5 text-amber-700">
-                  This user will be able to enter the admin panel and access
-                  administrative features allowed for the admin role.
+                  return (
+                    <div
+                      key={user.id}
+                      onClick={() => handleSelectUser(user)}
+                      className={`flex cursor-pointer items-center justify-between p-3 transition ${
+                        isSelected
+                          ? "bg-blue-50/80 font-medium"
+                          : "hover:bg-slate-100/70"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-600 text-xs font-bold">
+                          {user.name?.charAt(0)?.toUpperCase() || "U"}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-semibold text-slate-900">
+                            {user.name || "User"}
+                          </p>
+                          <p className="truncate text-[11px] text-slate-500">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 capitalize">
+                          {user.role}
+                        </span>
+                        {isSelected && (
+                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-white">
+                            <Check size={12} strokeWidth={3} />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {selectedUser && (
+              <p className="mt-2 text-xs text-blue-600 font-medium">
+                Selected: <span className="font-bold">{selectedUser.name}</span> ({selectedUser.email})
+              </p>
+            )}
+          </div>
+
+          {/* Step 2: Role Selector Cards */}
+          <div>
+            <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-600">
+              2. Assign Role & Permissions
+            </label>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {/* Admin Card */}
+              <div
+                onClick={() => setRole("admin")}
+                className={`cursor-pointer rounded-2xl border p-4.5 transition-all ${
+                  role === "admin"
+                    ? "border-blue-500 bg-blue-50/40 ring-2 ring-blue-500/20"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={18} className="text-blue-600" />
+                    <span className="text-sm font-bold text-slate-900">Administrator</span>
+                  </div>
+                  <input
+                    type="radio"
+                    name="role"
+                    checked={role === "admin"}
+                    onChange={() => setRole("admin")}
+                    className="accent-blue-600"
+                  />
+                </div>
+                <p className="mt-2 text-xs text-slate-600">
+                  Full administrative permissions. Can inspect stored files, manage user directories, recover soft-deleted accounts, and terminate active sessions.
+                </p>
+              </div>
+
+              {/* Standard User Card */}
+              <div
+                onClick={() => setRole("user")}
+                className={`cursor-pointer rounded-2xl border p-4.5 transition-all ${
+                  role === "user"
+                    ? "border-blue-500 bg-blue-50/40 ring-2 ring-blue-500/20"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <User size={18} className="text-slate-600" />
+                    <span className="text-sm font-bold text-slate-900">Standard User</span>
+                  </div>
+                  <input
+                    type="radio"
+                    name="role"
+                    checked={role === "user"}
+                    onChange={() => setRole("user")}
+                    className="accent-blue-600"
+                  />
+                </div>
+                <p className="mt-2 text-xs text-slate-600">
+                  Standard cloud storage access. Does not have access to the Admin Portal, user directory, or system security settings.
                 </p>
               </div>
             </div>
           </div>
-        )}
 
-        {/* Submit */}
-        <div className="mt-6 flex justify-end">
-          <button
-            type="submit"
-            disabled={!selectedUser || updating}
-            className="
-              inline-flex items-center gap-2
-              rounded-xl bg-blue-600
-              px-5 py-2.5
-              text-sm font-medium text-white
-              transition
-              hover:bg-blue-700
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-            "
-          >
-            <FiCheck size={16} />
-
-            {updating
-              ? "Updating..."
-              : role === "admin"
-                ? "Grant Admin Access"
-                : "Update Access"}
-          </button>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div className="flex justify-end pt-2">
+            <button
+              type="submit"
+              disabled={!selectedUser || updating}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {updating ? "Saving Changes..." : "Apply Role Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

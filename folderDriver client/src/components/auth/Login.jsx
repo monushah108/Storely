@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { FaGithub } from "react-icons/fa";
 import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
@@ -16,6 +16,7 @@ export default function Login() {
 
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,7 +28,10 @@ export default function Login() {
     try {
       await login({ email: email.trim(), password }).unwrap();
       toast.success("Welcome back! Signed in successfully");
-      navigate("/dashboard");
+      const destination = location.state?.from?.pathname
+        ? `${location.state.from.pathname}${location.state.from.search || ""}`
+        : "/dashboard";
+      navigate(destination, { replace: true });
     } catch (err) {
       const error = err?.data?.error || err?.data?.message || "Login failed. Please check your credentials.";
       toast.error(error);

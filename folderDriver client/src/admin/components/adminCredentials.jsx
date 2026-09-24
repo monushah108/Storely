@@ -1,48 +1,41 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  Lock,
+  Key,
+  Copy,
+  Check,
+  Plus,
+  Trash2,
+  Clock,
+  ShieldCheck,
+  AlertCircle,
+  ExternalLink,
+} from "lucide-react";
 import {
   useClearAccessTokenMutation,
   useGenerateAccessTokenMutation,
   useGetAdminCredentialsQuery,
 } from "../../store/slices/AdminSlice";
-import { FaCheck, FaCopy, FaKey, FaPlus, FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 export default function AdminCredentials() {
-  const { data: credentialStatus } = useGetAdminCredentialsQuery();
+  const { data: credentialStatus, refetch } = useGetAdminCredentialsQuery();
   const [generateAccessToken] = useGenerateAccessTokenMutation();
   const [clearAccessToken] = useClearAccessTokenMutation();
-
-  // ========================================
-  // TOKEN STATE
-  // ========================================
 
   const [expiresInDays, setExpiresInDays] = useState(7);
   const [generatedToken, setGeneratedToken] = useState("");
   const [generatedUrl, setGeneratedUrl] = useState("");
-
   const [generatedExpiresAt, setGeneratedExpiresAt] = useState("");
 
   const [generatingToken, setGeneratingToken] = useState(false);
   const [clearingToken, setClearingToken] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // ========================================
-  // PASSWORD STATUS
-  // ========================================
-
   const hasPassword = credentialStatus?.hasPassword ?? false;
-
-  // ========================================
-  // EXISTING ACCESS TOKEN
-  // ========================================
-
   const accessToken = credentialStatus?.accessToken ?? null;
-
-  const hasActiveToken = accessToken?.active === true || !!accessToken?.url;
-
-  // ========================================
-  // GENERATE TOKEN
-  // ========================================
+  const hasActiveToken = accessToken?.active === true || Boolean(accessToken?.url);
 
   const handleGenerateToken = async () => {
     try {
@@ -53,282 +46,214 @@ export default function AdminCredentials() {
         expiryDate: expiresInDays,
       }).unwrap();
 
-      /*
-       * Expected backend response:
-       *
-       * {
-       *   success: true,
-       *   token: "...",
-       *   accessUrl: "/admin/verify/...",
-       *   expiresAt: "..."
-       * }
-       */
-
       setGeneratedToken(data.token || "");
       setGeneratedUrl(data.accessUrl || "");
       setGeneratedExpiresAt(data.expiresAt || "");
+      toast.success("Temporary access key generated successfully!");
+      refetch();
     } catch (error) {
-      console.error("Failed to generate access token:", error);
+      toast.error(error?.data?.message || "Failed to generate access token");
     } finally {
       setGeneratingToken(false);
     }
   };
 
-  // ========================================
-  // CLEAR TOKEN
-  // ========================================
-
   const handleClearToken = async () => {
+    if (!window.confirm("Revoke active temporary admin access key?")) return;
+
     try {
       setClearingToken(true);
-
       await clearAccessToken().unwrap();
-
       setGeneratedToken("");
       setGeneratedUrl("");
       setGeneratedExpiresAt("");
       setCopied(false);
+      toast.success("Access key revoked successfully");
+      refetch();
     } catch (error) {
-      console.error("Failed to clear access token:", error);
+      toast.error(error?.data?.message || "Failed to clear access token");
     } finally {
       setClearingToken(false);
     }
   };
 
-  // ========================================
-  // COPY URL
-  // ========================================
-
   const handleCopy = async () => {
-    const url = generatedUrl || accessToken?.url;
+    const rawUrl = generatedUrl || accessToken?.url;
+    if (!rawUrl) return;
 
-    if (!url) return;
+    const fullUrl = rawUrl.startsWith("http")
+      ? rawUrl
+      : `${window.location.origin}${rawUrl}`;
 
     try {
-      await navigator.clipboard.writeText(url);
-
+      await navigator.clipboard.writeText(fullUrl);
       setCopied(true);
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to copy access URL:", error);
+      toast.success("Access URL copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy URL");
     }
   };
+
   return (
     <div className="space-y-6">
-      {/* ========================================
-            ADMIN PASSWORD
-        ======================================== */}
-
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-        {/* Header */}
-        <div className="border-b border-gray-200 px-5 py-4">
+      {/* ================= ADMIN PASSWORD CARD ================= */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100">
-              <FaLock size={14} className="text-gray-500" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <Lock size={18} />
             </div>
-
             <div>
-              <h2 className="text-sm font-semibold text-slate-700">
-                Admin Panel Password
-              </h2>
-
-              <p className="mt-0.5 text-xs text-gray-400">
-                Password used to protect temporary admin access.
+              <h3 className="text-sm font-bold text-slate-900">
+                Master Admin Password
+              </h3>
+              <p className="text-xs text-slate-500">
+                Guards your admin session and temporary verification gates.
               </p>
             </div>
           </div>
+
+          {hasPassword ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Configured
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+              <AlertCircle size={12} />
+              Not Configured
+            </span>
+          )}
         </div>
 
-        {/* Content */}
-        <div className="p-5">
-          {hasPassword ? (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">
-                  Password status
-                </p>
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold text-slate-800">
+              {hasPassword ? "Password Protection Active" : "No Admin Password Set"}
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {hasPassword
+                ? "Your admin password is encrypted with bcrypt and cannot be viewed in plaintext."
+                : "Set an admin password first before delegating temporary verification tokens."}
+            </p>
+          </div>
 
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="font-mono text-sm tracking-widest text-slate-700">
-                    ••••••••••••
-                  </span>
-
-                  <span className="rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-medium text-green-600">
-                    Configured
-                  </span>
-                </div>
-
-                <p className="mt-1 text-[11px] text-gray-400">
-                  The password is securely hashed and cannot be displayed.
-                </p>
-              </div>
-
-              <Link
-                to="/admin/settings/change-password"
-                className="inline-flex items-center justify-center rounded-lg bg-slate-800 px-4 py-2 text-xs font-medium text-white transition hover:bg-slate-700"
-              >
-                Change Password
-              </Link>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-700">
-                  No admin password configured
-                </p>
-
-                <p className="mt-1 text-xs text-gray-400">
-                  Set an admin password before generating temporary access.
-                </p>
-              </div>
-
-              <Link
-                to="/admin/settings/change-password"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-xs font-medium text-white transition hover:bg-slate-700"
-              >
-                <FaPlus size={10} />
-                Set Password
-              </Link>
-            </div>
-          )}
+          <Link
+            to="/admin/settings/change-password"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-slate-800 active:scale-[0.99]"
+          >
+            {hasPassword ? "Change Password" : "Set Admin Password"}
+          </Link>
         </div>
       </div>
 
-      {/* ========================================
-            TEMPORARY ADMIN ACCESS
-        ======================================== */}
-
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-        {/* Header */}
-        <div className="border-b border-gray-200 px-5 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100">
-              <FaKey size={14} className="text-gray-500" />
-            </div>
-
-            <div>
-              <h2 className="text-sm font-semibold text-slate-700">
-                Temporary Admin Access
-              </h2>
-
-              <p className="mt-0.5 text-xs text-gray-400">
-                Generate temporary access for another user.
-              </p>
-            </div>
+      {/* ================= TEMPORARY ACCESS KEYS ================= */}
+      <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <Key size={18} />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">
+              Temporary Delegation Access Keys
+            </h3>
+            <p className="text-xs text-slate-500">
+              Generate time-limited verification URLs to allow emergency or temporary admin access.
+            </p>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-5">
-          {generatedUrl || hasActiveToken ? (
-            <div>
-              <div className="mb-3">
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-medium text-slate-700">
-                    Active access URL
-                  </p>
-
-                  <span className="rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-medium text-green-600">
-                    Active
-                  </span>
-                </div>
-
-                <p className="mt-1 text-[11px] text-gray-400">
-                  Share this URL with the user who needs temporary admin access.
-                </p>
-              </div>
-
-              {/* URL */}
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <div className="flex min-w-0 flex-1 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-                  <input
-                    type="text"
-                    readOnly
-                    value={generatedUrl || accessToken?.url || ""}
-                    className="min-w-0 flex-1 bg-transparent px-3 py-2.5 font-mono text-xs text-gray-600 outline-none"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="flex shrink-0 items-center gap-2 border-l border-gray-200 px-3 text-xs font-medium text-gray-500 transition hover:bg-gray-100"
-                  >
-                    {copied ? (
-                      <>
-                        <FaCheck size={10} />
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <FaCopy size={10} />
-                        Copy
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleClearToken}
-                  disabled={clearingToken}
-                  className="rounded-lg border border-red-200 px-4 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {clearingToken ? "Revoking..." : "Revoke Access"}
-                </button>
-              </div>
-
-              {/* Expiration */}
-              {(generatedExpiresAt || accessToken?.expiresAt) && (
-                <p className="mt-2 text-[11px] text-gray-400">
-                  Expires:{" "}
-                  {new Date(
-                    generatedExpiresAt || accessToken.expiresAt,
-                  ).toLocaleString()}
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-700">
-                  No active access token
-                </p>
-
-                <p className="mt-1 text-xs text-gray-400">
-                  Generate a temporary URL when you need to give someone admin
-                  access.
-                </p>
+        {/* Existing Active Token View */}
+        {generatedUrl || hasActiveToken ? (
+          <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-4.5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-bold text-slate-900">Active Delegation Link</span>
               </div>
 
               <button
-                type="button"
-                onClick={handleGenerateToken}
-                disabled={generatingToken || !hasPassword}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2 text-xs font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={clearingToken}
+                onClick={handleClearToken}
+                className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-red-600 hover:bg-red-50"
               >
-                <FaKey size={10} />
-
-                {generatingToken ? "Generating..." : "Generate Access Token"}
+                <Trash2 size={12} />
+                <span>Revoke Key</span>
               </button>
             </div>
-          )}
 
-          {/* Password requirement */}
-          {!hasPassword && !hasActiveToken && (
-            <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-              <p className="text-xs font-medium text-amber-700">
-                Admin password required
-              </p>
+            {/* URL bar */}
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                type="text"
+                readOnly
+                value={
+                  generatedUrl
+                    ? `${window.location.origin}${generatedUrl}`
+                    : `${window.location.origin}${accessToken?.url || ""}`
+                }
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 font-mono text-xs text-slate-700 outline-none select-all"
+              />
 
-              <p className="mt-1 text-[11px] text-amber-600">
-                Set an admin password before generating an access token.
-              </p>
+              <button
+                onClick={handleCopy}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700"
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copied ? "Copied!" : "Copy Link"}</span>
+              </button>
             </div>
-          )}
-        </div>
+
+            <p className="text-[11px] text-slate-500">
+              Anyone with this link and your master admin password can verify temporary admin access.
+            </p>
+          </div>
+        ) : (
+          /* Generate Form */
+          <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                Token Expiration Window
+              </label>
+
+              <div className="flex flex-wrap gap-2">
+                {[1, 3, 7, 14, 30].map((days) => (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => setExpiresInDays(days)}
+                    className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition ${
+                      expiresInDays === days
+                        ? "bg-blue-600 text-white shadow-xs"
+                        : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {days} {days === 1 ? "Day" : "Days"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                disabled={generatingToken || !hasPassword}
+                onClick={handleGenerateToken}
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Plus size={14} />
+                <span>{generatingToken ? "Generating..." : `Generate Key (Expires in ${expiresInDays}d)`}</span>
+              </button>
+
+              {!hasPassword && (
+                <p className="mt-2 text-xs text-amber-600">
+                  * You must set an admin password before generating an access token.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

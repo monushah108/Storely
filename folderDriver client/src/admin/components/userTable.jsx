@@ -1,258 +1,304 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import CanAccess from "./CanAccess";
-import { FiUsers, FiMail, FiLogOut, FiTrash2, FiFolder } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
+import {
+  Folder,
+  LogOut,
+  Trash2,
+  Mail,
+  Users as UsersIcon,
+  ShieldCheck,
+  Crown,
+  User as UserIcon,
+  Sparkles,
+} from "lucide-react";
 
 export default function UserTable({
-  users,
-  loggingOut,
+  users = [],
+  loggingOut = false,
   handleLogout,
   openDeleteModal,
+  hasFilters = false,
+  onClearFilters,
 }) {
   const navigate = useNavigate();
 
-  return (
-    <>
-      {users.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center">
-          <FiUsers size={30} className="mx-auto text-gray-300" />
+  // Helper for role badge
+  const renderRoleBadge = (role = "user") => {
+    switch (role.toLowerCase()) {
+      case "owner":
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">
+            <Crown size={12} className="text-amber-600" />
+            Owner
+          </span>
+        );
+      case "admin":
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700">
+            <ShieldCheck size={12} className="text-blue-600" />
+            Admin
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
+            <UserIcon size={12} className="text-slate-400" />
+            User
+          </span>
+        );
+    }
+  };
 
-          <h2 className="mt-4 font-semibold text-slate-700">No users found</h2>
+  // Helper for avatar initials fallback
+  const getInitials = (name = "") => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
-          <p className="mt-1 text-sm text-gray-400">
-            There are no registered users to display.
-          </p>
+  if (users.length === 0) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-2xs">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <UsersIcon size={28} />
         </div>
-      ) : (
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-          {/* Desktop */}
-          <div className="hidden overflow-x-auto md:block">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    User
-                  </th>
 
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    Email
-                  </th>
+        <h3 className="mt-4 text-base font-semibold text-slate-800">
+          {hasFilters ? "No matching users found" : "No registered users"}
+        </h3>
 
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    Status
-                  </th>
+        <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500">
+          {hasFilters
+            ? "Try adjusting your search query, role filters, or status selection."
+            : "No accounts have registered on this platform yet."}
+        </p>
 
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    Session
-                  </th>
+        {hasFilters && onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700"
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
+    );
+  }
 
-                  <CanAccess role={["owner", "admin"]}>
-                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-400">
-                      Actions
-                    </th>
-                  </CanAccess>
-                </tr>
-              </thead>
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xs">
+      {/* ================= DESKTOP TABLE ================= */}
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full border-collapse text-left">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-50/75">
+              <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                User
+              </th>
+              <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Email
+              </th>
+              <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Role
+              </th>
+              <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Session
+              </th>
+              <CanAccess role={["owner", "admin"]}>
+                <th className="px-6 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Actions
+                </th>
+              </CanAccess>
+            </tr>
+          </thead>
 
-              <tbody>
-                {users.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-gray-100 last:border-0 hover:bg-gray-50/70"
-                  >
-                    {/* User */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                          {user.picture ? (
-                            <img
-                              src={user.picture}
-                              alt={user.name || "User"}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <FaUserCircle size={36} className="text-gray-300" />
-                          )}
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-800">
-                            {user.name || "Unknown user"}
-                          </p>
-
-                          <p className="text-xs capitalize text-gray-400">
-                            {user.role || "user"}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Email */}
-                    <td className="max-w-[260px] px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <FiMail size={14} className="shrink-0 text-gray-400" />
-
-                        <span className="truncate text-sm text-gray-500">
-                          {user.email}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      {user.isLoggedIn ? (
-                        <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-600">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          Online
-                        </span>
+          <tbody className="divide-y divide-slate-100">
+            {users.map((user) => (
+              <tr
+                key={user.id}
+                className="transition-colors hover:bg-slate-50/80"
+              >
+                {/* User Identity */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-2 ring-slate-200/60">
+                      {user.picture ? (
+                        <img
+                          src={user.picture}
+                          alt={user.name || "User"}
+                          className="h-full w-full object-cover"
+                        />
                       ) : (
-                        <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
-                          <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
-                          Offline
+                        <span className="text-xs font-bold text-slate-600">
+                          {getInitials(user.name)}
                         </span>
                       )}
-                    </td>
+                    </div>
 
-                    {/* Session */}
-                    <td className="px-6 py-4">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-900">
+                        {user.name || "Unnamed User"}
+                      </p>
+                      <p className="font-mono text-[10px] text-slate-400">
+                        ID: {user.id ? user.id.slice(-8) : "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+
+                {/* Email */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <Mail size={13} className="shrink-0 text-slate-400" />
+                    <span className="truncate text-xs font-medium text-slate-700">
+                      {user.email}
+                    </span>
+                  </div>
+                </td>
+
+                {/* Role Badge */}
+                <td className="px-6 py-4">
+                  {renderRoleBadge(user.role)}
+                </td>
+
+                {/* Session Status */}
+                <td className="px-6 py-4">
+                  {user.isLoggedIn ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 border border-emerald-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Online
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500">
+                      <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                      Offline
+                    </span>
+                  )}
+                </td>
+
+                {/* Actions */}
+                <CanAccess role={["owner", "admin"]}>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {/* Inspect Drive Files */}
+                      <button
+                        onClick={() => navigate(`/admin/data/${user.id}`)}
+                        title="Inspect user files"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                      >
+                        <Folder size={14} />
+                      </button>
+
+                      {/* Terminate Session */}
                       <button
                         disabled={!user.isLoggedIn || loggingOut}
                         onClick={() => handleLogout(user)}
-                        className="
-                          inline-flex items-center gap-2
-                          rounded-lg border border-gray-200
-                          px-3 py-1.5
-                          text-xs font-medium text-gray-600
-                          transition
-                          hover:border-red-200
-                          hover:bg-red-50
-                          hover:text-red-600
-                          disabled:cursor-not-allowed
-                          disabled:opacity-40
-                        "
+                        title={user.isLoggedIn ? "Terminate session" : "User offline"}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-600 disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        <FiLogOut size={14} />
-                        Logout
-                      </button>
-                    </td>
-
-                    {/* Actions */}
-                    <CanAccess role={["owner", "admin"]}>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            onClick={() => navigate(`/admin/data/${user.id}`)}
-                            title="Access files"
-                            className="
-                              rounded-lg border border-gray-200
-                              p-2 text-gray-500
-                              transition
-                              hover:border-blue-200
-                              hover:bg-blue-50
-                              hover:text-blue-600
-                            "
-                          >
-                            <FiFolder size={16} />
-                          </button>
-
-                          <button
-                            onClick={() => openDeleteModal(user)}
-                            title="Delete user"
-                            className="
-                              rounded-lg border border-gray-200
-                              p-2 text-gray-500
-                              transition
-                              hover:border-red-200
-                              hover:bg-red-50
-                              hover:text-red-600
-                            "
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </CanAccess>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile */}
-          <div className="divide-y divide-gray-100 md:hidden">
-            {users.map((user) => (
-              <div key={user.id} className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                    {user.picture ? (
-                      <img
-                        src={user.picture}
-                        alt={user.name || "User"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <FaUserCircle size={40} className="text-gray-300" />
-                    )}
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-800">
-                      {user.name || "Unknown user"}
-                    </p>
-
-                    <p className="truncate text-xs text-gray-400">
-                      {user.email}
-                    </p>
-                  </div>
-
-                  <span
-                    className={`h-2.5 w-2.5 rounded-full ${
-                      user.isLoggedIn ? "bg-emerald-500" : "bg-gray-300"
-                    }`}
-                  />
-                </div>
-
-                <div className="mt-4 flex items-center justify-between">
-                  <span
-                    className={`text-xs font-medium ${
-                      user.isLoggedIn ? "text-emerald-600" : "text-gray-400"
-                    }`}
-                  >
-                    {user.isLoggedIn ? "Online" : "Offline"}
-                  </span>
-
-                  <div className="flex gap-2">
-                    <button
-                      disabled={!user.isLoggedIn || loggingOut}
-                      onClick={() => handleLogout(user)}
-                      className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 disabled:opacity-40"
-                    >
-                      <FiLogOut size={14} />
-                      Logout
-                    </button>
-
-                    <CanAccess role={["owner", "admin"]}>
-                      <button
-                        onClick={() => navigate(`/admin/data/${user.id}`)}
-                        className="rounded-lg border border-blue-200 bg-blue-50 p-2 text-blue-600"
-                      >
-                        <FiFolder size={15} />
+                        <LogOut size={14} />
                       </button>
 
+                      {/* Delete Account */}
                       <button
                         onClick={() => openDeleteModal(user)}
-                        className="rounded-lg border border-red-200 bg-red-50 p-2 text-red-500"
+                        title="Delete user"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
                       >
-                        <FiTrash2 size={15} />
+                        <Trash2 size={14} />
                       </button>
-                    </CanAccess>
-                  </div>
+                    </div>
+                  </td>
+                </CanAccess>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ================= MOBILE VIEW (CARDS) ================= */}
+      <div className="divide-y divide-slate-100 md:hidden">
+        {users.map((user) => (
+          <div key={user.id} className="p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-2 ring-slate-200">
+                  {user.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.name || "User"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-slate-600">
+                      {getInitials(user.name)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-slate-900">
+                    {user.name || "Unnamed User"}
+                  </p>
+                  <p className="truncate text-xs text-slate-500">
+                    {user.email}
+                  </p>
                 </div>
               </div>
-            ))}
+
+              {renderRoleBadge(user.role)}
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <div>
+                {user.isLoggedIn ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Online Session
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="h-2 w-2 rounded-full bg-slate-300" />
+                    Offline
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => navigate(`/admin/data/${user.id}`)}
+                  title="Inspect files"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600"
+                >
+                  <Folder size={14} />
+                </button>
+
+                <button
+                  disabled={!user.isLoggedIn || loggingOut}
+                  onClick={() => handleLogout(user)}
+                  title="End session"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-30"
+                >
+                  <LogOut size={14} />
+                </button>
+
+                <button
+                  onClick={() => openDeleteModal(user)}
+                  title="Delete user"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-red-600"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-    </>
+        ))}
+      </div>
+    </div>
   );
 }

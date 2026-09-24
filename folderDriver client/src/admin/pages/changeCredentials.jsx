@@ -1,31 +1,32 @@
-import { useState } from "react";
-import { FaLock } from "react-icons/fa";
-
-import SettingForm from "../components/settingForm";
-import SettingToken from "../components/settingToken";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  KeyRound,
+  CheckCircle2,
+  ShieldAlert,
+} from "lucide-react";
 
 import {
   useGetAdminCredentialsQuery,
   useCreateAdminAccessMutation,
   useUpdateAdminCredentialsMutation,
-  useGenerateAccessTokenMutation,
-  useClearAccessTokenMutation,
 } from "../../store/slices/AdminSlice";
 
 export default function ChangeCredentials() {
-  // ========================================
-  // ADMIN PASSWORD
-  // ========================================
-
+  const navigate = useNavigate();
   const { data: credentialStatus, isLoading: checkingPassword } =
     useGetAdminCredentialsQuery();
 
-  const [updateAdminCredentials] = useUpdateAdminCredentialsMutation();
-  const [createAdminAccess] = useCreateAdminAccessMutation();
-  const [generateAccessToken] = useGenerateAccessTokenMutation();
-  const [clearAccessToken] = useClearAccessTokenMutation();
+  const [updateAdminCredentials, { isLoading: updating }] =
+    useUpdateAdminCredentialsMutation();
+  const [createAdminAccess, { isLoading: creating }] =
+    useCreateAdminAccessMutation();
 
-  // Get password status from backend
   const hasPassword = credentialStatus?.hasPassword ?? false;
 
   const [passwords, setPasswords] = useState({
@@ -40,71 +41,51 @@ export default function ChangeCredentials() {
     confirm: false,
   });
 
-  const [changingPassword, setChangingPassword] = useState(false);
-
-  // ========================================
-  // ADMIN ACCESS TOKEN
-  // ========================================
-
-  const [expiresInDays, setExpiresInDays] = useState(7);
-  const [token, setToken] = useState("");
-  const [expiresAt, setExpiresAt] = useState("");
-  const [generatingToken, setGeneratingToken] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [clearingToken, setClearingToken] = useState(false);
-  // ========================================
-  // PASSWORD HANDLERS
-  // ========================================
-
-  const handlePasswordChange = (e) => {
+  const handleChange = (e) => {
     setPasswords((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const togglePassword = (field) => {
+  const toggleShow = (field) => {
     setShowPassword((prev) => ({
       ...prev,
       [field]: !prev[field],
     }));
   };
 
-  const handlePasswordSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { currentPassword, newPassword, confirmPassword } = passwords;
 
-    if (!newPassword || !confirmPassword) {
-      console.log("both are null");
+    if (hasPassword && !currentPassword.trim()) {
+      toast.error("Please enter your current admin password");
       return;
     }
 
-    if (newPassword.length < 8) {
-      console.log("more than 8");
+    if (!newPassword || newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters long");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      console.log("not equla");
+      toast.error("New passwords do not match");
       return;
     }
 
     try {
-      setChangingPassword(true);
-
       if (hasPassword) {
-        // Change existing password
         await updateAdminCredentials({
           currentPassword,
           password: newPassword,
         }).unwrap();
-        console.log("setting password");
+        toast.success("Admin password changed successfully!");
       } else {
-        // Set password for the first time
         await createAdminAccess({
           password: newPassword,
         }).unwrap();
+        toast.success("Admin master password created successfully!");
       }
 
       setPasswords({
@@ -112,135 +93,135 @@ export default function ChangeCredentials() {
         newPassword: "",
         confirmPassword: "",
       });
+
+      navigate("/admin/settings");
     } catch (error) {
-      console.error(
-        hasPassword
-          ? "Failed to change admin password:"
-          : "Failed to set admin password:",
-        error,
-      );
-    } finally {
-      setChangingPassword(false);
+      toast.error(error?.data?.message || "Failed to update admin password");
     }
   };
 
-  // ========================================
-  // ACCESS TOKEN
-  // ========================================
-
-  const handleGenerateToken = async () => {
-    try {
-      setGeneratingToken(true);
-      setToken("");
-      setExpiresAt("");
-
-      const data = await generateAccessToken({
-        expiryDate: expiresInDays,
-      }).unwrap();
-
-      setToken(data.token);
-      setExpiresAt(data.expiresAt);
-    } catch (error) {
-      console.error("Failed to generate token:", error);
-    } finally {
-      setGeneratingToken(false);
-    }
-  };
-  const handleClearToken = async () => {
-    try {
-      setClearingToken(true);
-
-      await clearAccessToken().unwrap();
-
-      setToken("");
-      setExpiresAt("");
-      setCopied(false);
-    } catch (error) {
-      console.error("Failed to clear admin access token:", error);
-    } finally {
-      setClearingToken(false);
-    }
-  };
-  const handleCopy = async () => {
-    if (!token) return;
-
-    try {
-      await navigator.clipboard.writeText(token);
-
-      setCopied(true);
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to copy token:", error);
-    }
-  };
-
-  if (checkingPassword) {
-    return (
-      <div className="w-full">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-800">Settings</h1>
-
-          <p className="mt-1 text-sm text-gray-500">Loading settings...</p>
-        </div>
-      </div>
-    );
-  }
+  const isSubmitting = updating || creating;
 
   return (
-    <div className="w-full">
-      {/* Header */}
-
-      <div className="space-y-6">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-          {/* Header */}
-          <div className="border-b border-gray-200 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100">
-                <FaLock size={14} className="text-gray-500" />
-              </div>
-
-              <div>
-                <h2 className="text-sm font-semibold text-slate-700">
-                  {hasPassword ? "Change Admin Password" : "Set Admin Password"}
-                </h2>
-
-                <p className="mt-0.5 text-xs text-gray-400">
-                  {hasPassword
-                    ? "Update the password used to access the admin panel."
-                    : "Set a password for temporary admin access."}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Password Form */}
-          <SettingForm
-            handlePasswordChange={handlePasswordChange}
-            handlePasswordSubmit={handlePasswordSubmit}
-            passwords={passwords}
-            showPassword={showPassword}
-            changingPassword={changingPassword}
-            togglePassword={togglePassword}
-            hasPassword={hasPassword}
-          />
+    <div className="max-w-xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-bold text-slate-900">
+            {hasPassword ? "Change Master Admin Password" : "Set Initial Master Admin Password"}
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            This password protects temporary admin tokens and privileged operations.
+          </p>
         </div>
 
-        <SettingToken
-          expiryDate={expiresInDays}
-          setExpiresInDays={setExpiresInDays}
-          generatingToken={generatingToken}
-          handleGenerateToken={handleGenerateToken}
-          handleClearToken={handleClearToken}
-          clearingToken={clearingToken}
-          handleCopy={handleCopy}
-          token={token}
-          copied={copied}
-          expiresAt={expiresAt}
-        />
+        <Link
+          to="/admin/settings"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800"
+        >
+          <ArrowLeft size={13} />
+          <span>Back</span>
+        </Link>
       </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Current Password (if configured) */}
+        {hasPassword && (
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+              Current Admin Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword.current ? "text" : "password"}
+                name="currentPassword"
+                value={passwords.currentPassword}
+                onChange={handleChange}
+                required
+                placeholder="Enter current password"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              />
+              <button
+                type="button"
+                onClick={() => toggleShow("current")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword.current ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* New Password */}
+        <div>
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+            New Admin Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword.new ? "text" : "password"}
+              name="newPassword"
+              value={passwords.newPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="Minimum 6 characters"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+            />
+            <button
+              type="button"
+              onClick={() => toggleShow("new")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              {showPassword.new ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Confirm Password */}
+        <div>
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600">
+            Confirm New Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword.confirm ? "text" : "password"}
+              name="confirmPassword"
+              value={passwords.confirmPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="Re-enter new password"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-3.5 pr-10 text-xs text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+            />
+            <button
+              type="button"
+              onClick={() => toggleShow("confirm")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              {showPassword.confirm ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Submit */}
+        <div className="flex justify-end gap-3 pt-3">
+          <Link
+            to="/admin/settings"
+            className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+          >
+            Cancel
+          </Link>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Lock size={13} />
+            <span>{isSubmitting ? "Updating..." : hasPassword ? "Update Password" : "Set Password"}</span>
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
